@@ -1,8 +1,10 @@
+module Haskell.Model.Medico where
+
 data Medico = Medico {
     id :: Int,
     nome :: String,
     crm :: String,
-    -- idUbs :: Int
+    idUbs :: Int,
     especialidade :: String,
     horarios :: [String]
 } deriving (Show)

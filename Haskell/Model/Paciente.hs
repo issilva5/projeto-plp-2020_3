@@ -1,3 +1,4 @@
+module Haskell.Model.Paciente where
 
 data Paciente = Paciente {
     id :: Int,
