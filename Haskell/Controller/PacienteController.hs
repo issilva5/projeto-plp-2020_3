@@ -41,8 +41,8 @@ consultarLaudos idPac laudos = [(Laudo 1 1 "")]
 
 -- Ver um laudo a partir do código (a partir do código do laudo)
 -- laudosLista = [Laudos {indice = 1, idPac = "", codigo1 = "", laudo1 = ""} ]
-consultarLaudo :: Int -> Laudo
-consultarLaudo idPac  = (Laudo 1 1 "")
+consultarLaudo :: Int -> Int -> [Laudo] -> Laudo
+consultarLaudo idPac idLaudo laudos = (Laudo 1 1 "")
 
 -- Ver todas as receitas de medicamento
 -- receitasLista = [Receitas {indice = 1, idPac = "", receita1 = ""}]
@@ -51,8 +51,8 @@ consultarReceitasMed idPac receitas = [(Receita 1 1 1 1 [(1, "")])]
 
 -- Ver um receita de medicamento a partir do nome do medicamento
 -- receitasLista = [Receitas {indice = 1, idPac = "", receita1 = ""}]
-consultarReceitaMed :: Int -> Receita
-consultarReceitaMed idPac = (Receita 1 1 1 1 [(1, "")])
+consultarReceitaMed :: Int -> String -> [Receita] -> Receita
+consultarReceitaMed idPac medicamento receitas = (Receita 1 1 1 1 [(1, "")])
 
 -- Consultar lista de receitas de exames a partir do idPac
 -- examesLista = [Exames {indice = 1, idPac = "", exame = ""}]
@@ -61,8 +61,8 @@ consultarReceitasEx idPac exames = [(Exame 1 1 1 1 "" "" "")]
 
 -- Consultar receita de exame a partir do nome do exame
 -- examesLista = [Exames {indice = 1, idPac = "", exame = ""}]
-consultarReceitaEx :: Int -> Exame
-consultarReceitaEx idPac = (Exame 1 1 1 1 "" "" "")
+consultarReceitaEx :: Int -> String -> [Exame] -> Exame
+consultarReceitaEx idPac exame exames = (Exame 1 1 1 1 "" "" "")
 
 -- Pede atendimento de emergencia passando o endereço
 -- Retorna a desc da ambulancia
