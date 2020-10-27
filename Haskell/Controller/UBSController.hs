@@ -18,8 +18,8 @@ import Haskell.Model.Medicamento
 
 -- descricao: cadastra médico passando as informações
 -- retorno: booleano confirmando o cadastro
-cadastraMedico :: Int -> Medico -> Bool
-cadastraMedico idUBS med = False
+cadastraMedico :: Int -> [String] -> Medico
+cadastraMedico idUBS informs = Medico 1 "" "" 1 "" [""]
 
 visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
 visualizaAgendamentos idUBS consultas = []
@@ -34,8 +34,8 @@ visualizaMedico :: Int -> Int -> Medico
 visualizaMedico idUBS idMed = (Medico 1 "" "" 1 "" [])
 
 -- descricao: passa as informações do medicamento
-adicionaMedicamento :: Int -> Medicamento
-adicionaMedicamento idUBS = (Medicamento 1 0 "")
+adicionaMedicamento :: Int -> [String] -> Medicamento
+adicionaMedicamento idUBS informs = (Medicamento 1 0 "")
 
 -- descricao: adiciona quantidade ao medicamento
 adicionaMedicamentoEstoque :: Int -> Int -> Int -> Medicamento
