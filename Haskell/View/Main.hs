@@ -31,9 +31,6 @@ menuLogin _ = "Coleta as informações de Login"
 menuCadastro :: String -> String
 menuCadastro _ = "Coleta as informações de Cadastro"
 
-show_ :: String -> String
-show_ str = str 
-
 main :: IO()
 main = do 
     --hSetEncoding stdout utf8
@@ -45,7 +42,7 @@ main = do
 
     let acao | toUpper (head op) == 'L' = menuLogin ""
              | toUpper (head op) == 'C' = menuCadastro ""
-             | otherwise = (show_ "Opção Inválida")
+             | otherwise = ("Opção Inválida")
 
     putStrLn (acao)
     main
