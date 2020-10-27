@@ -27,12 +27,12 @@ acessarDadosPaciente :: Int -> Int -> Paciente
 acessarDadosPaciente idMed idPaciente = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False ["Poeira"])
 
 -- descricao: pegar os dados das consultas que tenho agendadas
-acessarConsultas :: Int -> [Consulta]
-acessarConsultas idMed = []
+acessarConsultas :: Int -> [Consulta] -> [Consulta]
+acessarConsultas idMed consultas = []
 
 -- descricao: pegar os dados das consultas que tenho agendadas
-acessarConsultasData :: Int -> String -> [Consulta]
-acessarConsultasData idMed date = []
+acessarConsultasData :: Int -> String -> [Consulta] -> [Consulta]
+acessarConsultasData idMed date consultas = []
 
 -- O que danado é ????
 emitirReceita :: Int -> Int -> Receita
@@ -44,8 +44,8 @@ emitirExame idMed idPac = (Receita 1 1 1 1 [(1, "")])
 emitirLaudo :: Int -> Int -> Receita
 emitirLaudo idMed idExame = (Receita 1 1 1 1 [(1, "")])
 
-acessarExames :: Int -> [Exame]
-acessarExames idMed = []
+acessarExames :: Int -> [Exame] -> [Exame]
+acessarExames idMed exame = []
 
 acessarExame :: Int -> Int -> Exame
 acessarExame idMed idExame = (Exame 1 1 1 1 "" "" "")

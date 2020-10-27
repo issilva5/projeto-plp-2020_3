@@ -21,14 +21,14 @@ import Haskell.Model.Medicamento
 cadastraMedico :: Int -> Medico -> Bool
 cadastraMedico idUBS med = False
 
-visualizaAgendamentos :: Int -> [Consulta]
-visualizaAgendamentos idUBS = []
+visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
+visualizaAgendamentos idUBS consultas = []
 
-visualizaPacientes :: Int -> [Paciente]
-visualizaPacientes idUBS = []
+visualizaPacientes :: Int -> [Paciente] -> [Paciente]
+visualizaPacientes idUBS pacientes = []
 
-visualizaMedicos :: Int -> [Medico]
-visualizaMedicos idUBS = []
+visualizaMedicos :: Int -> [Medico] -> [Medico]
+visualizaMedicos idUBS medicos = []
 
 visualizaMedico :: Int -> Int -> Medico
 visualizaMedico idUBS idMed = (Medico 1 "" "" 1 "" [])
@@ -45,8 +45,8 @@ adicionaMedicamentoEstoque idUBS idMed qtd = (Medicamento 1 0 "")
 removerMedicamento :: Int -> Int -> Int -> Medicamento
 removerMedicamento idUBS idMedicamento qtd = (Medicamento 1 0 "")
 
-visualizaMedicamentos :: Int -> [Medicamento]
-visualizaMedicamentos idUBS = []
+visualizaMedicamentos :: Int -> [Medicamento] -> [Medicamento]
+visualizaMedicamentos idUBS medicamentos = []
 
 visualizaMedicamento :: Int -> Medicamento
 visualizaMedicamento idUBS = (Medicamento 1 0 "")
