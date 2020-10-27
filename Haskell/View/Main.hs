@@ -9,7 +9,7 @@ import Data.Char ( toUpper )
 
 main :: IO()
 main = do
-    login (BD.BD [] [] [] [] [] [] [] [] [])
+    login (BD.BD [] [] [] [] [] [] [] [] [] [1..])
 
 login :: BD.BD -> IO()
 login dados  = do
@@ -26,13 +26,13 @@ cadastra dados = do
 
     if toUpper (head op) == 'P' then do
         dadosP <- lePaciente
-        clear
-        login dados {BD.pacientes = (BD.pacientes dados) ++ [PC.criaPaciente dadosP]}
+        senha <- prompt "Senha > "
+        login dados {BD.pacientes = (BD.pacientes dados) ++ [PC.criaPaciente ([show (head (BD.idAtual dados))] ++ dadosP)], BD.logins = (BD.logins dados) ++ [(head (BD.idAtual dados), senha)], BD.idAtual = drop 1 (BD.idAtual dados)}
 
     else if toUpper (head op) == 'U' then do
         dadosU <- leUBS
-        clear
-        login dados {BD.ubs = (BD.ubs dados) ++ [UBSC.criaUBS dadosU]}
+        senha <- prompt "Senha > "
+        login dados {BD.ubs = (BD.ubs dados) ++ [UBSC.criaUBS ([show (head (BD.idAtual dados))] ++ dadosU)], BD.logins = (BD.logins dados) ++ [(head (BD.idAtual dados), senha)], BD.idAtual = drop 1 (BD.idAtual dados)}
 
     else do
         clear

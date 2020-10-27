@@ -18,5 +18,6 @@ data BD = BD {
     laudos :: [Laudo.Laudo],
     medicamentos :: [Medicamento.Medicamento],
     receitas :: [Receita.Receita],
-    logins :: [(Int, String)]
+    logins :: [(Int, String)],
+    idAtual :: [Int]
 } deriving (Show)
