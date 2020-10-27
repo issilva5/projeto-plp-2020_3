@@ -6,6 +6,6 @@ data Exame = Exame {
     idMedico :: Int,
     idUBS :: Int,
     tipo :: String,
-    dia :: String,
+    data :: String,
     resultado :: String
 } deriving (Show)
