@@ -21,3 +21,6 @@ data BD = BD {
     logins :: [(Int, String)],
     idAtual :: [Int]
 } deriving (Show)
+
+nextID :: BD -> Int
+nextID bd = head (idAtual bd)
