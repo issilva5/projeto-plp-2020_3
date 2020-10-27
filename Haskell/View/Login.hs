@@ -1,6 +1,7 @@
 module Haskell.View.Login where
 
 import qualified Haskell.Model.BD as BD
+import qualified Haskell.View.Cadastro as MenuCadastro
 
 {-
 
@@ -10,4 +11,5 @@ Login ou Cadastro.
 -}
 login :: BD.BD -> IO()
 login dados  = do
-    putStrLn "Hello world!"
+    MenuCadastro.cadastra dados
+    

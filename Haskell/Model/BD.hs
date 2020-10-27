@@ -19,4 +19,4 @@ data BD = BD {
     medicamentos :: [Medicamento.Medicamento],
     receitas :: [Receita.Receita],
     logins :: [(Int, String)]
-}
+} deriving (Show)
