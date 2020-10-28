@@ -27,12 +27,12 @@ cadastra dados = do
     if toUpper (head op) == 'P' then do
         dadosP <- lePaciente
         senha <- prompt "Senha > "
-        login dados {BD.pacientes = (BD.pacientes dados) ++ [PC.criaPaciente ([show (BD.nextID dados)] ++ dadosP)], BD.logins = (BD.logins dados) ++ [(BD.nextID dados, senha)], BD.idAtual = drop 1 (BD.idAtual dados)}
+        login dados {BD.pacientes = (BD.pacientes dados) ++ [PC.criaPaciente ([show (BD.nextID dados)] ++ dadosP)], BD.logins = (BD.logins dados) ++ [(BD.nextID dados, senha, 0)], BD.idAtual = drop 1 (BD.idAtual dados)}
 
     else if toUpper (head op) == 'U' then do
         dadosU <- leUBS
         senha <- prompt "Senha > "
-        login dados {BD.ubs = (BD.ubs dados) ++ [UBSC.criaUBS ([show (BD.nextID dados)] ++ dadosU)], BD.logins = (BD.logins dados) ++ [(BD.nextID dados, senha)], BD.idAtual = drop 1 (BD.idAtual dados)}
+        login dados {BD.ubs = (BD.ubs dados) ++ [UBSC.criaUBS ([show (BD.nextID dados)] ++ dadosU)], BD.logins = (BD.logins dados) ++ [(BD.nextID dados, senha, 1)], BD.idAtual = drop 1 (BD.idAtual dados)}
 
     else do
         clear
