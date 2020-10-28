@@ -1,4 +1,5 @@
 module Haskell.Controller.PacienteController ( 
+  criaPaciente,
   buscarUnidades,
   requisitarConsulta,
   requisitarExame,
@@ -17,10 +18,14 @@ import Haskell.Model.Exame
 import Haskell.Model.UBS
 import Haskell.Model.Laudo
 
+criaPaciente :: Int -> [String] -> Paciente
+criaPaciente idPac infos = (Paciente ) --essa linha dá erro, falta preencher as infos do paciente
+
 -- Buscar as unidades que tem determinada especialidade
+-- possivelmente mover pro UBS Controller
 -- ubsLista = [UBS {indice = 1, idUBS = ""} ]
-buscarUnidades :: Int -> String -> [UBS] -> [UBS]
-buscarUnidades idPac str ubss = [(UBS 1 "" "")]
+buscarUnidades :: String -> [UBS] -> [UBS]
+buscarUnidades esp ubss = [(UBS 1 "" "")]
 
 -- Recebe a especialidade e a unidade de saúde
 requisitarConsulta :: Int -> String -> UBS -> String
