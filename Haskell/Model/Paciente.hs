@@ -11,6 +11,5 @@ data Paciente = Paciente {
     endereco :: String,
     cardiopata :: Bool,
     diabetico :: Bool,
-    hipertenso :: Bool,
-    alergias :: [String]
+    hipertenso :: Bool
 } deriving (Show)
