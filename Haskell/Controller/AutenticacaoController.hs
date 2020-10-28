@@ -3,5 +3,7 @@ module Haskell.Controller.AutenticacaoController (
 ) where
 
 -- Verifica se o login e senha estão corretos
-autentica :: [(Int, String, Int)] -> String -> String -> Int 
-autentica logins user senha tipo = -1
+autentica :: [(Int, String, Int)] -> Int -> String -> Int 
+autentica ((u, s, tipo):xs) user senha | u == user && s == senha = tipo
+                                       | otherwise = autentica xs user senha
+autentica [] _ _ = -1
