@@ -23,8 +23,9 @@ informarHorario idMed horario = False
 
 -- descricao: pegar os dados do paciente
 -- retorno: paciente
-acessarDadosPaciente :: Int -> Int -> Paciente
-acessarDadosPaciente idMed idPaciente = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False ["Poeira"])
+-- possivelmente reaproveitar a do PacienteController
+acessarDadosPaciente :: [Paciente] -> Int -> Paciente
+acessarDadosPaciente _ idPaciente = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False ["Poeira"])
 
 -- descricao: pegar os dados das consultas que tenho agendadas
 acessarConsultas :: Int -> [Consulta] -> [Consulta]
@@ -34,21 +35,20 @@ acessarConsultas idMed consultas = []
 acessarConsultasData :: Int -> String -> [Consulta] -> [Consulta]
 acessarConsultasData idMed date consultas = []
 
--- O que danado é ????
-emitirReceita :: Int -> Int -> Receita
-emitirReceita idMed idPac = (Receita 1 1 1 1 [(1, "")])
+emitirReceita :: Int -> Int -> [String] -> Receita
+emitirReceita idMed idPac informacoes = (Receita 1 1 1 1 [(1, "")])
 
-emitirExame :: Int -> Int -> Receita
-emitirExame idMed idPac = (Receita 1 1 1 1 [(1, "")])
+emitirExame :: Int -> Int -> [String] -> Exame
+emitirExame idMed idPac informacoes = (Exame 1 1 1 1 [(1, "")])
 
-emitirLaudo :: Int -> Int -> Receita
-emitirLaudo idMed idExame = (Receita 1 1 1 1 [(1, "")])
+emitirLaudo :: Int -> Int -> [String] -> Laudo
+emitirLaudo idMed idExame informacoes = (Laudo 1 1 1 1 [(1, "")])
 
 acessarExames :: Int -> [Exame] -> [Exame]
-acessarExames idMed exame = []
+acessarExames idMed exames = []
 
-acessarExame :: Int -> Int -> Exame
-acessarExame idMed idExame = (Exame 1 1 1 1 "" "" "")
+acessarExame :: Int -> Int -> [Exame] -> Exame
+acessarExame idMed idExame exames = (Exame 1 1 1 1 "" "" "")
 
 solicitarTransferencia :: Int -> Int -> Bool
 solicitarTransferencia idMed idUBS = False
