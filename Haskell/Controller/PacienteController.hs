@@ -1,4 +1,4 @@
-module Haskell.Controller.PacienteController ( 
+module Haskell.Controller.PacienteController (
   criaPaciente,
   buscarUnidades,
   requisitarConsulta,
