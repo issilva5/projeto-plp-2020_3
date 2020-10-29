@@ -1,5 +1,5 @@
 module Haskell.Controller.UBSController (
-  criaUBS
+  criaUBS,
   cadastraMedico,
   visualizaAgendamentos,
   visualizaPacientes,
@@ -16,6 +16,7 @@ import Haskell.Model.Medico
 import Haskell.Model.Consulta
 import Haskell.Model.Paciente
 import Haskell.Model.Medicamento
+import Haskell.Model.UBS
 
 criaUBS :: Int -> [String] -> UBS
 criaUBS idUBS infos = (UBS 0 "" "")
@@ -23,7 +24,7 @@ criaUBS idUBS infos = (UBS 0 "" "")
 -- descricao: cadastra médico passando as informações
 -- retorno: booleano confirmando o cadastro
 cadastraMedico :: Int -> [String] -> Medico
-cadastraMedico idUBS informs = Medico 1 "" "" 1 "" [""]
+cadastraMedico idUBS informs = (Medico 1 "" "" 1 "" [""])
 
 visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
 visualizaAgendamentos idUBS consultas = []

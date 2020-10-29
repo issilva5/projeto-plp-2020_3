@@ -17,6 +17,7 @@ import Haskell.Model.Receita
 import Haskell.Model.Exame
 import Haskell.Model.UBS
 import Haskell.Model.Laudo
+import Haskell.Model.Paciente
 
 criaPaciente :: Int -> [String] -> Paciente
 criaPaciente idPac infos = (Paciente ) --essa linha dá erro, falta preencher as infos do paciente

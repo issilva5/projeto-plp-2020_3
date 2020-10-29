@@ -1,5 +1,5 @@
 module Haskell.View.Cadastro (
-     cadastra
+    cadastra
 ) where
 
 import qualified Haskell.Model.BD as BD

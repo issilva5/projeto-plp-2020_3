@@ -14,18 +14,20 @@ module Haskell.Controller.MedicoController (
 import Haskell.Model.Paciente
 import Haskell.Model.Consulta
 import Haskell.Model.Receita
+import Haskell.Model.Medico
 import Haskell.Model.Exame
+import Haskell.Model.Laudo
 
 -- informa meu horario de atendimento no formato 'Ds HH:MM a HH:MM'
 -- retorno: booleano confirmando se deu certo
-informarHorario :: Int -> String -> Bool
-informarHorario idMed horario = False
+informarHorario :: Int -> String -> [Medico] -> Bool
+informarHorario idMed horario medicos = False
 
 -- descricao: pegar os dados do paciente
 -- retorno: paciente
 -- possivelmente reaproveitar a do PacienteController
 acessarDadosPaciente :: [Paciente] -> Int -> Paciente
-acessarDadosPaciente _ idPaciente = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False ["Poeira"])
+acessarDadosPaciente _ idPaciente = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False)
 
 -- descricao: pegar os dados das consultas que tenho agendadas
 acessarConsultas :: Int -> [Consulta] -> [Consulta]
@@ -39,10 +41,10 @@ emitirReceita :: Int -> Int -> [String] -> Receita
 emitirReceita idMed idPac informacoes = (Receita 1 1 1 1 [(1, "")])
 
 emitirExame :: Int -> Int -> [String] -> Exame
-emitirExame idMed idPac informacoes = (Exame 1 1 1 1 [(1, "")])
+emitirExame idMed idPac informacoes = (Exame 1 1 1 1 "" "" "")
 
 emitirLaudo :: Int -> Int -> [String] -> Laudo
-emitirLaudo idMed idExame informacoes = (Laudo 1 1 1 1 [(1, "")])
+emitirLaudo idMed idExame informacoes = (Laudo 1 1 "")
 
 acessarExames :: Int -> [Exame] -> [Exame]
 acessarExames idMed exames = []
