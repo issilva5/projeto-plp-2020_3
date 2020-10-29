@@ -25,6 +25,7 @@ menuMedico idMed dados = do
     if toUpper (head op) == 'I' then do
         horario <- prompt "Horário > "
         putStrLn MC.informarHorario idMed horario BD.medicos
+        menuMedico idMed dados
     
     else if toUpper (head op) == 'A' then do
         putStrLn medicoAcessarDados
@@ -33,14 +34,17 @@ menuMedico idMed dados = do
         if toUpper (head acessarOp) == 'P' then do
             idPac <- prompt "ID do Paciente > "
             putStrLn MC.acessarDadosPaciente BD.pacientes idPac
+            menuMedico idMed dados
 
         else if toUpper (head acessarOp) == 'E' then do
             idExame <- prompt "ID do Exame > "
             putStrLn MC.acessarExame idMed idExame BD.exames
+            menuMedico idMed dados
 
         else if toUpper (head acessarOp) == 'A' then do
             date <- prompt "Data > "
             putStrLn MC.acessarConsultasData idMed date (BD.consultas dados)
+            menuMedico idMed dados
 
         else do
             clear
@@ -52,17 +56,17 @@ menuMedico idMed dados = do
         if toUpper (head emitirOp) == 'R' then do
             idPac <- prompt "ID do Paciente > "
             informacoes <- prompt "Informações > "
-            menuMedico idMed {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita idMed idPac (read informacoes))]}
+            menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita idMed idPac (read informacoes))]}
 
         else if toUpper (head emitirOp) == 'S' then do
             idPac <- prompt "ID do Paciente > "
             informacoes <- prompt "Informações > "
-            login dados {BD.exames = BD.exames ++ [(MC.emitirExame idMed idPac (read informacoes))]}
+            menuMedico idMed dados {BD.exames = (BD.exames dados) ++ [(MC.emitirExame idMed idPac (read informacoes))]}
 
         else if toUpper (head emitirOp) == 'L' then do
             idPac <- prompt "ID do Paciente > "
             informacoes <- prompt "Informações > "
-            login dados {BD.laudos = BD.laudos ++ [(MC.emitirLaudo idMed idPac (read informacoes))]}
+            menuMedico idMed dados {BD.laudos = (BD.laudos dados) ++ [(MC.emitirLaudo idMed idPac (read informacoes))]}
 
         else do
             clear
@@ -70,6 +74,7 @@ menuMedico idMed dados = do
     else if toUpper (head op) == 'T' then do
         idUBS <- prompt "ID da UBS > "
         putStrLn MC.solicitarTransferencia idMed idUBS
+        menuMedico idMed dados
 
     else do
         clear
