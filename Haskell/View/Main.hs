@@ -37,7 +37,7 @@ login dados = do
     let proxMenu | aut == 0 = menuPaciente
                  | aut == 1 = menuUBS
                  | aut == 2 = menuMedico
-                 | otherwise = login 
+                 | otherwise = inicial
 
     proxMenu dados
 
