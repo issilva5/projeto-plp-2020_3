@@ -87,7 +87,7 @@ menuUBS idUBS dados = do
     else if toUpper (head op) == 'V' then do
         op2 <- opcoesUBSVisualizar
 
-        if toUpper (head op2) == 'V' then do
+        if toUpper (head op2) == 'A' then do
             
             print (UBSC.visualizaAgendamentos idUBS (BD.consultas dados))
         
