@@ -13,6 +13,18 @@ clear = do
     _ <- system "clear"
     return ()
 
+menuInicial :: String -> String
+menuInicial m = m ++ "\n"
+              ++ " -------------\n" 
+              ++ "  (L)ogin     \n"
+              ++ "  (C)adastrar \n"
+              ++ " -------------\n"
+
+title :: String -> String
+title _ = " -------------------------------------------------\n"
+        ++"  SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) \n"
+        ++" -------------------------------------------------\n"
+
 titleCadastro :: String
 titleCadastro = " -----------------------------------------------------------------\n"
               ++"  SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - MENU CADASTRO \n"
