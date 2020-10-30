@@ -18,9 +18,10 @@ import Haskell.Model.Exame
 import Haskell.Model.UBS
 import Haskell.Model.Laudo
 import Haskell.Model.Paciente
+import Data.Dates
 
 criaPaciente :: Int -> [String] -> Paciente
-criaPaciente idPac infos = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False)
+criaPaciente idPac infos = (Paciente 1 "infos" "" "" 0.0 0.0 "" "" False False False) -- implementação temporária para poder executar sem erro
 
 -- Buscar as unidades que tem determinada especialidade
 -- possivelmente mover pro UBS Controller
@@ -63,12 +64,12 @@ consultarReceitaMed idPac medicamento receitas = (Receita 1 1 1 1 [(1, "")])
 -- Consultar lista de receitas de exames a partir do idPac
 -- examesLista = [Exames {indice = 1, idPac = "", exame = ""}]
 consultarReceitasEx :: Int -> [Exame] -> [Exame]
-consultarReceitasEx idPac exames = [(Exame 1 1 1 1 "" "" "")]
+consultarReceitasEx idPac exames = [(Exame 1 1 1 1 "" (DateTime 2020 10 30 00 00 00) "")]
 
 -- Consultar receita de exame a partir do nome do exame
 -- examesLista = [Exames {indice = 1, idPac = "", exame = ""}]
 consultarReceitaEx :: Int -> String -> [Exame] -> Exame
-consultarReceitaEx idPac exame exames = (Exame 1 1 1 1 "" "" "")
+consultarReceitaEx idPac exame exames = (Exame 1 1 1 1 "" (DateTime 2020 10 30 00 00 00) "")
 
 -- Pede atendimento de emergencia passando o endereço
 -- Retorna a desc da ambulancia
