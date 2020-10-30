@@ -14,13 +14,14 @@ module Haskell.Controller.MedicoController (
 import Haskell.Model.Paciente
 import Haskell.Model.Consulta
 import Haskell.Model.Receita
+import Haskell.Model.Medico
 import Haskell.Model.Exame
 import Haskell.Model.Laudo
 
 -- informa meu horario de atendimento no formato 'Ds HH:MM a HH:MM'
 -- retorno: booleano confirmando se deu certo
-informarHorario :: Int -> String -> Bool
-informarHorario idMed horario = False
+informarHorario :: Int -> String -> [Medico] -> Bool
+informarHorario idMed horario medicos = False
 
 -- descricao: pegar os dados do paciente
 -- retorno: paciente

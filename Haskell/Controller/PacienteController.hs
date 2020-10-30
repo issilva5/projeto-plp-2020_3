@@ -20,7 +20,7 @@ import Haskell.Model.Laudo
 import Haskell.Model.Paciente
 
 criaPaciente :: Int -> [String] -> Paciente
-criaPaciente idPac infos = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False)
+criaPaciente idPac infos = (Paciente 1 "infos" "" "" 0.0 0.0 "" "" False False False) -- implementação temporária para poder executar sem erro
 
 -- Buscar as unidades que tem determinada especialidade
 -- possivelmente mover pro UBS Controller
