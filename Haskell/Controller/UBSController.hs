@@ -17,14 +17,17 @@ import Haskell.Model.Consulta
 import Haskell.Model.Paciente
 import Haskell.Model.Medicamento
 import Haskell.Model.UBS
+import Haskell.Model.DateCycle
 
 criaUBS :: Int -> [String] -> UBS
 criaUBS idUBS infos = (UBS 1 "" "")
 
 -- descricao: cadastra médico passando as informações
 -- retorno: booleano confirmando o cadastro
+-- as informações não contêm os horários, pois eles devem ser informados pelo médico
+-- assim para criar o medico utilize a função empty do DateCycle para o atributo horario
 cadastraMedico :: Int -> Int -> [String] -> Medico
-cadastraMedico idUBS idMed informs = Medico 1 "" "" 1 "" [""]
+cadastraMedico idUBS idMed informs = Medico 1 "" "" 1 "" (empty)
 
 visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
 visualizaAgendamentos idUBS consultas = []
@@ -38,7 +41,7 @@ visualizaMedicos :: Int -> [Medico] -> [Medico]
 visualizaMedicos idUBS medicos = []
 
 visualizaMedico :: Int -> Int -> [Medico] -> Medico
-visualizaMedico idUBS idMed medicos = (Medico 1 "" "" 1 "" [])
+visualizaMedico idUBS idMed medicos = (Medico 1 "" "" 1 "" empty)
 
 -- descricao: passa as informações do medicamento
 adicionaMedicamento :: Int -> Int -> [String] -> Medicamento

@@ -75,7 +75,7 @@ leUBS = do
 
 leMedico :: IO [String]
 leMedico = do
-    sequence [prompt "Nome > ", prompt "CRM > ", prompt "Especialidade > ", prompt "Horário (formato: Seg-HH:MM-HH:MM;Ter-HH:MM-HH:MM)> "]
+    sequence [prompt "Nome > ", prompt "CRM > ", prompt "Especialidade > "]
 
 leMedicamento :: IO [String]
 leMedicamento = do

@@ -16,6 +16,7 @@ import Haskell.Model.Consulta
 import Haskell.Model.Receita
 import Haskell.Model.Exame
 import Haskell.Model.Laudo
+import Data.Dates
 
 -- informa meu horario de atendimento no formato 'Ds HH:MM a HH:MM'
 -- retorno: booleano confirmando se deu certo
@@ -40,7 +41,7 @@ emitirReceita :: Int -> Int -> [String] -> Receita
 emitirReceita idMed idPac informacoes = (Receita 1 1 1 1 [(1, "")])
 
 emitirExame :: Int -> Int -> [String] -> Exame
-emitirExame idMed idPac informacoes = (Exame 1 1 1 1 "" "" "")
+emitirExame idMed idPac informacoes = (Exame 1 1 1 1 "" (DateTime 2020 10 30 00 00 00) "")
 
 emitirLaudo :: Int -> Int -> [String] -> Laudo
 emitirLaudo idMed idExame informacoes = (Laudo 1 1 "")
@@ -49,7 +50,7 @@ acessarExames :: Int -> [Exame] -> [Exame]
 acessarExames idMed exames = []
 
 acessarExame :: Int -> Int -> [Exame] -> Exame
-acessarExame idMed idExame exames = (Exame 1 1 1 1 "" "" "")
+acessarExame idMed idExame exames = (Exame 1 1 1 1 "" (DateTime 2020 10 30 00 00 00) "")
 
 solicitarTransferencia :: Int -> Int -> Bool
 solicitarTransferencia idMed idUBS = False

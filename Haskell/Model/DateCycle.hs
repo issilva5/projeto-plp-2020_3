@@ -1,7 +1,12 @@
 module Haskell.Model.DateCycle (
 
   DateCycle(..),
-  getNextDate
+  getNextDate,
+  empty,
+  isEmpty,
+  isValid,
+  seeNextDate,
+  nextDay
 
 ) where
 
@@ -19,6 +24,34 @@ data DateCycle = DateCycle {
 
 {-
 
+Cria um DateCycle vazio apenas para criação do médico.
+
+-}
+empty :: DateCycle
+empty = DateCycle (Heap.fromList []) [] [] (-1)
+
+{-
+
+Verifica se o DateCycle é vazio (i.e. foi criado pela função empty).
+
+-}
+isEmpty :: DateCycle -> Bool
+isEmpty dc = (timeSc dc) == -1
+
+{-
+
+Verifica se o DateCycle é válido. Deve ser usada para evitar erros ao usar getNextDate
+em um DateCycle inválido.
+
+-}
+isValid :: DateCycle -> Bool
+isValid dc = emptiness && lengthLists && heapEmpty
+             where emptiness = (not (isEmpty dc))
+                   lengthLists = (length (start dc)) == 7 && (length (end dc)) == 7
+                   heapEmpty = not (Heap.isEmpty (schedule dc))
+
+{-
+
 Recebe os horários de um médico e o horário atual, e retorna uma tupla com dois elementos, na qual:
  * Primeiro elemento: próximo horário livre do médico
  * Segundo elemento: horários do médico atualizado com a retirada do livre
@@ -31,6 +64,25 @@ getNextDate dc now | nextSc < now = getNextDate (snd (nextSc, dc {schedule = Hea
                    | otherwise = (nextSc, dc {schedule = Heap.insert (addJump dc nextSc) noHead})
                    where nextSc = head (Heap.take 1 (schedule dc))
                          noHead = (Heap.drop 1 (schedule dc))
+
+{-
+
+Dada uma data e um dia da semana, retorna a data do próximo dia da semana especificado.
+Exemplo nextDay (30/10/2020) Segunda => 02/11/2020
+
+-}
+nextDay :: DateTime -> WeekDay -> DateTime
+nextDay date wkd | (weekdayNumber (dateWeekDay date)) == (weekdayNumber wkd) = date
+                 | otherwise = (addInterval (nextMonday date) interval)
+                 where interval = Days (toInteger ((weekdayNumber wkd) - 1))
+
+{-
+
+Retorna a próxima data livre sem alterar retirá-la.
+
+-}
+seeNextDate :: DateCycle -> DateTime -> DateTime
+seeNextDate dc now = fst (getNextDate dc now)
 
 dateTimeToTime :: DateTime -> Time
 dateTimeToTime dt = (Time (hour dt) (minute dt) (second dt))
