@@ -80,3 +80,24 @@ leMedico = do
 leMedicamento :: IO [String]
 leMedicamento = do
     sequence [prompt "Nome > ", prompt "Quantidade > ", prompt "Bula > "]
+
+medicoMenu :: String
+medicoMenu =  " -----------------------------------------------------------------\n"
+            ++"   SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - MENU MÉDICO  \n"
+            ++" -----------------------------------------------------------------\n"
+            ++ "(I)nformar horários\n"
+            ++ "(A)cessar Dados\n"
+            ++ "(E)mitir\n"
+            ++ "(T)ransferência\n"
+
+medicoAcessarDados :: String
+medicoAcessarDados =   "Qual dado deseja acessar?"
+                    ++ "(P)acientes"
+                    ++ "(E)xames"
+                    ++ "(A)gendamentos"
+
+medicoEmitir :: String
+medicoEmitir = "Qual dado deseja acessar?"
+            ++ "(R)eceita"
+            ++ "(S)olicitação de Exame"
+            ++ "(L)audo Médico"
