@@ -24,7 +24,7 @@ criaUBS idUBS infos = (UBS 0 "" "")
 -- descricao: cadastra médico passando as informações
 -- retorno: booleano confirmando o cadastro
 cadastraMedico :: Int -> [String] -> Medico
-cadastraMedico idUBS informs = Medico 1 "" "" 1 "" [""]
+cadastraMedico idUBS informs = (Medico 1 "" "" 1 "" [""])
 
 visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
 visualizaAgendamentos idUBS consultas = []
