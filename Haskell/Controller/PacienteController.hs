@@ -1,4 +1,4 @@
-module Haskell.Controller.PacienteController ( 
+module Haskell.Controller.PacienteController (
   criaPaciente,
   buscarUnidades,
   requisitarConsulta,
@@ -17,9 +17,10 @@ import Haskell.Model.Receita
 import Haskell.Model.Exame
 import Haskell.Model.UBS
 import Haskell.Model.Laudo
+import Haskell.Model.Paciente
 
 criaPaciente :: Int -> [String] -> Paciente
-criaPaciente idPac infos = (Paciente ) --essa linha dá erro, falta preencher as infos do paciente
+criaPaciente idPac infos = (Paciente 1 "" "" "" 80.00 1.50 "" "" False False False)
 
 -- Buscar as unidades que tem determinada especialidade
 -- possivelmente mover pro UBS Controller
@@ -28,16 +29,16 @@ buscarUnidades :: String -> [UBS] -> [UBS]
 buscarUnidades esp ubss = [(UBS 1 "" "")]
 
 -- Recebe a especialidade e a unidade de saúde
-requisitarConsulta :: Int -> Int -> Int -> Int -> String -> Consulta
-requisitarConsulta idConsulta idPac idMed idUbs dia = "" 
+requisitarConsulta :: Int -> Int -> [String] -> Consulta
+requisitarConsulta idConsulta idPac informs = "" 
 
 -- Recebe o código do exame e a unidade de saúde
-requisitarExame :: Int -> Int -> Int -> Int -> String -> String -> Exame
-requisitarExame idExame idPac idMed idUbs tipo dia = ""
+requisitarExame :: Int -> Int -> [String] -> Exame
+requisitarExame idExame idPac informs = ""
 
 -- Recebe o nome do medicamento e a unidade de saúde
-requisitarMedicamento :: Int -> [Receita] -> Medicamento
-requisitarMedicamento idReceita receitas = ""
+requisitarMedicamento :: Receita -> [Medicamento] -> [Medicamento]
+requisitarMedicamento receita medicamentos = ""
 
 -- Ver todos os laudos do paciente (a partir do nome do paciente)
 -- laudosLista = [Laudos {indice = 1, idPac = "", codigo1 = "", laudo1 = ""} ]
