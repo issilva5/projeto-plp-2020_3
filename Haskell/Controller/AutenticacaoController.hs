@@ -4,4 +4,4 @@ module Haskell.Controller.AutenticacaoController (
 
 -- Verifica se o login e senha estão corretos
 autentica :: [(Int, String, Int)] -> String -> String -> Int 
-autentica logins user senha tipo = -1
+autentica logins user senha = -1

@@ -20,7 +20,7 @@ import Haskell.Model.Laudo
 import Haskell.Model.Paciente
 
 criaPaciente :: Int -> [String] -> Paciente
-criaPaciente idPac infos = (Paciente ) --essa linha dá erro, falta preencher as infos do paciente
+criaPaciente idPac infos = (Paciente 1 "infos" "" "" 0.0 0.0 "" "" False False False) -- implementação temporária para poder executar sem erro
 
 -- Buscar as unidades que tem determinada especialidade
 -- possivelmente mover pro UBS Controller
