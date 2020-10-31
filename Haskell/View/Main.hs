@@ -1,5 +1,7 @@
 import qualified Haskell.Model.BD as BD
 import qualified Haskell.Controller.MedicoController as MC
+import qualified Haskell.Controller.UBSController as UBSC
+import qualified Haskell.Controller.PacienteController as PC
 import qualified Haskell.Controller.AutenticacaoController as Autenticador
 import Haskell.View.Utils
 
@@ -24,24 +26,25 @@ inicial dados  = do
     acao dados
 
 login :: BD.BD -> IO()
-login dados = do
-    idAux <- prompt ("Informe o id > ")
+login dados = do 
+    
+    id <- prompt ("Informe o id > ")
     senha <- prompt ("Informe a senha > ")
     putStrLn "---------"
 
-    let id = read idAux :: Int
     let aut = Autenticador.autentica (BD.logins dados) id senha
 
-    if aut == 0 then do
-        menuPaciente id dados
-    else if aut == 1 then do
-        menuUBS id dados
-    else if aut == 2 then do
-        menuMedico id dados
-    else do
-        clear
-        inicial dados
+    if aut == 0 then
+        menuPaciente (read id) dados
 
+    else if aut == 1 then
+        menuUBS (read id) dados
+    
+    else if aut == 2 then
+        menuMedico (read id) dados
+    
+    else do
+        inicial dados
 
 cadastra :: BD.BD -> IO()
 cadastra dados = do
@@ -51,16 +54,21 @@ cadastra dados = do
     op <- prompt "Opção > "
     
     putStrLn ""
-
     if toUpper (head op) == 'P' then do
         dadosP <- lePaciente
         senha <- prompt "Senha > "
-        inicial dados {BD.pacientes = (BD.pacientes dados) ++ [PC.criaPaciente (BD.nextID dados) dadosP], BD.logins = (BD.logins dados) ++ [(BD.nextID dados, senha, 0)], BD.idAtual = drop 1 (BD.idAtual dados)}
+        inicial dados {BD.pacientes =
+            (BD.pacientes dados) ++ [PC.criaPaciente (BD.nextID dados) dadosP], BD.logins =
+                (BD.logins dados) ++ [(BD.nextID dados, senha, 0)], BD.idAtual =
+                    drop 1 (BD.idAtual dados)}
 
     else if toUpper (head op) == 'U' then do
         dadosU <- leUBS
         senha <- prompt "Senha > "
-        inicial dados {BD.ubs = (BD.ubs dados) ++ [UBSC.criaUBS (BD.nextID dados) dadosU], BD.logins = (BD.logins dados) ++ [(BD.nextID dados, senha, 1)], BD.idAtual = drop 1 (BD.idAtual dados)}
+        inicial dados {BD.ubs =
+            (BD.ubs dados) ++ [UBSC.criaUBS (BD.nextID dados) dadosU], BD.logins =
+                (BD.logins dados) ++ [(BD.nextID dados, senha, 1)], BD.idAtual =
+                    drop 1 (BD.idAtual dados)}
 
     else do
         clear
