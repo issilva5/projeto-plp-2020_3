@@ -1,12 +1,14 @@
 module Haskell.Model.Consulta where
 import Haskell.View.Utils (split) 
 
+import Data.Dates
+
 data Consulta = Consulta {
     id :: Int,
     idPaciente :: Int,
     idMedico :: Int,
     idUBS :: Int,
-    dia :: String
+    dia :: DateTime
 } deriving (Show)
 
 instance Read Consulta where 
@@ -18,5 +20,4 @@ instance Read Consulta where
     let idUBS = read (l !! 3) :: Int
     let dia = l !! 4
     
-    [(Consulta id idPaciente idMedico idUBS dia, "")] 
-
+    [(Consulta id idPaciente idMedico idUBS dia, "")]

@@ -19,6 +19,7 @@ import Haskell.Model.Consulta
 import Haskell.Model.Paciente
 import Haskell.Model.Medicamento
 import Haskell.Model.UBS
+import Haskell.Model.DateCycle
 
 criaUBS :: Int -> [String] -> UBS
 criaUBS idUBS infos = read (intercalate ";" ([show (idUBS)] ++ infos)) :: UBS
@@ -31,29 +32,33 @@ cadastraMedico idUBS informs = read (intercalate ";" ([show (idUBS)] ++ informs)
 visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
 visualizaAgendamentos idUBS consultas = []
 
-visualizaPacientes :: Int -> [Paciente] -> [Paciente]
-visualizaPacientes idUBS pacientes = []
+-- visualizaPacientes com consulta marcada na UBS
+-- recebe: pacientes, consultas da ubs
+visualizaPacientes :: [Paciente] -> [Consulta] -> [Paciente]
+visualizaPacientes pacientes consultasUBS = []
 
 visualizaMedicos :: Int -> [Medico] -> [Medico]
 visualizaMedicos idUBS medicos = []
 
-visualizaMedico :: Int -> Int -> Medico
-visualizaMedico idUBS idMed = (Medico 1 "" "" 1 "" [])
+visualizaMedico :: Int -> Int -> [Medico] -> Medico
+visualizaMedico idUBS idMed medicos = (Medico 1 "" "" 1 "" empty)
 
 -- descricao: passa as informações do medicamento
 adicionaMedicamento :: Int -> [String] -> Medicamento
 adicionaMedicamento idUBS informs = read (intercalate ";" ([show (idUBS)] ++ informs)) :: Medicamento
 
 -- descricao: adiciona quantidade ao medicamento
-adicionaMedicamentoEstoque :: Int -> Int -> Int -> Medicamento
-adicionaMedicamentoEstoque idUBS idMed qtd = (Medicamento 1 0 "")
+-- busca pelo medicamento requisitado altera sua quantidade e retorna a lista dos medicamentos
+adicionaMedicamentoEstoque :: Int -> Int -> Int -> [Medicamento] -> [Medicamento]
+adicionaMedicamentoEstoque idUBS idMed qtd medicamentos = []
 
 -- descricao: deduz do estoque
-removerMedicamento :: Int -> Int -> Int -> Medicamento
-removerMedicamento idUBS idMedicamento qtd = (Medicamento 1 0 "")
+-- busca pelo medicamento requisitado altera sua quantidade e retorna a lista dos medicamento
+removerMedicamento :: Int -> Int -> Int -> [Medicamento] -> [Medicamento]
+removerMedicamento idUBS idMedicamento qtd medicamentos = []
 
 visualizaMedicamentos :: Int -> [Medicamento] -> [Medicamento]
 visualizaMedicamentos idUBS medicamentos = []
 
-visualizaMedicamento :: Int -> Medicamento
-visualizaMedicamento idUBS = (Medicamento 1 0 "")
+visualizaMedicamento :: Int -> [Medicamento] -> Medicamento
+visualizaMedicamento idMedic medicamentos = (Medicamento 1 1 "" 0 "")
