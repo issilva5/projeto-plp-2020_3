@@ -18,5 +18,5 @@ instance Read Medico where
     let crm = l !! 2
     let idUbs = read (l !! 3) :: Int
     let especialidade = l !! 4
-    let horarios = read (l !! 5) :: [String]    
+    let horarios = split (l !! 5) ',' ""    
     [(Medico id nome crm idUbs especialidade horarios, "")]

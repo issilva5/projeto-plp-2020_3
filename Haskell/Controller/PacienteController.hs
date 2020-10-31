@@ -13,6 +13,7 @@ module Haskell.Controller.PacienteController (
   emergencia
 ) where 
 
+import Data.List ( intercalate ) 
 import Haskell.Model.Receita
 import Haskell.Model.Exame
 import Haskell.Model.UBS
@@ -20,7 +21,8 @@ import Haskell.Model.Laudo
 import Haskell.Model.Paciente
 
 criaPaciente :: Int -> [String] -> Paciente
-criaPaciente idPac infos = (Paciente 1 "infos" "" "" 0.0 0.0 "" "" False False False) -- implementação temporária para poder executar sem erro
+criaPaciente idPac infos = read (intercalate ";" ([show (idPac)] ++ infos)) :: Paciente
+  
 
 -- Buscar as unidades que tem determinada especialidade
 -- possivelmente mover pro UBS Controller

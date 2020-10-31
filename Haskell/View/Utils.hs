@@ -46,7 +46,7 @@ leUBS = do
 
 leMedico :: IO [String]
 leMedico = do
-    sequence [prompt "Nome > ", prompt "CRM > ", prompt "ID da UBS > ", prompt "Especialidade > ", prompt "Horarios > "]
+    sequence [prompt "Nome > ", prompt "CRM > ", prompt "ID da UBS > ", prompt "Especialidade > ", prompt "Horarios (separados por vírgula) > "]
 
 medicoMenu :: String
 medicoMenu =  " -----------------------------------------------------------------\n"

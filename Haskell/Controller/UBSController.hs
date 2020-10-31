@@ -12,6 +12,8 @@ module Haskell.Controller.UBSController (
   visualizaMedicamento
 ) where
 
+import Haskell.View.Utils (split) 
+import Data.List ( intercalate ) 
 import Haskell.Model.Medico
 import Haskell.Model.Consulta
 import Haskell.Model.Paciente
@@ -19,12 +21,12 @@ import Haskell.Model.Medicamento
 import Haskell.Model.UBS
 
 criaUBS :: Int -> [String] -> UBS
-criaUBS idUBS infos = (UBS 0 "" "")
+criaUBS idUBS infos = read (intercalate ";" ([show (idUBS)] ++ infos)) :: UBS
 
 -- descricao: cadastra médico passando as informações
 -- retorno: booleano confirmando o cadastro
 cadastraMedico :: Int -> [String] -> Medico
-cadastraMedico idUBS informs = (Medico 1 "" "" 1 "" [""])
+cadastraMedico idUBS informs = read (intercalate ";" ([show (idUBS)] ++ informs)) :: Medico
 
 visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
 visualizaAgendamentos idUBS consultas = []
@@ -40,7 +42,7 @@ visualizaMedico idUBS idMed = (Medico 1 "" "" 1 "" [])
 
 -- descricao: passa as informações do medicamento
 adicionaMedicamento :: Int -> [String] -> Medicamento
-adicionaMedicamento idUBS informs = (Medicamento 1 0 "")
+adicionaMedicamento idUBS informs = read (intercalate ";" ([show (idUBS)] ++ informs)) :: Medicamento
 
 -- descricao: adiciona quantidade ao medicamento
 adicionaMedicamentoEstoque :: Int -> Int -> Int -> Medicamento
