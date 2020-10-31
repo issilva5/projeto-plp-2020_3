@@ -55,3 +55,6 @@ acessarExame idMed idExame exames = (Exame 1 1 1 1 "" (DateTime 2020 10 30 00 00
 
 solicitarTransferencia :: Int -> Int -> Bool
 solicitarTransferencia idMed idUBS = False
+
+proximoHorarioLivre :: Int -> [Medico] -> (DateTime, [Medico])
+proximoHorarioLivre idMed medicos = ()

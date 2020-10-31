@@ -32,16 +32,16 @@ buscarUnidades :: String -> [UBS] -> [UBS]
 buscarUnidades esp ubss = [(UBS 1 "" "")]
 
 -- Recebe a especialidade e a unidade de saúde
-requisitarConsulta :: Int -> String -> UBS -> String
-requisitarConsulta idPac str ubs = "" 
+requisitarConsulta :: Int -> Int -> [String] -> DateTime -> Consulta
+requisitarConsulta idConsulta idPac informs dia = "" 
 
 -- Recebe o código do exame e a unidade de saúde
-requisitarExame :: Int -> String -> UBS -> String
-requisitarExame idPac str ubs = ""
+requisitarExame :: Int -> Int -> [String] -> DateTime -> Exame
+requisitarExame idExame idPac informs dia= ""
 
 -- Recebe o nome do medicamento e a unidade de saúde
-requisitarMedicamento :: Int -> String -> UBS -> String
-requisitarMedicamento idPac str ubs = ""
+requisitarMedicamento :: Receita -> [Medicamento] -> [Medicamento]
+requisitarMedicamento receita medicamentos = ""
 
 -- Ver todos os laudos do paciente (a partir do nome do paciente)
 -- laudosLista = [Laudos {indice = 1, idPac = "", codigo1 = "", laudo1 = ""} ]
