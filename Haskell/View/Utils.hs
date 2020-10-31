@@ -68,3 +68,10 @@ medicoEmitir = "Qual dado deseja acessar?"
             ++ "(R)eceita"
             ++ "(S)olicitação de Exame"
             ++ "(L)audo Médico"
+
+split :: String -> Char -> String -> [String]
+split "" sep "" = []
+split "" sep aux = [aux]
+split (h : t) sep aux | h == sep && aux == "" = split t sep aux
+                  | h == sep = [aux] ++ split t sep ""
+                  | otherwise = split t sep (aux ++ [h])
