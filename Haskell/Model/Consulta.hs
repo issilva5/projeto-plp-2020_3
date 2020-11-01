@@ -18,6 +18,6 @@ instance Read Consulta where
     let idPaciente = read (l !! 1) :: Int
     let idMedico = read (l !! 2) :: Int
     let idUBS = read (l !! 3) :: Int
-    let dia = l !! 4
+    let dia = DateTime 2020 11 01 00 00 00
     
     [(Consulta id idPaciente idMedico idUBS dia, "")]

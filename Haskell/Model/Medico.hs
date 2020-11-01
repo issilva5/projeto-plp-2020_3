@@ -15,10 +15,10 @@ data Medico = Medico {
 instance Read Medico where 
     readsPrec _ str = do 
     let l = split str ';' ""   
-    let id = read (l !! 0) :: Int
-    let nome = l !! 1
-    let crm = l !! 2
-    let idUbs = read (l !! 3) :: Int
+    let id = read (l !! 1) :: Int
+    let nome = l !! 2
+    let crm = l !! 3
+    let idUbs = read (l !! 0) :: Int
     let especialidade = l !! 4
     let horarios = empty    
     [(Medico id nome crm idUbs especialidade horarios, "")]

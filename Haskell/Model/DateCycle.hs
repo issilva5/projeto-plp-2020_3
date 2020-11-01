@@ -6,12 +6,14 @@ module Haskell.Model.DateCycle (
   isEmpty,
   isValid,
   seeNextDate,
-  nextDay
+  nextDay,
+  (===)
 
 ) where
 
 import Data.Dates
 import qualified Data.Heap as Heap
+import Haskell.View.Utils (split) 
 
 data DateCycle = DateCycle {
 
@@ -83,6 +85,28 @@ Retorna a próxima data livre sem alterar retirá-la.
 -}
 seeNextDate :: DateCycle -> DateTime -> DateTime
 seeNextDate dc now = fst (getNextDate dc now)
+
+{-
+
+Converte uma string do tipo DD/MM/YYYY em DateTime
+
+-}
+instance Read DateTime where 
+    readsPrec _ str = do 
+    let l = split str '/' "" 
+    let year = read (l !! 2) :: Int
+    let month = read (l !! 1) :: Int
+    let day = read (l !! 0) :: Int   
+    [(DateTime year month day 00 00 00, "")]
+
+{-
+
+Compara duas datas sem levar em conta seu horário.
+
+-}
+(===) :: DateTime -> DateTime -> Bool
+(===) d1 d2 | (year d1) == (year d2) && (month d1) == (month d2) && (day d1) == (day d2) = True
+            | otherwise = False
 
 dateTimeToTime :: DateTime -> Time
 dateTimeToTime dt = (Time (hour dt) (minute dt) (second dt))

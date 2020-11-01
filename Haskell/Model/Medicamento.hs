@@ -12,7 +12,9 @@ data Medicamento = Medicamento {
 instance Read Medicamento where 
     readsPrec _ str = do 
     let l = split str ';' ""
-    let id = read (l !! 0) :: Int 
-    let qtdEstoque = read (l !! 1) :: Int 
-    let bula = l !! 2
-    [(Medicamento id qtdEstoque bula, "")]
+    let id = read (l !! 1) :: Int
+    let idUBS = read (l !! 0) :: Int
+    let nome = l !! 2
+    let qtdEstoque = read (l !! 3) :: Int 
+    let bula = l !! 4
+    [(Medicamento id idUBS nome qtdEstoque bula, "")]
