@@ -48,7 +48,7 @@ Função auxiliar da criação de um DateCycle. Cria a lista com os primeiros ho
 -}
 firstTimes :: DateTime -> [Time] -> Int -> [DateTime]
 firstTimes _ [] _ = []
-firstTimes hj (x:xs) d | (tHour x) /= (-1) && (tMinute x) /= (-1) = [(nextDay hj d)] ++ (firstTimes hj xs (d+1))
+firstTimes hj (x:xs) d | (tHour x) /= (-1) && (tMinute x) /= (-1) = [(nextDay hj d) {hour = tHour x, minute = tMinute x}] ++ (firstTimes hj xs (d+1))
                        | otherwise = (firstTimes hj xs (d+1))
 
 {-
