@@ -1,6 +1,6 @@
 module Haskell.Model.Medico where
-import Haskell.View.Utils (split) 
-
+import Haskell.View.Utils (split)
+import Prelude hiding (id)
 import Haskell.Model.DateCycle
 
 data Medico = Medico {
@@ -12,13 +12,23 @@ data Medico = Medico {
     horarios :: DateCycle
 } deriving (Show)
 
-instance Read Medico where 
-    readsPrec _ str = do 
-    let l = split str ';' ""   
+toString :: Medico -> String
+toString m = show (id m) ++ ";" ++
+             show (nome m) ++ ";" ++
+             show (crm m) ++ ";" ++
+             show (idUbs m) ++ ";" ++
+             show (especialidade m) ++ ";" ++
+             show (start (horarios m)) ++ ";" ++
+             show (end (horarios m)) ++ ";" ++
+             show (timeSc (horarios m))
+
+instance Read Medico where
+    readsPrec _ str = do
+    let l = split str ';' ""
     let id = read (l !! 1) :: Int
-    let nome = l !! 2
-    let crm = l !! 3
+    let nome = read (l !! 2) :: String
+    let crm = read (l !! 3) :: String
     let idUbs = read (l !! 0) :: Int
-    let especialidade = l !! 4
-    let horarios = empty    
+    let especialidade = read (l !! 4) :: String
+    let horarios = empty
     [(Medico id nome crm idUbs especialidade horarios, "")]

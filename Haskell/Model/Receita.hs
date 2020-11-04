@@ -1,5 +1,6 @@
 module Haskell.Model.Receita where
-import Haskell.View.Utils (split) 
+import Haskell.View.Utils (split)
+import Prelude hiding (id)
 
 data Receita = Receita {
     id :: Int,
@@ -9,8 +10,16 @@ data Receita = Receita {
     remedios :: [(Int, String)]
 } deriving (Show)
 
-instance Read Receita where 
-    readsPrec _ str = do 
+toString :: Receita -> String
+toString r =
+    show (id r) ++ ";" ++
+    show (idPaciente r) ++ ";" ++
+    show (idMedico r) ++ ";" ++
+    show (idUBS r) ++ ";" ++
+    show (remedios r)
+
+instance Read Receita where
+    readsPrec _ str = do
     let l = split str ';' ""
     let id = read (l !! 0) :: Int
     let idPaciente = read (l !! 1) :: Int

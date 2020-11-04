@@ -1,5 +1,6 @@
 module Haskell.Model.UBS where
-import Haskell.View.Utils (split) 
+import Haskell.View.Utils (split)
+import Prelude hiding (id)
 
 data UBS = UBS {
     id :: Int,
@@ -7,10 +8,16 @@ data UBS = UBS {
     endereco :: String
 } deriving (Show)
 
-instance Read UBS where 
-    readsPrec _ str = do 
+toString :: UBS -> String
+toString u =
+    show (id u) ++ ";" ++
+    show (nome u) ++ ";" ++
+    show (endereco u)
+
+instance Read UBS where
+    readsPrec _ str = do
     let l = split str ';' ""
     let id = read (l !! 0) :: Int
-    let nome = l !! 1
-    let endereco = l !! 2
+    let nome = read (l !! 1) :: String
+    let endereco = read (l !! 2) :: String
     [(UBS id nome endereco, "")]
