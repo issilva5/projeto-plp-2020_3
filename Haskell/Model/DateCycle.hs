@@ -125,6 +125,10 @@ Instância do read para DateCycle.
 Após realizar o read para DateCycle é necessário inicializar o DateCycle.
 
 Para isso, utilizar a função newDC.
+exemplo:
+ let p = read str :: DateCycle
+ hj <- getCurrentDateTime
+ let k = newDC hj (DateCycle.start p) (DateCycle.end p) (DateCycle.timeSc p)
 
 -}
 instance Read DateCycle where
