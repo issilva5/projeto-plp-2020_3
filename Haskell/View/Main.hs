@@ -6,6 +6,8 @@ import qualified Haskell.Controller.AutenticacaoController as Autenticador
 import Haskell.View.Utils
 
 import Data.Char ( toUpper )
+import Data.Maybe (fromJust)
+import Data.Dates
 
 main :: IO()
 main = do
@@ -354,7 +356,8 @@ menuMedico idMed dados = do
     if toUpper (head op) == 'I' then do
         horario <- leHorariosMedico
         tempoConsulta <- prompt "Duração da consulta > "
-        let med = MC.informarHorario idMed (fst horario) (snd horario) (read tempoConsulta) (BD.medicos dados)
+        hj <- getCurrentDateTime
+        let med = MC.informarHorario idMed hj (fst horario) (snd horario) (read tempoConsulta) (BD.medicos dados)
         menuMedico idMed dados {BD.medicos = med}
     
     else if toUpper (head op) == 'A' then do
@@ -364,10 +367,10 @@ menuMedico idMed dados = do
         if toUpper (head acessarOp) == 'P' then do
 
             idPac <- prompt "ID do Paciente > "
-
+            
             if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) then do
 
-                print (MC.acessarDadosPaciente (BD.pacientes dados) (read idPac))
+                print (fromJust (MC.acessarDadosPaciente (BD.pacientes dados) (read idPac)))
                 menuMedico idMed dados
             
             else do
@@ -398,7 +401,7 @@ menuMedico idMed dados = do
 
                     if (UBSC.validaIDExame (read idExame) (BD.exames dados)) then do
 
-                        print (MC.acessarExame (read idExame) (BD.exames dados))
+                        print (fromJust (MC.acessarExame (read idExame) (BD.exames dados)))
                         menuMedico idMed dados
                     
                     else do
@@ -536,9 +539,10 @@ leituraRequisitaConsulta dados idPaciente = do
 
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
-        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) (BD.medicos dados)
+        hj <- getCurrentDateTime
+        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
         print ("Consulta marcada com id " ++ (show (BD.nextID dados)))
-        menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fst medicoHorario)], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fromJust (fst medicoHorario))], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 
@@ -552,9 +556,10 @@ leituraRequisitaExame dados idPaciente = do
 
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
-        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) (BD.medicos dados)
+        hj <- getCurrentDateTime
+        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
         print ("Exame marcado com id " ++ (show (BD.nextID dados)))
-        menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fst medicoHorario)], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fromJust (fst medicoHorario))], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 
