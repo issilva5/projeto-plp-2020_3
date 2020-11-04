@@ -7,6 +7,7 @@ module Haskell.Model.DateCycle (
   isValid,
   seeNextDate,
   nextDay,
+  newDC,
   (===)
 
 ) where
@@ -31,6 +32,24 @@ Cria um DateCycle vazio apenas para criação do médico.
 -}
 empty :: DateCycle
 empty = DateCycle (Heap.fromList []) [] [] (-1)
+
+{-
+
+Cria um DateCycle.
+
+-}
+newDC :: DateTime -> [Time] -> [Time] -> Int -> DateCycle
+newDC hj i f t = DateCycle (Heap.fromList (firstTimes hj i 0)) i f t
+
+{-
+
+Função auxiliar da criação de um DateCycle. Cria a lista com os primeiros horários do médico.
+
+-}
+firstTimes :: DateTime -> [Time] -> Int -> [DateTime]
+firstTimes _ [] _ = []
+firstTimes hj (x:xs) d | (tHour x) /= (-1) && (tMinute x) /= (-1) = [(nextDay hj d) {hour = tHour x, minute = tMinute x}] ++ (firstTimes hj xs (d+1))
+                       | otherwise = (firstTimes hj xs (d+1))
 
 {-
 
