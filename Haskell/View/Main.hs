@@ -6,15 +6,45 @@ import qualified Haskell.Controller.AutenticacaoController as Autenticador
 import Haskell.View.Utils
 
 import Data.Char ( toUpper )
+import System.IO
 
 main :: IO()
 main = do
     inicial (BD.BD [] [] [] [] [] [] [] [] [] [1..])
 
+encerrar :: BD.BD -> IO()
+encerrar dados = do
+    let pacientes = BD.pacientes dados
+    let medicos = BD.medicamentos dados
+    let ubs = BD.ubs dados
+    let consultas = BD.consultas dados
+    let exames = BD.exames dados
+    let laudos = BD.laudos dados
+    let medicamentos = BD.medicamentos dados
+    let receitas = BD.receitas dados
+    let loins = BD.logins dados
+    let idAtual = BD.idAtual dados
+
+    writeList pacientes "pacientes.txt" 0
+    return()
+
+writeList :: Show t => [t] -> String -> Int -> IO()
+writeList l fileName n =
+    if (n > length l) then return()
+    else do
+    arq <- openFile ("Haskell/Persistence/" ++ fileName) AppendMode
+    hPutStrLn arq (show (l !! n))
+    hClose arq
+    writeList l fileName (n+1)
+
+
+
+
+
 inicial :: BD.BD -> IO()
 inicial dados  = do
 
-    putStrLn (title "") 
+    putStrLn (title "")
     putStrLn (menuInicial "")
 
     op <- prompt ("Opção > ")
@@ -24,13 +54,13 @@ inicial dados  = do
     else if toUpper (head op) == 'C' then do
         cadastra dados
     else if toUpper (head op) == 'E' then do
-        return ()
+        encerrar dados
     else do
         inicial dados
 
 login :: BD.BD -> IO()
-login dados = do 
-    
+login dados = do
+
     putStrLn titleLogin
     id <- prompt ("Informe o id > ")
     senha <- prompt ("Informe a senha > ")
@@ -40,16 +70,16 @@ login dados = do
 
     if aut == 0 then do
         clear
-        menuPaciente (read id) dados 
+        menuPaciente (read id) dados
 
     else if aut == 1 then do
         clear
-        menuUBS (read id) dados 
-    
+        menuUBS (read id) dados
+
     else if aut == 2 then do
         clear
         menuMedico (read id) dados
-    
+
     else do
         clear
         inicial dados
@@ -62,7 +92,7 @@ cadastra dados = do
     putStrLn "(U)BS"
     putStrLn "(V)oltar"
     op <- prompt "Opção > "
-    
+
     putStrLn ""
     if toUpper (head op) == 'P' then do
         dadosP <- lePaciente
@@ -175,7 +205,7 @@ menuPaciente idPac dados = do
                 else do
                     clear
                     menuPaciente idPac dados
-            
+
             else do
                 clear
                 menuPaciente idPac dados
@@ -187,7 +217,7 @@ menuPaciente idPac dados = do
     else if toUpper (head op) == 'E' then do
 
         leituraEmergencia dados idPac
-        menuPaciente idPac dados 
+        menuPaciente idPac dados
 
     else if toUpper (head op) == 'S' then do
 
@@ -200,12 +230,12 @@ menuPaciente idPac dados = do
 
 
 menuUBS :: Int -> BD.BD -> IO()
-menuUBS idUBS dados = do 
+menuUBS idUBS dados = do
     putStrLn titleUBS
     op <- opcoesUBS
 
     if toUpper (head op) == 'C' then do
-        
+
         dadosM <- leMedico
         senha <- prompt "Senha > "
         let med = UBSC.cadastraMedico idUBS (BD.nextID dados) dadosM
@@ -216,12 +246,12 @@ menuUBS idUBS dados = do
         op2 <- opcoesUBSVisualizar
 
         if toUpper (head op2) == 'A' then do
-            
+
             imprime (UBSC.visualizaAgendamentos idUBS (BD.consultas dados))
             menuUBS idUBS dados
-        
+
         else if toUpper (head op2) == 'P' then do
-            
+
             imprime (UBSC.visualizaPacientes idUBS (BD.pacientes dados) (UBSC.visualizaAgendamentos idUBS (BD.consultas dados)))
             menuUBS idUBS dados
 
@@ -244,7 +274,7 @@ menuUBS idUBS dados = do
 
                     print (UBSC.visualizaMedico (read idMed) (BD.medicos dados))
                     menuUBS idUBS dados
-                
+
                 else do
 
                     putStrLn "ID informado é inválido!"
@@ -278,7 +308,7 @@ menuUBS idUBS dados = do
 
                     print (UBSC.visualizaMedicamento (read idMedic) (UBSC.visualizaMedicamentos idUBS (BD.medicamentos dados)))
                     menuUBS idUBS dados
-                
+
                 else do
 
                     putStrLn "ID informado é inválido!"
@@ -289,7 +319,7 @@ menuUBS idUBS dados = do
                 menuUBS idUBS dados
 
         else if toUpper (head op2) == 'N' then do
-            
+
             dadosMedic <- leMedicamento
             let medic = UBSC.adicionaMedicamento idUBS ([show (BD.nextID dados)] ++ dadosMedic)
             print ("Medicamento criado com ID " ++ (show (BD.nextID dados)))
@@ -304,14 +334,14 @@ menuUBS idUBS dados = do
 
                 let medic = UBSC.adicionaMedicamentoEstoque idUBS (read idMedic) (read quantToAdd) (BD.medicamentos dados)
                 menuUBS idUBS dados {BD.medicamentos = medic}
-            
+
             else do
 
                 putStrLn "ID informado é inválido!"
                 menuUBS idUBS dados
 
         else if toUpper (head op2) == 'R' then do
-            
+
             idMedic <- prompt "ID do Medicamento > "
             quantToAdd <- prompt "Quantidade a remover > "
 
@@ -319,7 +349,7 @@ menuUBS idUBS dados = do
 
                 let medic = UBSC.removerMedicamento idUBS (read idMedic) (read quantToAdd) (BD.medicamentos dados)
                 menuUBS idUBS dados {BD.medicamentos = medic}
-            
+
             else do
 
                 putStrLn "ID informado é inválido!"
@@ -356,7 +386,7 @@ menuMedico idMed dados = do
         tempoConsulta <- prompt "Duração da consulta > "
         let med = MC.informarHorario idMed (fst horario) (snd horario) (read tempoConsulta) (BD.medicos dados)
         menuMedico idMed dados {BD.medicos = med}
-    
+
     else if toUpper (head op) == 'A' then do
         putStrLn medicoAcessarDados
         acessarOp <- prompt "Opção > "
@@ -369,7 +399,7 @@ menuMedico idMed dados = do
 
                 print (MC.acessarDadosPaciente (BD.pacientes dados) (read idPac))
                 menuMedico idMed dados
-            
+
             else do
 
                 putStrLn "ID informado é inválido!"
@@ -400,12 +430,12 @@ menuMedico idMed dados = do
 
                         print (MC.acessarExame (read idExame) (BD.exames dados))
                         menuMedico idMed dados
-                    
+
                     else do
 
                         putStrLn "ID informado é inválido!"
                         menuMedico idMed dados
-                
+
                 else if toUpper (head op4) == 'P' then do
 
                     idPaciente <- prompt "ID do Paciente > "
@@ -414,16 +444,16 @@ menuMedico idMed dados = do
 
                         imprime (MC.acessarExamesPaciente (read idPaciente) (BD.exames dados))
                         menuMedico idMed dados
-                    
+
                     else do
 
                         putStrLn "ID informado é inválido!"
                         menuMedico idMed dados
-                
+
                 else do
                     clear
                     menuMedico idMed dados
-            
+
             else do
                 clear
                 menuMedico idMed dados
@@ -438,13 +468,13 @@ menuMedico idMed dados = do
 
                 imprime (MC.acessarConsultas idMed (BD.consultas dados))
                 menuMedico idMed dados
-            
+
             else if toUpper (head op3) == 'E' then do
 
                 date <- prompt "Data > "
                 imprime (MC.acessarConsultasData idMed (read date) (BD.consultas dados))
                 menuMedico idMed dados
-            
+
             else do
                 clear
                 menuMedico idMed dados
@@ -452,7 +482,7 @@ menuMedico idMed dados = do
         else do
             clear
             menuMedico idMed dados
-    
+
     else if toUpper (head op) == 'E' then do
         putStrLn medicoEmitir
         emitirOp <- prompt "Opção > "
@@ -509,7 +539,7 @@ menuMedico idMed dados = do
             let idUBS = read input :: Int
             let med = MC.solicitarTransferencia idMed idUBS (BD.medicos dados)
             menuMedico idMed dados {BD.medicos = med}
-        
+
         else do
 
             putStrLn "ID informado é inválido!"
@@ -546,7 +576,7 @@ leituraRequisitaConsulta dados idPaciente = do
         menuPaciente idPaciente dados
 
 leituraRequisitaExame :: BD.BD -> Int -> IO()
-leituraRequisitaExame dados idPaciente = do  
+leituraRequisitaExame dados idPaciente = do
     aux <- sequence [prompt "ID do Médico > ", prompt "ID da UBS > ", prompt "Tipo de Exame > "]
     let informs = [(show (BD.nextID dados)), (show idPaciente)] ++ aux
 
@@ -562,7 +592,7 @@ leituraRequisitaExame dados idPaciente = do
         menuPaciente idPaciente dados
 
 leituraRequisitaMedicamento :: BD.BD -> Int -> IO()
-leituraRequisitaMedicamento dados idPaciente = do  
+leituraRequisitaMedicamento dados idPaciente = do
     idReceita <- prompt "ID da Receita > "
 
     if (UBSC.validaIDReceita (read idReceita) (BD.receitas dados)) then do

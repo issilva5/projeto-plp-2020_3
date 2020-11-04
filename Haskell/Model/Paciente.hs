@@ -18,13 +18,13 @@ data Paciente = Paciente {
 
 toString :: Paciente -> String
 toString p = show (id p) ++ ";" ++
-             show (nome p) ++ ";" ++
-             show (cpf p) ++ ";" ++
-             show (dataNascimento p) ++ ";" ++
+                  (nome p) ++ ";" ++
+                  (cpf p) ++ ";" ++
+                  (dataNascimento p) ++ ";" ++
              show (peso p) ++ ";" ++
              show (altura p) ++ ";" ++
-             show (tipoSanguineo p) ++ ";" ++
-             show (endereco p) ++ ";" ++
+                  (tipoSanguineo p) ++ ";" ++
+                  (endereco p) ++ ";" ++
              show (cardiopata p) ++ ";" ++
              show (diabetico p) ++ ";" ++
              show (hipertenso p) ++ ";"

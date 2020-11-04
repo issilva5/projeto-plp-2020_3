@@ -11,8 +11,8 @@ data UBS = UBS {
 toString :: UBS -> String
 toString u =
     show (id u) ++ ";" ++
-    show (nome u) ++ ";" ++
-    show (endereco u)
+         (nome u) ++ ";" ++
+         (endereco u)
 
 instance Read UBS where
     readsPrec _ str = do

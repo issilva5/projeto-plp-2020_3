@@ -14,10 +14,10 @@ data Medico = Medico {
 
 toString :: Medico -> String
 toString m = show (id m) ++ ";" ++
-             show (nome m) ++ ";" ++
-             show (crm m) ++ ";" ++
+                  (nome m) ++ ";" ++
+                  (crm m) ++ ";" ++
              show (idUbs m) ++ ";" ++
-             show (especialidade m) ++ ";" ++
+                  (especialidade m) ++ ";" ++
              show (start (horarios m)) ++ ";" ++
              show (end (horarios m)) ++ ";" ++
              show (timeSc (horarios m))
