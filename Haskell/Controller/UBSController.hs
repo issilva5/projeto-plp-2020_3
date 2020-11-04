@@ -17,16 +17,18 @@ module Haskell.Controller.UBSController (
   validaIDLaudo
 ) where
 
-import Data.List ( intercalate ) 
-import Haskell.Model.Medico
-import Haskell.Model.Consulta
-import Haskell.Model.Paciente
-import Haskell.Model.Medicamento
-import Haskell.Model.UBS
+import Data.List ( intercalate )
 import Haskell.Model.DateCycle
-import Haskell.Model.Exame
-import Haskell.Model.Receita
-import Haskell.Model.Laudo
+import qualified Haskell.Model.Medico as Medico
+import qualified Haskell.Model.Consulta as Consulta
+import qualified Haskell.Model.Paciente as Paciente
+import qualified Haskell.Model.Medicamento as Medicamento
+import qualified Haskell.Model.UBS as Ubs
+import qualified Haskell.Model.Exame as Exame
+import qualified Haskell.Model.Receita as Receita
+import qualified Haskell.Model.Laudo as Laudo
+
+
 
 {-
 
@@ -35,19 +37,19 @@ Cria uma UBS
 @param infos: informações da UBS
 
 -}
-criaUBS :: Int -> [String] -> UBS
-criaUBS idUBS infos = read (intercalate ";" ([show (idUBS)] ++ infos)) :: UBS
+criaUBS :: Int -> [String] -> UBS.UBS
+criaUBS idUBS infos = read (intercalate ";" ([show (idUBS)] ++ infos))
 
 {-
 
 Cria um médico
 @param idUBS: id da ubs a qual o médico pertence
 @param idMed: id do médico
-@param informs: informações do médico
+@param infos: informações do médico
 
 -}
-cadastraMedico :: Int -> Int -> [String] -> Medico
-cadastraMedico idUBS idMed informs = read (intercalate ";" ([show (idUBS), show (idMed)] ++ informs)) :: Medico
+cadastraMedico :: Int -> Int -> [String] -> Medico.Medico
+cadastraMedico idUBS idMed infos = read (intercalate ";" ([show (idUBS), show (idMed)] ++ infos))
 
 {-
 
@@ -57,20 +59,30 @@ Ver todas as consultas agendadas na UBS
 @return lista das consultas agendadas na UBS
 
 -}
-visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
-visualizaAgendamentos idUBS consultas = []
+visualizaAgendamentos :: Int -> [Consulta.Consulta] -> DateTime -> [Consulta.Consulta]
+visualizaAgendamentos _ [] _ = []
+visualizaAgendamentos idUBS (x:xs) hj| idUBS == (Consulta.idUBS x) && hj <= (Consulta.dia x) = [x] ++ (visualizaAgendamentos idUBS xs hj)
+                                     | otherwise = visualizaAgendamentos idUBS xs hj
 
 {-
 
-Ver todas as consultas agendadas na UBS
+Ver todos os pacientes na UBS
 @param idUBS: id da ubs
 @param pacientes: lista dos pacientes
 @param consultas: lista das consultas
 @return lista dos pacientes com consultas agendadas na UBS
 
 -}
-visualizaPacientes :: Int -> [Paciente] -> [Consulta] -> [Paciente]
-visualizaPacientes idUBS pacientes consultasUBS = []
+visualizaPacientes :: Int -> [Paciente.Paciente] -> [Consulta.Consulta] -> [Paciente.Paciente]
+visualizaPacientes _ [] _ = []
+visualizaPacientes _ _ [] = []
+visualizaPacientes idUBS (x:xs) consulta | (_verificaConsultaPaciente idUBS x consulta) = [x] ++ (visualizaPacientes idUbs xs consulta)
+                                         | otherwise = visualizaPacientes idUbs xs consulta
+
+_verificaConsultaPaciente :: Int -> Paciente.Paciente -> [Consulta.Consulta] -> Bool
+_verificaConsultaPaciente _ _ [] = False
+_verificaConsultaPaciente idUBS paciente (x:xs) | (idUBS == Consulta.idUBS x) && (Paciente.id paciente) == (Consulta.idPaciente x) = True
+                                                | otherwise = _verificaConsultaPaciente paciente xs
 
 {-
 
@@ -80,8 +92,10 @@ Ver todos os médicos que trabalham na UBS
 @return lista dos medicos da UBS
 
 -}
-visualizaMedicos :: Int -> [Medico] -> [Medico]
-visualizaMedicos idUBS medicos = []
+visualizaMedicos :: Int -> [Medico.Medico] -> [Medico.Medico]
+visualizaMedicos _ [] = []
+visualizaMedicos idUBS (x:xs) | idUBS == (Medico.idUbs x) = [x] ++ (visualizaMedicos idUBS xs)
+                              | otherwise = visualizaMedicos idUBS xs
 
 {-
 
@@ -91,8 +105,10 @@ Ver um médico que trabalha na UBS
 @return médico
 
 -}
-visualizaMedico :: Int -> [Medico] -> Medico
-visualizaMedico idMed medicos = (Medico 1 "" "" 1 "" empty)
+visualizaMedico :: Int -> Int -> [Medico.Medico] -> Maybe Medico.Medico
+visualizaMedico _ _ [] = Nothing 
+visualizaMedico idUBS idMed (x:xs) | idMed == (Medico.id x) && idUBS == (Medico.idUbs x) = [x] ++ (visualizaMedico idUBS idMed xs)
+                                   | otherwise = visualizaMedico idUBS idMed xs
 
 {-
 
@@ -103,7 +119,7 @@ Adiciona um medicamento à ubs
 
 -}
 adicionaMedicamento :: Int -> [String] -> Medicamento
-adicionaMedicamento idUBS informs = read (intercalate ";" ([show (idUBS)] ++ informs)) :: Medicamento
+adicionaMedicamento idUBS informs = read (intercalate ";" ([show (idUBS)] ++ informs))
 
 {-
 
