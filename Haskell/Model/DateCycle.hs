@@ -7,13 +7,14 @@ module Haskell.Model.DateCycle (
   isValid,
   seeNextDate,
   nextDay,
+  newDC,
   (===)
 
 ) where
 
 import Data.Dates
 import qualified Data.Heap as Heap
-import Haskell.View.Utils (split) 
+import Haskell.View.Utils
 
 data DateCycle = DateCycle {
 
@@ -22,7 +23,7 @@ data DateCycle = DateCycle {
   end :: [Time], -- horarios de termino de plantao, deve ter um Time para cada dia da semana, começando da Segunda
   timeSc :: Int -- duração da consulta
 
-} deriving (Show)
+}
 
 {-
 
@@ -31,6 +32,24 @@ Cria um DateCycle vazio apenas para criação do médico.
 -}
 empty :: DateCycle
 empty = DateCycle (Heap.fromList []) [] [] (-1)
+
+{-
+
+Cria um DateCycle.
+
+-}
+newDC :: DateTime -> [Time] -> [Time] -> Int -> DateCycle
+newDC hj i f t = DateCycle (Heap.fromList (firstTimes hj i 0)) i f t
+
+{-
+
+Função auxiliar da criação de um DateCycle. Cria a lista com os primeiros horários do médico.
+
+-}
+firstTimes :: DateTime -> [Time] -> Int -> [DateTime]
+firstTimes _ [] _ = []
+firstTimes hj (x:xs) d | (tHour x) /= (-1) && (tMinute x) /= (-1) = [(nextDay hj d) {hour = tHour x, minute = tMinute x}] ++ (firstTimes hj xs (d+1))
+                       | otherwise = (firstTimes hj xs (d+1))
 
 {-
 
@@ -68,15 +87,13 @@ getNextDate dc now | nextSc < now = getNextDate (snd (nextSc, dc {schedule = Hea
                          noHead = (Heap.drop 1 (schedule dc))
 
 {-
-
 Dada uma data e um dia da semana, retorna a data do próximo dia da semana especificado.
 Exemplo nextDay (30/10/2020) Segunda => 02/11/2020
-
 -}
-nextDay :: DateTime -> WeekDay -> DateTime
-nextDay date wkd | (weekdayNumber (dateWeekDay date)) == (weekdayNumber wkd) = date
+nextDay :: DateTime -> Int -> DateTime
+nextDay date wkd | (weekdayNumber (dateWeekDay date)) == wkd = date
                  | otherwise = (addInterval (nextMonday date) interval)
-                 where interval = Days (toInteger ((weekdayNumber wkd) - 1))
+                 where interval = Days (toInteger wkd)
 
 {-
 
@@ -98,6 +115,33 @@ instance Read DateTime where
     let month = read (l !! 1) :: Int
     let day = read (l !! 0) :: Int   
     [(DateTime year month day 00 00 00, "")]
+
+instance Show DateCycle where
+    show (DateCycle _ s e d) = (timeShow s) ++ ";" ++ (timeShow e) ++ ";" ++ (show d)
+
+{-
+
+Instância do read para DateCycle.
+Após realizar o read para DateCycle é necessário inicializar o DateCycle.
+
+Para isso, utilizar a função newDC.
+exemplo:
+ let p = read str :: DateCycle
+ hj <- getCurrentDateTime
+ let k = newDC hj (DateCycle.start p) (DateCycle.end p) (DateCycle.timeSc p)
+
+-}
+instance Read DateCycle where
+    readsPrec _ str = do
+      let l = split str ';' ""
+      let s = map read (split (l !! 0) ',' "") :: [Time]
+      let e = map read (split (l !! 1) ',' "")  :: [Time]
+      let d = read (l !! 2) :: Int
+      [(DateCycle (Heap.fromList []) s e d, "")]
+  
+timeShow :: [Time] -> String
+timeShow [] = ""
+timeShow (x:xs) = ((show (tHour x)) ++ ":" ++ (show (tMinute x)) ++ ":" ++ (show (tSecond x))) ++ "," ++ (timeShow xs)
 
 {-
 
