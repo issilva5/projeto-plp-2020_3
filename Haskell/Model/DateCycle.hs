@@ -13,7 +13,7 @@ module Haskell.Model.DateCycle (
 
 import Data.Dates
 import qualified Data.Heap as Heap
-import Haskell.View.Utils (split) 
+import Haskell.View.Utils
 
 data DateCycle = DateCycle {
 
@@ -22,7 +22,7 @@ data DateCycle = DateCycle {
   end :: [Time], -- horarios de termino de plantao, deve ter um Time para cada dia da semana, começando da Segunda
   timeSc :: Int -- duração da consulta
 
-} deriving (Show)
+}
 
 {-
 
@@ -68,15 +68,13 @@ getNextDate dc now | nextSc < now = getNextDate (snd (nextSc, dc {schedule = Hea
                          noHead = (Heap.drop 1 (schedule dc))
 
 {-
-
 Dada uma data e um dia da semana, retorna a data do próximo dia da semana especificado.
 Exemplo nextDay (30/10/2020) Segunda => 02/11/2020
-
 -}
-nextDay :: DateTime -> WeekDay -> DateTime
-nextDay date wkd | (weekdayNumber (dateWeekDay date)) == (weekdayNumber wkd) = date
+nextDay :: DateTime -> Int -> DateTime
+nextDay date wkd | (weekdayNumber (dateWeekDay date)) == wkd = date
                  | otherwise = (addInterval (nextMonday date) interval)
-                 where interval = Days (toInteger ((weekdayNumber wkd) - 1))
+                 where interval = Days (toInteger wkd)
 
 {-
 
@@ -98,6 +96,29 @@ instance Read DateTime where
     let month = read (l !! 1) :: Int
     let day = read (l !! 0) :: Int   
     [(DateTime year month day 00 00 00, "")]
+
+instance Show DateCycle where
+    show (DateCycle _ s e d) = (timeShow s) ++ ";" ++ (timeShow e) ++ ";" ++ (show d)
+
+{-
+
+Instância do read para DateCycle.
+Após realizar o read para DateCycle é necessário inicializar o DateCycle.
+
+Para isso, utilizar a função newDC.
+
+-}
+instance Read DateCycle where
+    readsPrec _ str = do
+      let l = split str ';' ""
+      let s = map read (split (l !! 0) ',' "") :: [Time]
+      let e = map read (split (l !! 1) ',' "")  :: [Time]
+      let d = read (l !! 2) :: Int
+      [(DateCycle (Heap.fromList []) s e d, "")]
+  
+timeShow :: [Time] -> String
+timeShow [] = ""
+timeShow (x:xs) = ((show (tHour x)) ++ ":" ++ (show (tMinute x)) ++ ":" ++ (show (tSecond x))) ++ "," ++ (timeShow xs)
 
 {-
 
