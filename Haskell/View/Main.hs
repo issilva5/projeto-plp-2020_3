@@ -576,7 +576,7 @@ leituraRequisitaMedicamento dados idPaciente = do
 
 leituraConsultaLaudo :: BD.BD -> Int -> IO()
 leituraConsultaLaudo dados idPaciente = do
-    imprime (PC.consultarLaudos idPaciente (BD.laudos dados))
+    imprime (PC.consultarLaudos idPaciente (BD.laudos dados) (BD.exames dados))
     menuPaciente idPaciente dados
 
 leituraConsultaLaudoId :: BD.BD -> Int -> IO()
