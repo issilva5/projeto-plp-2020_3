@@ -25,9 +25,17 @@ import qualified Haskell.Model.Consulta as Consulta
 import Haskell.Model.Medicamento
 import Data.Dates
 
+{-
+
+Cria um paciente.
+@param idPac: o id do paciente
+@param infos: as informações do paciente
+@return o paciente criado.
+
+-}
 criaPaciente :: Int -> [String] -> Paciente
 criaPaciente idPac infos = read (intercalate ";" ([show (idPac)] ++ infos)) :: Paciente
-  
+
 
 {-
 
@@ -44,7 +52,7 @@ buscarUnidades esp medicos ubss = [(UBS 1 "" "")]
 
 {-
 
-Cria uma consulta
+Cria uma consulta.
 @param informs: informações da consulta
 @param diaC: dia da consulta
 @return a consulta criada
@@ -52,6 +60,7 @@ Cria uma consulta
 -}
 requisitarConsulta :: [String] -> DateTime -> Consulta.Consulta
 requisitarConsulta informs diaC = (read (intercalate ";" informs)) {Consulta.dia = diaC}
+
 
 {-
 
@@ -63,6 +72,7 @@ Cria um exame
 -}
 requisitarExame :: [String] -> DateTime -> Exame
 requisitarExame informs dia = (read (intercalate ";" informs)) {dia = dia}
+
 
 {-
 
@@ -76,6 +86,7 @@ Cria um exame
 requisitarMedicamento :: Int -> [Receita] -> [Medicamento] -> [Medicamento]
 requisitarMedicamento idReceita receitas medicamentos = medicamentos
 
+
 {-
 
 Consultar todos os laudos do paciente
@@ -86,6 +97,7 @@ Consultar todos os laudos do paciente
 -}
 consultarLaudos :: Int -> [Laudo] -> [Laudo]
 consultarLaudos idPac laudos = [(Laudo 1 1 1 "")]
+
 
 {-
 
@@ -99,6 +111,7 @@ Consultar todos um específico laudos do paciente
 consultarLaudo :: Int -> Int -> [Laudo] -> Laudo
 consultarLaudo idPac idLaudo laudos = (Laudo 1 1 1 "")
 
+
 {-
 
 Consultar todos as receitas de medicamento do paciente
@@ -109,6 +122,7 @@ Consultar todos as receitas de medicamento do paciente
 -}
 consultarReceitasMed :: Int -> [Receita] -> [Receita]
 consultarReceitasMed idPac receitas = [(Receita 1 1 1 1 [(1, "")])]
+
 
 {-
 
@@ -122,6 +136,7 @@ Consultar uma receita de medicamento do paciente
 consultarReceitaMed :: Int -> Int -> [Receita] -> Receita
 consultarReceitaMed idPac idReceita receitas = (Receita 1 1 1 1 [(1, "")])
 
+
 {-
 
 Consultar todos as receitas de exame do paciente
@@ -132,6 +147,7 @@ Consultar todos as receitas de exame do paciente
 -}
 consultarReceitasEx :: Int -> [Exame] -> [Exame]
 consultarReceitasEx idPac exames = [(Exame 1 1 1 1 "" (DateTime 2020 10 30 00 00 00) "")]
+
 
 {-
 
@@ -145,6 +161,7 @@ Consultar uma receita de exame do paciente
 consultarReceitaEx :: Int -> Int -> [Exame] -> Exame
 consultarReceitaEx idPac idReceita exames = (Exame 1 1 1 1 "" (DateTime 2020 10 30 00 00 00) "")
 
+
 {-
 
 Recebe um pedido de emergência.
@@ -153,7 +170,8 @@ Recebe um pedido de emergência.
 
 -}
 emergencia :: Int -> String -> String
-emergencia idPac endereco = ""
+emergencia idPac endereco = "🚑 Ambulância para " ++ endereco ++ " está a caminho! 🩺"
+
 
 {-
 
@@ -164,4 +182,6 @@ Verifica se existe paciente com o id dado
 
 -}
 validaIDPaciente :: Int -> [Paciente] -> Bool
-validaIDPaciente idPac pacientes = True
+validaIDPaciente _ [] = False
+validaIDPaciente idPac (x:xs) | idPac == (Paciente.id x) = True 
+                              | otherwise = validaIDPaciente idPac xs
