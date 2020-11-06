@@ -12,7 +12,7 @@ data Consulta = Consulta {
 } deriving (Show)
 
 formataConsulta :: Consulta -> String
-formataConsulta consulta = "Consulta " ++ (show (id consulta)) ++ ": " ++ (show (dia consulta))
+formataConsulta c = "Consulta " ++ (show (id c)) ++ " do paciente " ++ (show (idPaciente c)) ++ " com o médico " ++ (show (idMedico c)) ++ " em " (show (dia c))
 
 instance Read Consulta where 
     readsPrec _ str = do 
