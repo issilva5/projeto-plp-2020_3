@@ -14,9 +14,12 @@ module Haskell.Controller.UBSController (
   validaIDExame,
   validaIDUBS,
   validaIDReceita,
-  validaIDLaudo
+  validaIDLaudo,
+  getConsultasDoDia,
+  getMedicosDisponiveis
 ) where
 
+import Data.Dates
 import Data.List ( intercalate ) 
 import Haskell.Model.Medico
 import Haskell.Model.Consulta
@@ -207,3 +210,41 @@ Verifica se existe Laudo com o id dado
 -}
 validaIDLaudo :: Int -> [Laudo] -> Bool
 validaIDLaudo idReceita laudos = True
+
+{-
+
+Lista as consultas do dia atual
+@param hoje: data do dia atual
+@param consultas: lista de Consultas
+@return consultas do dia.
+
+-}
+getConsultasDoDia :: DateTime -> [Consulta] -> [Consulta]
+getConsultasDoDia _ [] = []
+getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [x] + (getConsultasDoDia xs)
+                        | otherwise = getConsultasDoDia xs
+
+{-
+
+Lista os médicos disponíveis 
+@param consultas: lista de Consultas
+@param medicos: lista de Médicos
+@return consultas do dia.
+
+-}
+-- !! NÃO SEI SE FUNCIONA !!
+getMedicosDisponiveis :: [Consulta] -> [Medico] -> [Medico]
+getMedicosDisponiveis [] _ = []
+getMedicosDisponiveis consultas (x:xs) | (Medico.id x) `notElem` ids = [x] ++ (getMedicosDisponiveis ids xs)
+                                      | otherwise = getMedicosDisponiveis ids xs
+                                  where
+                                    ids = _getMedicosIDs consultas
+
+-- _getMedicosDisponiveis :: [Int] -> [Medico] -> [Medico]
+-- _getMedicosDisponiveis _ [] = []
+-- _getMedicosDisponiveis ids (x:xs) | (Medico.id x) `elem` ids = [x] ++ (_getMedicosDisponiveis ids xs)
+--                                   | otherwise = _getMedicosDisponiveis ids xs
+
+_getMedicosIDs :: [Consulta] -> [Int]
+_getMedicosIDs [] = []
+_getMedicosIDs (x:xs) = [(Consulta.idMedico x)] ++ (_getMedicosIDs xs)

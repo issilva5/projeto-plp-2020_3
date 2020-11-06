@@ -5,10 +5,12 @@ import qualified Haskell.Controller.PacienteController as PC
 import qualified Haskell.Controller.AutenticacaoController as Autenticador
 import Haskell.View.Utils
 
+import Data.Dates
 import Data.Char ( toUpper )
 
 main :: IO()
 main = do
+    dashboardPrint
     inicial (BD.BD [] [] [] [] [] [] [] [] [] [1..])
 
 inicial :: BD.BD -> IO()
@@ -27,6 +29,18 @@ inicial dados  = do
         return ()
     else do
         inicial dados
+
+--    putStrLn "StatusUBS: Consultas."
+--             "Consultas do Dia: "
+--    putStrLn "StatusUBS: Pacientes."
+--    putStrLn "StatusUBS: Médicos."
+--             "Médicos : "
+--    putStrLn "StatusUBS: Medicamentos."
+-- statusUBS : visualizaAgendamentos, visualizaPacientes, visualizaMedicos, visualizaMedicamentos
+--     (UBSC.visualizaAgendamentos idUBS (BD.consultas dados))
+--     (UBSC.visualizaPacientes idUBS (BD.pacientes dados)
+--     (UBSC.visualizaMedicos idUBS (BD.medicos dados))
+--     (UBSC.visualizaMedicamentos idUBS (BD.medicamentos dados))
 
 login :: BD.BD -> IO()
 login dados = do 
@@ -329,8 +343,24 @@ menuUBS idUBS dados = do
 
     else if toUpper (head op) == 'D' then do
 
-        print "Dashboard"
-        menuUBS idUBS dados
+        putStrLn titleDashboard
+
+        putStrLn "Dashboard[UBS]: Consultas"
+        putStrLn "                Consultas do Dia: \n"
+        hoje <- getCurrentDateTime
+        imprime (UBSC.getConsultasDoDia hoje (BD.consultas dados))
+
+        putStrLn "Dashboard[UBS]: Medicamentos"
+        putStrLn "                Histórico de Medicamentos: \n"
+        imprime (BD.medicamentos dados)
+
+        putStrLn "Dashboard[UBS]: Médicos"
+        putStrLn "                Médicos Disponíveis: \n"
+        imprime (UBSC.getMedicosDisponiveis (BD.consultas dados) (BD.medico dados))
+
+        -- prompt "Opção > "
+        -- print "Dashboard"
+        -- menuUBS idUBS dados
 
     else if toUpper (head op) == 'S' then do
 
