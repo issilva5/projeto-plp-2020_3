@@ -219,9 +219,9 @@ Lista as consultas do dia atual
 @return consultas do dia.
 
 -}
-getConsultasDoDia :: DateTime -> [Consulta.Consulta] -> [Consulta.Consulta]
+getConsultasDoDia :: DateTime -> [Consulta.Consulta] -> [String]
 getConsultasDoDia _ [] = []
-getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [x] ++ (getConsultasDoDia hoje xs)
+getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [Consulta.formataConsulta x] ++ (getConsultasDoDia hoje xs)
                               | otherwise = getConsultasDoDia hoje xs
 
 {-
@@ -249,4 +249,11 @@ statusMedico m (x:xs) s | (Consulta.dia x) >= s && (Consulta.dia x) <= e = 1 -- 
                         | otherwise = statusMedico m xs s
                         where
                           e = correctDate (addTime s (Time 0 (timeSc (Medico.horarios m)) 0)) -- termino da consulta
-                          
+
+formataMedicamentosDashboard :: [Medicamento] -> String
+formataMedicamentosDashboard [] = ""
+formataMedicamentosDashboard (x:xs) = (Medicamento.nome x) ++ " - " ++ (show (Medicamento.qtdEstoque x)) ++ "\n" ++ (formataMedicamentosDashboard xs)
+
+formataMedicosDashboard :: [Medico.Medico] -> String
+formataMedicosDashboard [] = ""
+formataMedicosDashboard (x:xs) = (show (Medico.id x)) ++ " " ++ (Medico.nome x) ++ " - " ++ (Medico.especialidade x) ++ "\n" ++ (formataMedicosDashboard xs)

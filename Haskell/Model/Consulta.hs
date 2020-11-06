@@ -11,6 +11,9 @@ data Consulta = Consulta {
     dia :: DateTime
 } deriving (Show)
 
+formataConsulta :: Consulta -> String
+formataConsulta consulta = "Consulta " ++ (show (id consulta)) ++ ": " ++ (show (dia consulta))
+
 instance Read Consulta where 
     readsPrec _ str = do 
     let l = split str ';' ""
