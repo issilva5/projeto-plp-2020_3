@@ -18,6 +18,6 @@ instance Read UBS where
     readsPrec _ str = do
     let l = split str ';' ""
     let id = read (l !! 0) :: Int
-    let nome = read (l !! 1) :: String
-    let endereco = read (l !! 2) :: String
+    let nome = l !! 1
+    let endereco = l !! 2
     [(UBS id nome endereco, "")]

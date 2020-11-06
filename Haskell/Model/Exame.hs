@@ -30,7 +30,7 @@ instance Read Exame where
     let idPaciente = read (l !! 1) :: Int
     let idMedico = read (l !! 2) :: Int
     let idUBS = read (l !! 3) :: Int
-    let tipo = read (l !! 4) :: String
+    let tipo = l !! 4
     let dia = DateTime 2020 11 01 00 00 00
     let resultado = ""
     [(Exame id idPaciente idMedico idUBS tipo dia resultado, "")]

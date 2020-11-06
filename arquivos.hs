@@ -1,6 +1,5 @@
 import System.IO
 import System.IO (isEOF)
-import Data.Char (toUpper)
 import Control.Monad (forever, when)
 import System.Exit (exitSuccess)
 

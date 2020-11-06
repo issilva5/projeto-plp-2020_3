@@ -6,42 +6,14 @@ import qualified Haskell.Controller.AutenticacaoController as Autenticador
 import Haskell.View.Utils
 
 import Data.Char ( toUpper )
-import System.IO
 import Data.Maybe (fromJust)
 import Data.Dates
+import qualified Haskell.Persistence.Persistence as Persistence
 
-main :: IO()
+main :: IO ()
 main = do
-    inicial (BD.BD [] [] [] [] [] [] [] [] [] [1..])
-
-encerrar :: BD.BD -> IO()
-encerrar dados = do
-    let pacientes = BD.pacientes dados
-    let medicos = BD.medicamentos dados
-    let ubs = BD.ubs dados
-    let consultas = BD.consultas dados
-    let exames = BD.exames dados
-    let laudos = BD.laudos dados
-    let medicamentos = BD.medicamentos dados
-    let receitas = BD.receitas dados
-    let loins = BD.logins dados
-    let idAtual = BD.idAtual dados
-
-    writeList pacientes "pacientes.txt" 0
-    return()
-
-writeList :: Show t => [t] -> String -> Int -> IO()
-writeList l fileName n =
-    if (n > length l) then return()
-    else do
-    arq <- openFile ("Haskell/Persistence/" ++ fileName) AppendMode
-    hPutStrLn arq (show (l !! n))
-    hClose arq
-    writeList l fileName (n+1)
-
-
-
-
+    dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
+    inicial (dados)
 
 inicial :: BD.BD -> IO()
 inicial dados  = do
@@ -56,7 +28,7 @@ inicial dados  = do
     else if toUpper (head op) == 'C' then do
         cadastra dados
     else if toUpper (head op) == 'E' then do
-        encerrar dados
+        Persistence.encerrar dados
     else do
         inicial dados
 
@@ -99,20 +71,20 @@ cadastra dados = do
     if toUpper (head op) == 'P' then do
         dadosP <- lePaciente
         senha <- prompt "Senha > "
-        print ("Paciente cadastrado com id " ++ (show (BD.nextID dados)))
+        print ("Paciente cadastrado com id " ++ (show (BD.idAtual dados)))
         inicial dados {BD.pacientes =
-            (BD.pacientes dados) ++ [PC.criaPaciente (BD.nextID dados) dadosP], BD.logins =
-                (BD.logins dados) ++ [(BD.nextID dados, senha, 0)], BD.idAtual =
-                    drop 1 (BD.idAtual dados)}
+            (BD.pacientes dados) ++ [PC.criaPaciente (BD.idAtual dados) dadosP], BD.logins =
+                (BD.logins dados) ++ [(BD.idAtual dados, senha, 0)], BD.idAtual =
+                    1 + (BD.idAtual dados)}
 
     else if toUpper (head op) == 'U' then do
         dadosU <- leUBS
         senha <- prompt "Senha > "
-        print ("UBS cadastrada com id " ++ (show (BD.nextID dados)))
+        print ("UBS cadastrada com id " ++ (show (BD.idAtual dados)))
         inicial dados {BD.ubs =
-            (BD.ubs dados) ++ [UBSC.criaUBS (BD.nextID dados) dadosU], BD.logins =
-                (BD.logins dados) ++ [(BD.nextID dados, senha, 1)], BD.idAtual =
-                    drop 1 (BD.idAtual dados)}
+            (BD.ubs dados) ++ [UBSC.criaUBS (BD.idAtual dados) dadosU], BD.logins =
+                (BD.logins dados) ++ [(BD.idAtual dados, senha, 1)], BD.idAtual =
+                    1 + (BD.idAtual dados)}
 
     else if toUpper (head op) == 'V' then do
 
@@ -240,9 +212,9 @@ menuUBS idUBS dados = do
 
         dadosM <- leMedico
         senha <- prompt "Senha > "
-        let med = UBSC.cadastraMedico idUBS (BD.nextID dados) dadosM
-        print ("Médico cadastrado com id " ++ (show (BD.nextID dados)))
-        menuUBS idUBS (dados {BD.medicos = [med] ++ (BD.medicos dados), BD.logins = (BD.logins dados) ++ [(BD.nextID dados, senha, 2)], BD.idAtual = drop 1 (BD.idAtual dados)})
+        let med = UBSC.cadastraMedico idUBS (BD.idAtual dados) dadosM
+        print ("Médico cadastrado com id " ++ (show (BD.idAtual dados)))
+        menuUBS idUBS (dados {BD.medicos = [med] ++ (BD.medicos dados), BD.logins = (BD.logins dados) ++ [(BD.idAtual dados, senha, 2)], BD.idAtual = 1 + (BD.idAtual dados)})
 
     else if toUpper (head op) == 'V' then do
         op2 <- opcoesUBSVisualizar
@@ -323,9 +295,9 @@ menuUBS idUBS dados = do
         else if toUpper (head op2) == 'N' then do
 
             dadosMedic <- leMedicamento
-            let medic = UBSC.adicionaMedicamento idUBS ([show (BD.nextID dados)] ++ dadosMedic)
-            print ("Medicamento criado com ID " ++ (show (BD.nextID dados)))
-            menuUBS idUBS (dados {BD.medicamentos = [medic] ++ (BD.medicamentos dados), BD.idAtual = drop 1 (BD.idAtual dados)})
+            let medic = UBSC.adicionaMedicamento idUBS ([show (BD.idAtual dados)] ++ dadosMedic)
+            print ("Medicamento criado com ID " ++ (show (BD.idAtual dados)))
+            menuUBS idUBS (dados {BD.medicamentos = [medic] ++ (BD.medicamentos dados), BD.idAtual = 1 + (BD.idAtual dados)})
 
         else if toUpper (head op2) == 'A' then do
 
@@ -496,7 +468,7 @@ menuMedico idMed dados = do
 
             if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) then do
 
-                menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.nextID dados) idMed (read idPac) idUBS (read informacoes))], BD.idAtual = drop 1 (BD.idAtual dados)}
+                menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.idAtual dados) idMed (read idPac) idUBS (read informacoes))], BD.idAtual = 1 + (BD.idAtual dados)}
 
             else do
 
@@ -523,7 +495,7 @@ menuMedico idMed dados = do
 
             if (UBSC.validaIDExame (read idExame) (BD.exames dados)) then do
 
-                menuMedico idMed dados {BD.laudos = (BD.laudos dados) ++ [(MC.emitirLaudo (BD.nextID dados) idMed (read idExame) (read informacoes))], BD.idAtual = drop 1 (BD.idAtual dados)}
+                menuMedico idMed dados {BD.laudos = (BD.laudos dados) ++ [(MC.emitirLaudo (BD.idAtual dados) idMed (read idExame) (read informacoes))], BD.idAtual = 1 + (BD.idAtual dados)}
 
             else do
 
@@ -565,14 +537,14 @@ leituraBuscaUnidades dados = do
 leituraRequisitaConsulta :: BD.BD -> Int -> IO()
 leituraRequisitaConsulta dados idPaciente = do
     aux <- sequence [prompt "ID do Médico > ", prompt "ID da UBS > "]
-    let informs = [(show (BD.nextID dados)), (show idPaciente)] ++ aux
+    let informs = [(show (BD.idAtual dados)), (show idPaciente)] ++ aux
 
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
         hj <- getCurrentDateTime
         let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
-        print ("Consulta marcada com id " ++ (show (BD.nextID dados)))
-        menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fromJust (fst medicoHorario))], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        print ("Consulta marcada com id " ++ (show (BD.idAtual dados)))
+        menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fromJust (fst medicoHorario))], BD.idAtual = 1 + (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 
@@ -582,14 +554,14 @@ leituraRequisitaConsulta dados idPaciente = do
 leituraRequisitaExame :: BD.BD -> Int -> IO()
 leituraRequisitaExame dados idPaciente = do
     aux <- sequence [prompt "ID do Médico > ", prompt "ID da UBS > ", prompt "Tipo de Exame > "]
-    let informs = [(show (BD.nextID dados)), (show idPaciente)] ++ aux
+    let informs = [(show (BD.idAtual dados)), (show idPaciente)] ++ aux
 
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
         hj <- getCurrentDateTime
         let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
-        print ("Exame marcado com id " ++ (show (BD.nextID dados)))
-        menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fromJust (fst medicoHorario))], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        print ("Exame marcado com id " ++ (show (BD.idAtual dados)))
+        menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fromJust (fst medicoHorario))], BD.idAtual = 1 + (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 

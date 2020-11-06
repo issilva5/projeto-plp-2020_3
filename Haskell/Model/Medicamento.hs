@@ -23,7 +23,7 @@ instance Read Medicamento where
     let l = split str ';' ""
     let id = read (l !! 1) :: Int
     let idUBS = read (l !! 0) :: Int
-    let nome = read (l !! 2) :: String
+    let nome = l !! 2
     let qtdEstoque = read (l !! 3) :: Int
-    let bula = read (l !! 4) :: String
+    let bula = l !! 4
     [(Medicamento id idUBS nome qtdEstoque bula, "")]

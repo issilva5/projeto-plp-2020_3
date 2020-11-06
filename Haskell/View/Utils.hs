@@ -11,13 +11,13 @@ Limpa a tela
 
 -}
 clear :: IO ()
-clear = do 
+clear = do
     _ <- system "clear"
     return ()
 
 menuInicial :: String -> String
 menuInicial m = m ++ "\n"
-              ++ " -------------\n" 
+              ++ " -------------\n"
               ++ "  (L)ogin     \n"
               ++ "  (C)adastrar \n"
               ++ "  (E)ncerrar \n"
@@ -80,9 +80,9 @@ prompt text = do
 
 lePaciente :: IO [String]
 lePaciente = do
-    sequence [prompt "Nome > ", prompt "CPF > ", prompt "Data de Nascimento > ", prompt "Peso > ", prompt "Altura > ", prompt "Tipo Sanguineo > ", prompt "Endereço > ", prompt "Cardiopata > ", prompt "Diabético > ", prompt "Hipertenso > "]
+    sequence [prompt "Nome > ", prompt "CPF > ", prompt "Data de Nascimento > ", prompt "Peso > ", prompt "Altura > ", prompt "Tipo Sanguineo > ", prompt "Endereço > ", prompt "Cardiopata (S ou N) > ", prompt "Diabético (S ou N) > ", prompt "Hipertenso (S ou N) > "]
 
-leUBS :: IO [String]
+leUBS :: IO ([String])
 leUBS = do
     sequence [prompt "Nome > ", prompt "Endereco > "]
 
@@ -122,11 +122,11 @@ leHorariosMedico = do
 Converte uma string do tipo HH:MM em Time
 
 -}
-instance Read Time where 
-    readsPrec _ str = do 
-    let l = split str ':' "" 
+instance Read Time where
+    readsPrec _ str = do
+    let l = split str ':' ""
     let hour = read (l !! 0) :: Int
-    let minute = read (l !! 1) :: Int   
+    let minute = read (l !! 1) :: Int
     [(Time hour minute 0, "")]
 
 formataLista :: Show t => [t] -> String

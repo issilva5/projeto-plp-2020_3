@@ -1,0 +1,6 @@
+(1,"sa",0)
+(1,"password123",0)
+(2,"senhaSegura",0)
+(3,"minhaSenha",1)
+(4,"senha123",1)
+

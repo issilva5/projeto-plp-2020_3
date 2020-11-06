@@ -17,7 +17,7 @@ module Haskell.Controller.UBSController (
   validaIDLaudo
 ) where
 
-import Data.List ( intercalate ) 
+import Data.List ( intercalate )
 import Haskell.Model.Medico
 import Haskell.Model.Consulta
 import Haskell.Model.Paciente
@@ -36,7 +36,8 @@ Cria uma UBS
 
 -}
 criaUBS :: Int -> [String] -> UBS
-criaUBS idUBS infos = read (intercalate ";" ([show (idUBS)] ++ infos)) :: UBS
+criaUBS idUBS infos =
+  read (intercalate ";" ([show (idUBS)] ++ infos)) :: UBS
 
 {-
 

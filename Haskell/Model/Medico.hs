@@ -26,9 +26,9 @@ instance Read Medico where
     readsPrec _ str = do
     let l = split str ';' ""
     let id = read (l !! 1) :: Int
-    let nome = read (l !! 2) :: String
-    let crm = read (l !! 3) :: String
+    let nome = l !! 2
+    let crm = l !! 3
     let idUbs = read (l !! 0) :: Int
-    let especialidade = read (l !! 4) :: String
+    let especialidade = l !! 4
     let horarios = empty
     [(Medico id nome crm idUbs especialidade horarios, "")]
