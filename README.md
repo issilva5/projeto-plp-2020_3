@@ -36,6 +36,6 @@ O projeto foi desenvolvido em [Haskell](Haskell) e em Prolog.
 
 ### Haskell
 
-Antes de tudo faça a instalação das dependências descritas [aqui](Haskell/DEPENDENCIES.md), feito, no diretório raiz do repositório, faça:
+Antes de tudo faça a instalação das dependências descritas [aqui](Haskell/DEPENDENCIES.md), tendo feito isso, no diretório raiz do repositório, faça:
  - `ghc Haskell/View/Main.hs` para compilar;
  - com a compilação terminada faça `./Haskell/View/Main` para executar o sistema.
