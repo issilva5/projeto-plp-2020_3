@@ -218,13 +218,13 @@ menuUBS idUBS dados = do
         op2 <- opcoesUBSVisualizar
 
         if toUpper (head op2) == 'A' then do
-            
-            imprime (UBSC.visualizaAgendamentos idUBS (BD.consultas dados))
+            hj <- getCurrentDateTime
+            imprime (UBSC.visualizaAgendamentos idUBS (BD.consultas dados) hj)
             menuUBS idUBS dados
         
         else if toUpper (head op2) == 'P' then do
-            
-            imprime (UBSC.visualizaPacientes idUBS (BD.pacientes dados) (UBSC.visualizaAgendamentos idUBS (BD.consultas dados)))
+            hj <- getCurrentDateTime
+            imprime (UBSC.visualizaPacientes idUBS (BD.pacientes dados) (UBSC.visualizaAgendamentos idUBS (BD.consultas dados) hj))
             menuUBS idUBS dados
 
         else if toUpper (head op2) == 'M' then do
@@ -244,7 +244,7 @@ menuUBS idUBS dados = do
 
                 if (MC.validaIDMedico (read idMed) (BD.medicos dados)) then do
 
-                    print (UBSC.visualizaMedico (read idMed) (BD.medicos dados))
+                    print (fromJust (UBSC.visualizaMedico idUBS (read idMed) (BD.medicos dados)))
                     menuUBS idUBS dados
                 
                 else do
@@ -278,7 +278,7 @@ menuUBS idUBS dados = do
 
                 if (UBSC.validaIDMedicamento (read idMedic) (BD.medicamentos dados)) then do
 
-                    print (UBSC.visualizaMedicamento (read idMedic) (UBSC.visualizaMedicamentos idUBS (BD.medicamentos dados)))
+                    print (fromJust (UBSC.visualizaMedicamento idUBS (read idMedic) (UBSC.visualizaMedicamentos idUBS (BD.medicamentos dados))))
                     menuUBS idUBS dados
                 
                 else do
