@@ -129,6 +129,19 @@ instance Read Time where
     let minute = read (l !! 1) :: Int
     [(Time hour minute 0, "")]
 
+instance Read DateTime where
+    readsPrec _ str = do 
+    let dt = split str ' ' ""
+    let d = split (dt !! 0) '/' ""
+    let t = if (length dt) == 2 then split (dt !! 1) ':' "" else []
+    let day = read (d !! 0) :: Int
+    let month = read (d !! 1) :: Int
+    let year = read (d !! 2) :: Int
+    let hour = if (length t) >= 1 then read (t !! 0) :: Int else 0
+    let minute = if (length t) >= 2 then read (t !! 1) :: Int else 0
+    let second = if (length t) == 3 then read (t !! 2) :: Int else 0
+    [(DateTime year month day hour minute second, "")]
+
 formataLista :: Show t => [t] -> String
 formataLista [] = ""
 formataLista (x:xs) = (show x) ++ "\n" ++ (formataLista xs)
@@ -164,3 +177,11 @@ split "" _ aux = [aux]
 split (h : t) sep aux | h == sep && aux == "" = split t sep aux
                   | h == sep = [aux] ++ split t sep ""
                   | otherwise = split t sep (aux ++ [h])
+
+dateTimeToString :: DateTime -> String
+dateTimeToString dt =
+    show (day dt) ++ "/" ++
+    show (month dt) ++ "/" ++
+    show (year dt) ++ " " ++
+    show (hour dt) ++ ":" ++
+    show (minute dt)

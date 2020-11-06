@@ -12,9 +12,9 @@ module Haskell.Controller.PacienteController (
   consultarReceitaEx,
   emergencia,
   validaIDPaciente
-) where 
+) where
 
-import Data.List ( intercalate ) 
+import Data.List ( intercalate )
 import Haskell.Model.Receita
 import Haskell.Model.Exame
 import Haskell.Model.UBS
@@ -27,7 +27,7 @@ import Data.Dates
 
 criaPaciente :: Int -> [String] -> Paciente
 criaPaciente idPac infos = read (intercalate ";" ([show (idPac)] ++ infos)) :: Paciente
-  
+
 
 {-
 
@@ -108,7 +108,7 @@ Consultar todos as receitas de medicamento do paciente
 
 -}
 consultarReceitasMed :: Int -> [Receita] -> [Receita]
-consultarReceitasMed idPac receitas = [(Receita 1 1 1 1 [(1, "")])]
+consultarReceitasMed idPac receitas = [(Receita 1 1 1 1 [(1, "", 1)])]
 
 {-
 
@@ -120,7 +120,7 @@ Consultar uma receita de medicamento do paciente
 
 -}
 consultarReceitaMed :: Int -> Int -> [Receita] -> Receita
-consultarReceitaMed idPac idReceita receitas = (Receita 1 1 1 1 [(1, "")])
+consultarReceitaMed idPac idReceita receitas = (Receita 1 1 1 1 [(1, "", 1)])
 
 {-
 

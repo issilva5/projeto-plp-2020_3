@@ -103,21 +103,8 @@ Retorna a próxima data livre sem alterar retirá-la.
 seeNextDate :: DateCycle -> DateTime -> DateTime
 seeNextDate dc now = fst (getNextDate dc now)
 
-{-
-
-Converte uma string do tipo DD/MM/YYYY em DateTime
-
--}
-instance Read DateTime where 
-    readsPrec _ str = do 
-    let l = split str '/' "" 
-    let year = read (l !! 2) :: Int
-    let month = read (l !! 1) :: Int
-    let day = read (l !! 0) :: Int   
-    [(DateTime year month day 00 00 00, "")]
-
 instance Show DateCycle where
-    show (DateCycle _ s e d) = (timeShow s) ++ ";" ++ (timeShow e) ++ ";" ++ (show d)
+    show (DateCycle _ s e d) = (timeShow s) ++ "|" ++ (timeShow e) ++ "|" ++ (show d)
 
 {-
 
@@ -133,7 +120,7 @@ exemplo:
 -}
 instance Read DateCycle where
     readsPrec _ str = do
-      let l = split str ';' ""
+      let l = split str '|' ""
       let s = map read (split (l !! 0) ',' "") :: [Time]
       let e = map read (split (l !! 1) ',' "")  :: [Time]
       let d = read (l !! 2) :: Int

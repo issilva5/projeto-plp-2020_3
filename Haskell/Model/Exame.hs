@@ -1,5 +1,5 @@
 module Haskell.Model.Exame where
-import Haskell.View.Utils (split)
+import Haskell.View.Utils
 import Prelude hiding (id)
 import Data.Dates
 
@@ -20,8 +20,7 @@ toString e =
     show (idMedico e) ++ ";" ++
     show (idUBS e) ++ ";" ++
          (tipo e) ++ ";" ++
-    show (dia e) ++ ";" ++
-         resultado e
+    dateTimeToString (dia e)
 
 instance Read Exame where
     readsPrec _ str = do
@@ -31,6 +30,6 @@ instance Read Exame where
     let idMedico = read (l !! 2) :: Int
     let idUBS = read (l !! 3) :: Int
     let tipo = l !! 4
-    let dia = DateTime 2020 11 01 00 00 00
+    let dia = read (l !! 5) :: DateTime
     let resultado = ""
     [(Exame id idPaciente idMedico idUBS tipo dia resultado, "")]
