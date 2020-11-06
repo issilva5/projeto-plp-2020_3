@@ -250,10 +250,30 @@ statusMedico m (x:xs) s | (Consulta.dia x) >= s && (Consulta.dia x) <= e = 1 -- 
                         where
                           e = correctDate (addTime s (Time 0 (timeSc (Medico.horarios m)) 0)) -- termino da consulta
 
+{-
+
+Formata os medicamentos para a dashboard
+@param medicamentos: Lista com os 5 medicamentos com pouco estoque
+@return retorna todos os medicamentos no formato Nome - Estoque 
+
+-}
 formataMedicamentosDashboard :: [Medicamento] -> String
 formataMedicamentosDashboard [] = ""
 formataMedicamentosDashboard (x:xs) = (Medicamento.nome x) ++ " - " ++ (show (Medicamento.qtdEstoque x)) ++ "\n" ++ (formataMedicamentosDashboard xs)
 
-formataMedicosDashboard :: [Medico.Medico] -> String
+{-
+
+Formata os médicos para a dashboard
+@param medicos: Lista com os médicos a serem mostrados na dashboard
+@return retorna todos os médicos no formato ID - Nome - Status
+
+-}
+formataMedicosDashboard :: [(Medico.Medico, Int)] -> String
 formataMedicosDashboard [] = ""
-formataMedicosDashboard (x:xs) = (show (Medico.id x)) ++ " " ++ (Medico.nome x) ++ " - " ++ (Medico.especialidade x) ++ "\n" ++ (formataMedicosDashboard xs)
+formataMedicosDashboard ((a:b):xs) = (show (Medico.id a)) ++ " " ++ (Medico.nome a) ++ " - " ++ (formataStatus b) ++ "\n" ++ (formataMedicosDashboard xs)
+
+formataStatus :: Int -> String
+formataStatus n | n == -1 = "Não está em plantão"
+                | n == 0 = "Está de plantão e sem consulta"
+                | n == 1 = "Está de plantão e em consulta"
+                | otherwise = ""
