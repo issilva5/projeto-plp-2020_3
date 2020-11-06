@@ -278,7 +278,7 @@ menuUBS idUBS dados = do
 
                 if (UBSC.validaIDMedicamento (read idMedic) (BD.medicamentos dados)) then do
 
-                    print (UBSC.visualizaMedicamento (read idMedic) (UBSC.visualizaMedicamentos idUBS (BD.medicamentos dados)))
+                    print (UBSC.visualizaMedicamento idUBS (read idMedic) (UBSC.visualizaMedicamentos idUBS (BD.medicamentos dados)))
                     menuUBS idUBS dados
                 
                 else do

@@ -23,7 +23,7 @@ import qualified Haskell.Model.Medico as Medico
 import qualified Haskell.Model.Consulta as Consulta
 import qualified Haskell.Model.Paciente as Paciente
 import qualified Haskell.Model.Medicamento as Medicamento
-import qualified Haskell.Model.UBS as Ubs
+import qualified Haskell.Model.UBS as UBS
 import qualified Haskell.Model.Exame as Exame
 import qualified Haskell.Model.Receita as Receita
 import qualified Haskell.Model.Laudo as Laudo
@@ -132,20 +132,24 @@ Adiciona uma quantidade no estoque de um medicamento
 
 -}
 adicionaMedicamentoEstoque :: Int -> Int -> Int -> [Medicamento] -> [Medicamento]
-adicionaMedicamentoEstoque idUBS idMed qtd medicamentos = []
+adicionaMedicamentoEstoque _ _ _ [] = []
+adicionaMedicamentoEstoque idUBS idMed qtd (x:xs) | (idUBS == Medicamento.idUBS x) && (idMed == Medicamento.id x) = [x {Medicamento.qtdEstoque = (Medicamento.qtdEstoque x) + qtd}] ++ (adicionaMedicamentoEstoque idUBS idMed qtd xs)
+                                                  | otherwise = adicionaMedicamentoEstoque idUBS idMed qtd xs
 
 {-
 
 Remove uma quantidade no estoque de um medicamento
 @param idUBS: id da ubs
 @param idMed: id do medicamento
-@param qtd: quantidade a adicionar
+@param qtd: quantidade a retirar
 @param medicamentos: lista dos medicamentos
 @return lista dos medicamentos com o medicamento alterado
 
 -}
-removerMedicamento :: Int -> Int -> Int -> [Medicamento] -> [Medicamento]
-removerMedicamento idUBS idMedicamento qtd medicamentos = []
+adicionaMedicamentoEstoque :: Int -> Int -> Int -> [Medicamento] -> [Medicamento]
+adicionaMedicamentoEstoque _ _ _ [] = []
+adicionaMedicamentoEstoque idUBS idMed qtd (x:xs) | (idUBS == Medicamento.idUBS x) && (idMed == Medicamento.id x) = [x {Medicamento.qtdEstoque = (Medicamento.qtdEstoque x) - qtd}] ++ (adicionaMedicamentoEstoque idUBS idMed qtd xs)
+                                                  | otherwise = adicionaMedicamentoEstoque idUBS idMed qtd xs
 
 {-
 
@@ -156,29 +160,35 @@ Ver todos os medicamentos disponíveis na UBS
 
 -}
 visualizaMedicamentos :: Int -> [Medicamento] -> [Medicamento]
-visualizaMedicamentos idUBS medicamentos = []
+visualizaMedicamentos _ [] = []
+visualizaMedicamentos idUBS (x:xs) | idUBS == Medicamento.idUBS x = [x] ++ visualizaMedicamentos idUBS xs
+                                   | otherwise = visualizaMedicamentos idUBS xs
 
 {-
 
-Ver um medicamentos disponível na UBS
-@param idMedic: id do medicamento
+Ver um medicamento disponível na UBS
+@param idMed: id do medicamento
 @param medicamentos: lista dos medicamentos
 @return medicamento
 
 -}
-visualizaMedicamento :: Int -> [Medicamento] -> Medicamento
-visualizaMedicamento idMedic medicamentos = (Medicamento 1 1 "" 0 "")
+visualizaMedicamento :: Int-> Int -> [Medicamento] -> Medicamento
+visualizaMedicamento _ _ [] = []
+visualizaMedicamento idUBS idMed (x:xs) | (idUBS == Medicamento.idUBS x) && (idMed == Medicamento.id x) = x
+                                        | otherwise = visualizaMedicamento idUBS idMed xs
 
 {-
 
 Verifica se existe medicamento com o id dado
-@param idMedic: id do medicamento
+@param idMed: id do medicamento
 @param medicamentos: lista dos medicamentos
 @return True se existir, False c.c.
 
 -}
 validaIDMedicamento :: Int -> [Medicamento] -> Bool
-validaIDMedicamento idMedic medicamentos = True
+validaIDMedicamento _ [] = False
+validaIDMedicamento idMed (x:xs) | idMed == (Medicamento.id x) = True
+                                 | otherwise = validaIDMedicamento idMed xs
 
 {-
 
@@ -189,7 +199,9 @@ Verifica se existe exame com o id dado
 
 -}
 validaIDExame :: Int -> [Exame] -> Bool
-validaIDExame idExame exames = True
+validaIDExame _ [] = False
+validaIDExame idExame (x:xs) | idExame == (Exame.id x) = True
+                             | otherwise = validaIDExame idExame xs
 
 {-
 
@@ -200,7 +212,9 @@ Verifica se existe UBS com o id dado
 
 -}
 validaIDUBS :: Int -> [UBS] -> Bool
-validaIDUBS idUBS ubs = True
+validaIDUBS _ [] = False
+validaIDUBS idUBS (x:xs) | idUBS == (UBS.id) = True
+                         | otherwise = validaIDUBS idUBS xs
 
 {-
 
@@ -211,7 +225,9 @@ Verifica se existe Receita com o id dado
 
 -}
 validaIDReceita :: Int -> [Receita] -> Bool
-validaIDReceita idReceita receitas = True
+validaIDReceita _ [] = False
+validaIDReceita idReceita (x:xs) | idReceita == (Receita.id x) = True
+                                 | otherwise = validaIDReceita idReceita xs
 
 {-
 
@@ -222,4 +238,6 @@ Verifica se existe Laudo com o id dado
 
 -}
 validaIDLaudo :: Int -> [Laudo] -> Bool
-validaIDLaudo idReceita laudos = True
+validaIDLaudo _ [] = False
+validaIDLaudo idLaudo (x:xs) | idLaudo == (Laudo.id x) = True
+                             | otherwise = validaIDLaudo idLaudo xs
