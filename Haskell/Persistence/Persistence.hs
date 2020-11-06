@@ -2,7 +2,6 @@ module Haskell.Persistence.Persistence where
 
 import qualified Haskell.Model.BD as BD
 import Haskell.View.Utils ( split )
-import System.IO
 
 carregaPacientes :: BD.BD -> IO BD.BD
 carregaPacientes dados = do
@@ -12,14 +11,17 @@ carregaPacientes dados = do
 carregaUBS :: BD.BD -> IO BD.BD
 carregaUBS dados = do
     ubs <- leConteudo "ubs.txt"
-    carregaLogins dados {BD.ubs =  BD.stringToUBS $ split ubs '\n' ""}
+    carregaMedicos dados {BD.ubs =  BD.stringToUBS $ split ubs '\n' ""}
 
 carregaMedicos :: BD.BD -> IO BD.BD
 carregaMedicos dados = do
     medicos <- leConteudo "medicos.txt"
+    carregaMedicamento dados {BD.medicos =  BD.stringToMedico $ split medicos '\n' ""}
 
-    return (dados)
-    --carregaConsultas dados {BD.medicos =  BD.stringToMedico $ split medicos '\n' ""}
+carregaMedicamento :: BD.BD -> IO BD.BD
+carregaMedicamento dados = do
+    medicamentos <- leConteudo "medicamentos.txt"
+    carregaLogins dados {BD.medicamentos =  BD.stringToMedicamento $ split medicamentos '\n' ""}
 
 carregaLogins :: BD.BD -> IO BD.BD
 carregaLogins dados = do
@@ -39,7 +41,6 @@ encerrar dados = do
     putStrLn (show dados)
 
     let path = "Haskell/Persistence/"
-
     let listaPacientes = BD.pacientes dados
     let listaUBS =  BD.ubs dados
     let listaMedicos = BD.medicos dados
@@ -53,14 +54,13 @@ encerrar dados = do
     writeFile (path ++ "pacientes.txt") (BD.pacientesToString listaPacientes "")
     writeFile (path ++ "ubs.txt") (BD.ubsToString listaUBS "")
     writeFile (path ++ "medicos.txt") (BD.medicosToString listaMedicos "")
-    -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
-    -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
-    -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
-    -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
-    -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
+    writeFile (path ++ "medicamentos.txt") (BD.medicamentosToString listaMedicamentos "")
+    writeFile (path ++ "receitas.txt") (BD.receitasToString listaReceitas "")
+    writeFile (path ++ "consultas.txt") (BD.consultasToString listaConsultas "")
+    writeFile (path ++ "exames.txt") (BD.examesToString listaExames "")
+    writeFile (path ++ "laudos.txt") (BD.laudosToString listaLaudos "")
     writeFile (path ++ "logins.txt") (BD.loginsToString listaLogins "")
     writeFile (path ++ "idAtual.txt") (show $ BD.idAtual dados)
-
 
 write :: String -> String -> IO()
 write content fileName = do

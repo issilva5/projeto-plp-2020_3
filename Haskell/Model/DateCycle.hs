@@ -121,11 +121,15 @@ exemplo:
 instance Read DateCycle where
     readsPrec _ str = do
       let l = split str '|' ""
+      if length l < 3 then
+        [(empty, "")]
+
+      else do
       let s = map read (split (l !! 0) ',' "") :: [Time]
       let e = map read (split (l !! 1) ',' "")  :: [Time]
       let d = read (l !! 2) :: Int
       [(DateCycle (Heap.fromList []) s e d, "")]
-  
+
 timeShow :: [Time] -> String
 timeShow [] = ""
 timeShow (x:xs) = ((show (tHour x)) ++ ":" ++ (show (tMinute x)) ++ ":" ++ (show (tSecond x))) ++ "," ++ (timeShow xs)

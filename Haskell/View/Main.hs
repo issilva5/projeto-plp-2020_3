@@ -13,6 +13,7 @@ import qualified Haskell.Persistence.Persistence as Persistence
 main :: IO ()
 main = do
     dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
+    putStr (show dados)
     inicial (dados)
 
 inicial :: BD.BD -> IO()
@@ -467,7 +468,7 @@ menuMedico idMed dados = do
             informacoes <- prompt "Informações > "
 
             if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) then do
-
+                -- TODO
                 menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.idAtual dados) idMed (read idPac) idUBS (read informacoes))], BD.idAtual = 1 + (BD.idAtual dados)}
 
             else do
