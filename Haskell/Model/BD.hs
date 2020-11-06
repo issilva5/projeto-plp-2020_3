@@ -43,8 +43,19 @@ loginsToString (h : t) aux = aux ++ (show h) ++ "\n" ++ loginsToString t aux
 stringToLogin :: [String] -> [(Int, String, Int)]
 stringToLogin l = map read l :: [(Int, String, Int)]
 
+medicosToString :: [Medico.Medico] -> String -> String
+medicosToString [] aux = aux
+medicosToString (h:t) aux = aux ++ (Medico.toString h) ++ "\n" ++ medicosToString t aux
 
---"[( id, senha, tipo )]"
+stringToMedico :: [String] -> [Medico.Medico]
+stringToMedico l = map read l :: [Medico.Medico]
+
+-- medicos
+-- consultas
+-- exames
+-- laudos
+-- medicamentos
+-- receitas
 
 {-
 nextID :: BD -> Int

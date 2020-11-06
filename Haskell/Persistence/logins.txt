@@ -2,4 +2,4 @@
 (2,"senhaSegura",0)
 (3,"minhaSenha",1)
 (4,"senha123",1)
-
+(5,"se",1)

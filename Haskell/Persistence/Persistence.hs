@@ -15,8 +15,10 @@ carregaUBS dados = do
     carregaLogins dados {BD.ubs =  BD.stringToUBS $ split ubs '\n' ""}
 
 carregaMedicos :: BD.BD -> IO BD.BD
-carregaMedicos dados = do return dados
-    --medicos <- leConteudo "medicos.txt"
+carregaMedicos dados = do
+    medicos <- leConteudo "medicos.txt"
+
+    return (dados)
     --carregaConsultas dados {BD.medicos =  BD.stringToMedico $ split medicos '\n' ""}
 
 carregaLogins :: BD.BD -> IO BD.BD
@@ -34,30 +36,34 @@ leConteudo fileName = readFile ("Haskell/Persistence/" ++ fileName)
 
 encerrar :: BD.BD -> IO()
 encerrar dados = do
-    print dados
-    let medicos = BD.medicamentos dados
-    let consultas = BD.consultas dados
-    let exames = BD.exames dados
-    let laudos = BD.laudos dados
-    let medicamentos = BD.medicamentos dados
-    let receitas = BD.receitas dados
-    let loins = BD.logins dados
+    putStrLn (show dados)
 
-    write (BD.pacientesToString (BD.pacientes dados) "") "pacientes.txt"
-    write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
+    let path = "Haskell/Persistence/"
+
+    let listaPacientes = BD.pacientes dados
+    let listaUBS =  BD.ubs dados
+    let listaMedicos = BD.medicos dados
+    let listaConsultas = BD.consultas dados
+    let listaExames = BD.exames dados
+    let listaLaudos = BD.laudos dados
+    let listaMedicamentos = BD.medicamentos dados
+    let listaReceitas = BD.receitas dados
+    let listaLogins = BD.logins dados
+
+    writeFile (path ++ "pacientes.txt") (BD.pacientesToString listaPacientes "")
+    writeFile (path ++ "ubs.txt") (BD.ubsToString listaUBS "")
+    writeFile (path ++ "medicos.txt") (BD.medicosToString listaMedicos "")
     -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
     -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
     -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
     -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
     -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
-    -- write (BD.ubsToString (BD.ubs dados) "") "ubs.txt"
-    write (BD.loginsToString (BD.logins dados) "") "logins.txt"
-    write (show (BD.idAtual dados)) "idAtual.txt"
+    writeFile (path ++ "logins.txt") (BD.loginsToString listaLogins "")
+    writeFile (path ++ "idAtual.txt") (show $ BD.idAtual dados)
 
 
 write :: String -> String -> IO()
 write content fileName = do
-    arq <- openFile ("Haskell/Persistence/" ++ fileName) WriteMode
-    hPutStrLn arq content
-    hClose arq
+    writeFile ("Haskell/Persistence/" ++ fileName) content
+
 
