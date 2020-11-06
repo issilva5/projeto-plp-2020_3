@@ -22,6 +22,6 @@ instance Read Laudo where
      let id = read (l !! 0) :: Int
      let idMed = read (l !! 1) :: Int
      let idExame = read (l !! 2) :: Int
-     let texto = read (l !! 3) :: String
+     let texto = l !! 3
 
      [(Laudo id idMed idExame texto, "")]
