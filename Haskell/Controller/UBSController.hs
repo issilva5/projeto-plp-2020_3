@@ -16,13 +16,13 @@ module Haskell.Controller.UBSController (
   validaIDReceita,
   validaIDLaudo,
   getConsultasDoDia,
-  getMedicosDisponiveis
+  getStatusMedicos
 ) where
 
 import Data.Dates
 import Data.List ( intercalate ) 
-import Haskell.Model.Medico
-import Haskell.Model.Consulta
+import qualified Haskell.Model.Medico as Medico
+import qualified Haskell.Model.Consulta as Consulta
 import Haskell.Model.Paciente
 import Haskell.Model.Medicamento
 import Haskell.Model.UBS
@@ -49,8 +49,8 @@ Cria um médico
 @param informs: informações do médico
 
 -}
-cadastraMedico :: Int -> Int -> [String] -> Medico
-cadastraMedico idUBS idMed informs = read (intercalate ";" ([show (idUBS), show (idMed)] ++ informs)) :: Medico
+cadastraMedico :: Int -> Int -> [String] -> Medico.Medico
+cadastraMedico idUBS idMed informs = read (intercalate ";" ([show (idUBS), show (idMed)] ++ informs)) :: Medico.Medico
 
 {-
 
@@ -60,7 +60,7 @@ Ver todas as consultas agendadas na UBS
 @return lista das consultas agendadas na UBS
 
 -}
-visualizaAgendamentos :: Int -> [Consulta] -> [Consulta]
+visualizaAgendamentos :: Int -> [Consulta.Consulta] -> [Consulta.Consulta]
 visualizaAgendamentos idUBS consultas = []
 
 {-
@@ -72,7 +72,7 @@ Ver todas as consultas agendadas na UBS
 @return lista dos pacientes com consultas agendadas na UBS
 
 -}
-visualizaPacientes :: Int -> [Paciente] -> [Consulta] -> [Paciente]
+visualizaPacientes :: Int -> [Paciente] -> [Consulta.Consulta] -> [Paciente]
 visualizaPacientes idUBS pacientes consultasUBS = []
 
 {-
@@ -83,7 +83,7 @@ Ver todos os médicos que trabalham na UBS
 @return lista dos medicos da UBS
 
 -}
-visualizaMedicos :: Int -> [Medico] -> [Medico]
+visualizaMedicos :: Int -> [Medico.Medico] -> [Medico.Medico]
 visualizaMedicos idUBS medicos = []
 
 {-
@@ -94,8 +94,8 @@ Ver um médico que trabalha na UBS
 @return médico
 
 -}
-visualizaMedico :: Int -> [Medico] -> Medico
-visualizaMedico idMed medicos = (Medico 1 "" "" 1 "" empty)
+visualizaMedico :: Int -> [Medico.Medico] -> Medico.Medico
+visualizaMedico idMed medicos = (Medico.Medico 1 "" "" 1 "" empty)
 
 {-
 
@@ -219,10 +219,10 @@ Lista as consultas do dia atual
 @return consultas do dia.
 
 -}
-getConsultasDoDia :: DateTime -> [Consulta] -> [Consulta]
+getConsultasDoDia :: DateTime -> [Consulta.Consulta] -> [Consulta.Consulta]
 getConsultasDoDia _ [] = []
-getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [x] + (getConsultasDoDia xs)
-                        | otherwise = getConsultasDoDia xs
+getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [x] ++ (getConsultasDoDia hoje xs)
+                              | otherwise = getConsultasDoDia hoje xs
 
 {-
 
@@ -232,19 +232,31 @@ Lista os médicos disponíveis
 @return consultas do dia.
 
 -}
+getStatusMedicos :: DateTime -> [Consulta.Consulta] -> [Medico.Medico] -> [(Medico.Medico, Bool)]
+getStatusMedicos _ [] _ = []
+getStatusMedicos _ _ [] = []
+getStatusMedicos hj consultas (x:xs) = [(x, statusMedico x consultas hj)] ++ (getStatusMedicos hj consultas xs)
+
+statusMedico :: Medico.Medico -> [Consulta.Consulta] -> DateTime -> Bool
+statusMedico _ [] _ = False
+statusMedico m (x:xs) s | (Consulta.dia x) >= s && (Consulta.dia x) <= e = True
+                        | otherwise = statusMedico m xs s
+                        where
+                          e = correctDate (addTime s (Time 0 (timeSc (Medico.horarios m)) 0))
+
 -- !! NÃO SEI SE FUNCIONA !!
-getMedicosDisponiveis :: [Consulta] -> [Medico] -> [Medico]
-getMedicosDisponiveis [] _ = []
-getMedicosDisponiveis consultas (x:xs) | (Medico.id x) `notElem` ids = [x] ++ (getMedicosDisponiveis ids xs)
-                                      | otherwise = getMedicosDisponiveis ids xs
-                                  where
-                                    ids = _getMedicosIDs consultas
+-- getMedicosDisponiveis :: [Consulta.Consulta] -> [Medico.Medico] -> [Medico.Medico]
+-- getMedicosDisponiveis [] _ = []
+-- getMedicosDisponiveis consultas (x:xs) | (Medico.id x) `notElem` ids = [x] ++ (getMedicosDisponiveis ids xs)
+--                                        | otherwise = getMedicosDisponiveis ids xs
+--                                        where
+--                                         ids = _getMedicosIDs consultas
 
 -- _getMedicosDisponiveis :: [Int] -> [Medico] -> [Medico]
 -- _getMedicosDisponiveis _ [] = []
 -- _getMedicosDisponiveis ids (x:xs) | (Medico.id x) `elem` ids = [x] ++ (_getMedicosDisponiveis ids xs)
 --                                   | otherwise = _getMedicosDisponiveis ids xs
 
-_getMedicosIDs :: [Consulta] -> [Int]
-_getMedicosIDs [] = []
-_getMedicosIDs (x:xs) = [(Consulta.idMedico x)] ++ (_getMedicosIDs xs)
+-- _getMedicosIDs :: [Consulta.Consulta] -> [Int]
+-- _getMedicosIDs [] = []
+-- _getMedicosIDs (x:xs) = [(Consulta.idMedico x)] ++ (_getMedicosIDs xs)
