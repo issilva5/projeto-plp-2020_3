@@ -229,34 +229,24 @@ getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [x] ++ (getConsultasD
 Lista os médicos disponíveis 
 @param consultas: lista de Consultas
 @param medicos: lista de Médicos
-@return consultas do dia.
+@return -1 se o médico não está de plantão, 0 se o médico está de plantão sem consulta,
+        1 se o médico está em consulta
 
 -}
-getStatusMedicos :: DateTime -> [Consulta.Consulta] -> [Medico.Medico] -> [(Medico.Medico, Bool)]
+getStatusMedicos :: DateTime -> [Consulta.Consulta] -> [Medico.Medico] -> [(Medico.Medico, Int)]
 getStatusMedicos _ [] _ = []
 getStatusMedicos _ _ [] = []
-getStatusMedicos hj consultas (x:xs) = [(x, statusMedico x consultas hj)] ++ (getStatusMedicos hj consultas xs)
+getStatusMedicos hj consultas (x:xs) | (dateTimeToTime hj) < pi || (dateTimeToTime hj) > pe = [(x, -1)] ++ (getStatusMedicos hj consultas xs) -- medico esta fora do plantão
+                                     | otherwise = [(x, statusMedico x consultas hj)] ++ (getStatusMedicos hj consultas xs)
+                                     where
+                                       weekday = (weekdayNumber (dateWeekDay hj)) - 1 -- dia da semana
+                                       pi = startD weekday (Medico.horarios x) -- inicio do plantao
+                                       pe = endD weekday (Medico.horarios x) -- fim do plantao
 
-statusMedico :: Medico.Medico -> [Consulta.Consulta] -> DateTime -> Bool
-statusMedico _ [] _ = False
-statusMedico m (x:xs) s | (Consulta.dia x) >= s && (Consulta.dia x) <= e = True
+statusMedico :: Medico.Medico -> [Consulta.Consulta] -> DateTime -> Int
+statusMedico _ [] _ = 0 -- medico está de plantão e sem consulta
+statusMedico m (x:xs) s | (Consulta.dia x) >= s && (Consulta.dia x) <= e = 1 -- medico está em consulta
                         | otherwise = statusMedico m xs s
                         where
-                          e = correctDate (addTime s (Time 0 (timeSc (Medico.horarios m)) 0))
-
--- !! NÃO SEI SE FUNCIONA !!
--- getMedicosDisponiveis :: [Consulta.Consulta] -> [Medico.Medico] -> [Medico.Medico]
--- getMedicosDisponiveis [] _ = []
--- getMedicosDisponiveis consultas (x:xs) | (Medico.id x) `notElem` ids = [x] ++ (getMedicosDisponiveis ids xs)
---                                        | otherwise = getMedicosDisponiveis ids xs
---                                        where
---                                         ids = _getMedicosIDs consultas
-
--- _getMedicosDisponiveis :: [Int] -> [Medico] -> [Medico]
--- _getMedicosDisponiveis _ [] = []
--- _getMedicosDisponiveis ids (x:xs) | (Medico.id x) `elem` ids = [x] ++ (_getMedicosDisponiveis ids xs)
---                                   | otherwise = _getMedicosDisponiveis ids xs
-
--- _getMedicosIDs :: [Consulta.Consulta] -> [Int]
--- _getMedicosIDs [] = []
--- _getMedicosIDs (x:xs) = [(Consulta.idMedico x)] ++ (_getMedicosIDs xs)
+                          e = correctDate (addTime s (Time 0 (timeSc (Medico.horarios m)) 0)) -- termino da consulta
+                          

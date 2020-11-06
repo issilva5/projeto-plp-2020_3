@@ -9,6 +9,9 @@ module Haskell.Model.DateCycle (
   nextDay,
   newDC,
   correctDate,
+  dateTimeToTime,
+  startD,
+  endD,
   (===)
 
 ) where
