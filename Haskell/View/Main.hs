@@ -213,7 +213,7 @@ menuUBS idUBS dados = do
         dadosM <- leMedico
         senha <- prompt "Senha > "
         let med = UBSC.cadastraMedico idUBS (BD.idAtual dados) dadosM
-        print ("Médico cadastrado com id " ++ (show (BD.idAtual dados)))
+        putStrLn ("Médico cadastrado com id " ++ (show (BD.idAtual dados)))
         menuUBS idUBS (dados {BD.medicos = [med] ++ (BD.medicos dados), BD.logins = (BD.logins dados) ++ [(BD.idAtual dados, senha, 2)], BD.idAtual = 1 + (BD.idAtual dados)})
 
     else if toUpper (head op) == 'V' then do
