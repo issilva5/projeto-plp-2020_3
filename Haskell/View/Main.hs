@@ -188,8 +188,8 @@ menuPaciente idPac dados = do
 
     else if toUpper (head op) == 'E' then do
 
-        leituraEmergencia dados idPac
-        menuPaciente idPac dados 
+        leituraEmergencia
+        menuPaciente idPac dados
 
     else if toUpper (head op) == 'S' then do
 
@@ -581,7 +581,7 @@ leituraRequisitaMedicamento dados idPaciente = do
 
 leituraConsultaLaudo :: BD.BD -> Int -> IO()
 leituraConsultaLaudo dados idPaciente = do
-    imprime (PC.consultarLaudos idPaciente (BD.laudos dados))
+    imprime (PC.consultarLaudos idPaciente (BD.laudos dados) (BD.exames dados))
     menuPaciente idPaciente dados
 
 leituraConsultaLaudoId :: BD.BD -> Int -> IO()
@@ -590,7 +590,7 @@ leituraConsultaLaudoId dados idPaciente = do
 
     if (UBSC.validaIDLaudo (read idLaudo) (BD.laudos dados)) then do
 
-        print (PC.consultarLaudo idPaciente (read idLaudo) (BD.laudos dados))
+        print (PC.consultarLaudo (read idLaudo) (BD.laudos dados))
         menuPaciente idPaciente dados
 
     else do
@@ -609,7 +609,7 @@ leituraConsultaReceitaMedicamentoId dados idPaciente = do
 
     if (UBSC.validaIDReceita (read idReceita) (BD.receitas dados)) then do
 
-        print (PC.consultarReceitaMed idPaciente (read idReceita) (BD.receitas dados))
+        print (fromJust (PC.consultarReceitaMed (read idReceita) (BD.receitas dados)))
         menuPaciente idPaciente dados
 
     else do
@@ -628,7 +628,7 @@ leituraConsultaReceitaExameId dados idPaciente = do
 
     if (UBSC.validaIDExame (read exame) (BD.exames dados)) then do
 
-        print (PC.consultarReceitaEx idPaciente (read exame) (BD.exames dados))
+        print (fromJust (PC.consultarReceitaEx (read exame) (BD.exames dados)))
         menuPaciente idPaciente dados
 
     else do
@@ -636,7 +636,7 @@ leituraConsultaReceitaExameId dados idPaciente = do
         putStrLn "ID informado é inválido!"
         menuPaciente idPaciente dados
 
-leituraEmergencia :: BD.BD -> Int -> IO ()
-leituraEmergencia dados idPac = do
+leituraEmergencia :: IO ()
+leituraEmergencia = do
     endereco <- prompt "Endereço > "
-    print (PC.emergencia idPac endereco)
+    print (PC.emergencia endereco)
