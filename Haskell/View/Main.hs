@@ -7,6 +7,8 @@ import Haskell.View.Utils
 
 import Data.Dates
 import Data.Char ( toUpper )
+import Data.Maybe (fromJust)
+import Data.Dates
 
 main :: IO()
 main = do
@@ -200,8 +202,8 @@ menuPaciente idPac dados = do
 
     else if toUpper (head op) == 'E' then do
 
-        leituraEmergencia dados idPac
-        menuPaciente idPac dados 
+        leituraEmergencia
+        menuPaciente idPac dados
 
     else if toUpper (head op) == 'S' then do
 
@@ -384,7 +386,8 @@ menuMedico idMed dados = do
     if toUpper (head op) == 'I' then do
         horario <- leHorariosMedico
         tempoConsulta <- prompt "Duração da consulta > "
-        let med = MC.informarHorario idMed (fst horario) (snd horario) (read tempoConsulta) (BD.medicos dados)
+        hj <- getCurrentDateTime
+        let med = MC.informarHorario idMed hj (fst horario) (snd horario) (read tempoConsulta) (BD.medicos dados)
         menuMedico idMed dados {BD.medicos = med}
     
     else if toUpper (head op) == 'A' then do
@@ -394,10 +397,10 @@ menuMedico idMed dados = do
         if toUpper (head acessarOp) == 'P' then do
 
             idPac <- prompt "ID do Paciente > "
-
+            
             if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) then do
 
-                print (MC.acessarDadosPaciente (BD.pacientes dados) (read idPac))
+                print (fromJust (MC.acessarDadosPaciente (BD.pacientes dados) (read idPac)))
                 menuMedico idMed dados
             
             else do
@@ -428,7 +431,7 @@ menuMedico idMed dados = do
 
                     if (UBSC.validaIDExame (read idExame) (BD.exames dados)) then do
 
-                        print (MC.acessarExame (read idExame) (BD.exames dados))
+                        print (fromJust (MC.acessarExame (read idExame) (BD.exames dados)))
                         menuMedico idMed dados
                     
                     else do
@@ -566,9 +569,10 @@ leituraRequisitaConsulta dados idPaciente = do
 
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
-        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) (BD.medicos dados)
+        hj <- getCurrentDateTime
+        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
         print ("Consulta marcada com id " ++ (show (BD.nextID dados)))
-        menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fst medicoHorario)], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fromJust (fst medicoHorario))], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 
@@ -582,9 +586,10 @@ leituraRequisitaExame dados idPaciente = do
 
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
-        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) (BD.medicos dados)
+        hj <- getCurrentDateTime
+        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
         print ("Exame marcado com id " ++ (show (BD.nextID dados)))
-        menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fst medicoHorario)], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fromJust (fst medicoHorario))], BD.idAtual = drop 1 (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 
@@ -606,7 +611,7 @@ leituraRequisitaMedicamento dados idPaciente = do
 
 leituraConsultaLaudo :: BD.BD -> Int -> IO()
 leituraConsultaLaudo dados idPaciente = do
-    imprime (PC.consultarLaudos idPaciente (BD.laudos dados))
+    imprime (PC.consultarLaudos idPaciente (BD.laudos dados) (BD.exames dados))
     menuPaciente idPaciente dados
 
 leituraConsultaLaudoId :: BD.BD -> Int -> IO()
@@ -615,7 +620,7 @@ leituraConsultaLaudoId dados idPaciente = do
 
     if (UBSC.validaIDLaudo (read idLaudo) (BD.laudos dados)) then do
 
-        print (PC.consultarLaudo idPaciente (read idLaudo) (BD.laudos dados))
+        print (PC.consultarLaudo (read idLaudo) (BD.laudos dados))
         menuPaciente idPaciente dados
 
     else do
@@ -634,7 +639,7 @@ leituraConsultaReceitaMedicamentoId dados idPaciente = do
 
     if (UBSC.validaIDReceita (read idReceita) (BD.receitas dados)) then do
 
-        print (PC.consultarReceitaMed idPaciente (read idReceita) (BD.receitas dados))
+        print (fromJust (PC.consultarReceitaMed (read idReceita) (BD.receitas dados)))
         menuPaciente idPaciente dados
 
     else do
@@ -653,7 +658,7 @@ leituraConsultaReceitaExameId dados idPaciente = do
 
     if (UBSC.validaIDExame (read exame) (BD.exames dados)) then do
 
-        print (PC.consultarReceitaEx idPaciente (read exame) (BD.exames dados))
+        print (fromJust (PC.consultarReceitaEx (read exame) (BD.exames dados)))
         menuPaciente idPaciente dados
 
     else do
@@ -661,7 +666,7 @@ leituraConsultaReceitaExameId dados idPaciente = do
         putStrLn "ID informado é inválido!"
         menuPaciente idPaciente dados
 
-leituraEmergencia :: BD.BD -> Int -> IO ()
-leituraEmergencia dados idPac = do
+leituraEmergencia :: IO ()
+leituraEmergencia = do
     endereco <- prompt "Endereço > "
-    print (PC.emergencia idPac endereco)
+    print (PC.emergencia endereco)

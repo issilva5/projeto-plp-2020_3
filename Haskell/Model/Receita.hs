@@ -6,7 +6,7 @@ data Receita = Receita {
     idPaciente :: Int,
     idMedico :: Int,
     idUBS :: Int,
-    remedios :: [(Int, String)]
+    remedios :: [(Int, String, Int)]
 } deriving (Show)
 
 instance Read Receita where 
@@ -16,5 +16,5 @@ instance Read Receita where
     let idPaciente = read (l !! 1) :: Int
     let idMedico = read (l !! 2) :: Int
     let idUBS = read (l !! 3) :: Int
-    let remedios = read (l !! 4) :: [(Int, String)]
+    let remedios = read (l !! 4) :: [(Int, String, Int)]
     [(Receita id idPaciente idMedico idUBS remedios, "")]
