@@ -9,9 +9,11 @@ import Data.Char ( toUpper )
 import Data.Maybe (fromJust, isNothing)
 import Data.Dates
 import qualified Haskell.Persistence.Persistence as Persistence
+import System.IO (utf8, hSetEncoding, stdout)
 
 main :: IO ()
 main = do
+    hSetEncoding stdout utf8
     dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
     putStr (show dados)
     inicial dados
@@ -176,16 +178,16 @@ menuPaciente idPac dados = do
                     clear
                     menuPaciente idPac dados
 
-            else if toUpper (head op2) == 'E' then do
+            else if toUpper (head op3) == 'E' then do
 
                 putStrLn "(T)odos"
                 putStrLn "(E)specífico"
 
-                op3 <- prompt "Opção > "
+                op4 <- prompt "Opção > "
 
-                if toUpper (head op3) == 'T' then do
+                if toUpper (head op4) == 'T' then do
                     leituraConsultaReceitaExame dados idPac
-                else if toUpper (head op3) == 'E' then do
+                else if toUpper (head op4) == 'E' then do
                     leituraConsultaReceitaExameId dados idPac
                 else do
                     clear
@@ -308,6 +310,7 @@ menuUBS idUBS dados = do
             dadosMedic <- leMedicamento
             let medic = UBSC.adicionaMedicamento idUBS ([show (BD.idAtual dados)] ++ dadosMedic)
             print ("Medicamento criado com ID " ++ (show (BD.idAtual dados)))
+            print medic
             menuUBS idUBS (dados {BD.medicamentos = [medic] ++ (BD.medicamentos dados), BD.idAtual = 1 + (BD.idAtual dados)})
 
         else if toUpper (head op2) == 'A' then do

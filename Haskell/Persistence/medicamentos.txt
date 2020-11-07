@@ -1,1 +1,4 @@
-12;5;Remedio;5;Bula
+5;31;paracetamol;147;febre e dor
+5;30;rivotril;100;morte
+5;29;rivotril;100;morte
+5;12;Remedio;2;Bula
