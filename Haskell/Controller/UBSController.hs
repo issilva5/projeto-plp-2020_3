@@ -243,14 +243,6 @@ getStatusMedicos hj consultas (x:xs) | inicioPlantao == (Time (-1) (-1) 0) = [(x
                                       inicioPlantao = startD weekd (Medico.horarios x)
                                       fimPlantao = endD weekd (Medico.horarios x)
 
--- 0 1 2 3 4 5 6
--- h h       h h
---     x x x
-
--- (hj > ini) && (hj < fim)
--- ~(hj > ini) || ~(hj < fim)
--- (hj <= ini) || (hj >= fim)
-
 statusMedico :: Medico.Medico -> [Consulta.Consulta] -> DateTime -> Int
 statusMedico _ [] _ = 0 -- medico está de plantão e sem consulta
 statusMedico m (x:xs) hj | s <= hj && e >= hj = 1 -- medico está em consulta
