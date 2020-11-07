@@ -316,7 +316,6 @@ menuUBS idUBS dados = do
             dadosMedic <- leMedicamento
             let medic = UBSC.adicionaMedicamento idUBS ([show (BD.idAtual dados)] ++ dadosMedic)
             print ("Medicamento criado com ID " ++ (show (BD.idAtual dados)))
-            print medic
             menuUBS idUBS (dados {BD.medicamentos = [medic] ++ (BD.medicamentos dados), BD.idAtual = 1 + (BD.idAtual dados)})
 
         else if toUpper (head op2) == 'A' then do

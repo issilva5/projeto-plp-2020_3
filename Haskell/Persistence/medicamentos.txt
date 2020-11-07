@@ -1,1 +1,2 @@
-2;6;cloroquina;14;talkey
+2;11;paracetamol;20;febre
+2;6;cloroquina;0;talkey

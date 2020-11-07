@@ -129,7 +129,7 @@ Adiciona uma quantidade no estoque de um medicamento
 adicionaMedicamentoEstoque :: Int -> Int -> Int -> [Medicamento.Medicamento] -> [Medicamento.Medicamento]
 adicionaMedicamentoEstoque _ _ _ [] = []
 adicionaMedicamentoEstoque idUBS idMed qtd (x:xs) | (idUBS == Medicamento.idUBS x) && (idMed == Medicamento.id x) = [x {Medicamento.qtdEstoque = (Medicamento.qtdEstoque x) + qtd}] ++ (adicionaMedicamentoEstoque idUBS idMed qtd xs)
-                                                  | otherwise = adicionaMedicamentoEstoque idUBS idMed qtd xs
+                                                  | otherwise = [x] ++ adicionaMedicamentoEstoque idUBS idMed qtd xs
 
 {-
 
@@ -143,8 +143,8 @@ Remove uma quantidade no estoque de um medicamento
 -}
 removerMedicamento :: Int -> Int -> Int -> [Medicamento.Medicamento] -> [Medicamento.Medicamento]
 removerMedicamento _ _ _ [] = []
-removerMedicamento idUBS idMed qtd (x:xs) | (idUBS == Medicamento.idUBS x) && (idMed == Medicamento.id x) = [x {Medicamento.qtdEstoque = (Medicamento.qtdEstoque x) - qtd}] ++ (adicionaMedicamentoEstoque idUBS idMed qtd xs)
-                                                  | otherwise = removerMedicamento idUBS idMed qtd xs
+removerMedicamento idUBS idMed qtd (x:xs) | (idUBS == Medicamento.idUBS x) && (idMed == Medicamento.id x) = [x {Medicamento.qtdEstoque = max 0 ((Medicamento.qtdEstoque x) - qtd)}] ++ (adicionaMedicamentoEstoque idUBS idMed qtd xs)
+                                          | otherwise = [x] ++ removerMedicamento idUBS idMed qtd xs
 
 {-
 
