@@ -464,7 +464,12 @@ menuMedico idMed dados = do
             else do
                 clear
                 menuMedico idMed dados
-
+        
+        else if toUpper (head acessarOp) == 'M' then do
+            
+            imprime (BD.medicamentos dados)
+            menuMedico idMed dados
+        
         else do
             clear
             menuMedico idMed dados
@@ -477,7 +482,7 @@ menuMedico idMed dados = do
             idPac <- prompt "ID do Paciente > "
             informacoes <- lerReceita []
 
-            if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) then do
+            if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) && (UBSC.validaReceita informacoes (BD.medicamentos dados)) then do
 
                 menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.idAtual dados) idMed (read idPac) idUBS informacoes)], BD.idAtual = 1 + (BD.idAtual dados)}
 

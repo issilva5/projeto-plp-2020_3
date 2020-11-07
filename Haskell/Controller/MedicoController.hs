@@ -21,6 +21,7 @@ import qualified Haskell.Model.Receita as Receita
 import qualified Haskell.Model.Medico as Medico
 import qualified Haskell.Model.Exame as Exame
 import qualified Haskell.Model.Laudo as Laudo
+import qualified Haskell.Model.Medicamento as Medicamento
 import Data.Dates
 import Data.List ( intercalate )
 import Haskell.Model.DateCycle (newDC, (===), getNextDate, isValid)

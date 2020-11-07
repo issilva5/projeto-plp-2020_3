@@ -167,6 +167,7 @@ medicoAcessarDados :: String
 medicoAcessarDados =  "(P)acientes\n"
                     ++ "(E)xames\n"
                     ++ "(A)gendamentos\n"
+                    ++ "(M)edicamentos\n"
 
 medicoEmitir :: String
 medicoEmitir = "(R)eceita\n"
