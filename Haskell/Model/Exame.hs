@@ -11,7 +11,7 @@ data Exame = Exame {
     tipo :: String,
     dia :: DateTime,
     resultado :: String
-} deriving (Show)
+}
 
 toString :: Exame -> String
 toString e =
@@ -21,6 +21,16 @@ toString e =
     show (idUBS e) ++ ";" ++
          (tipo e) ++ ";" ++
     dateTimeToString (dia e)
+
+instance Show Exame where
+    show (Exame id idP idM idU t d r) = "----------------------------\n" ++
+                                        "EXAME " ++ (show id) ++ "\n" ++
+                                        "Paciente: " ++ (show idP) ++ "\n" ++
+                                        "Médico responsável: " ++ (show idM) ++ "\n" ++
+                                        "UBS: " ++ (show idU) ++ "\n" ++
+                                        "Tipo do exame: " ++ t ++ "\n" ++
+                                        "Data: " ++ (dateTimeToString d) ++ "\n" ++
+                                        "Resultado: " ++ r
 
 instance Read Exame where
     readsPrec _ str = do

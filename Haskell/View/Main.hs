@@ -154,14 +154,14 @@ menuPaciente idPac dados = do
                 clear
                 menuPaciente idPac dados
 
-        else if toUpper (head op) == 'R' then do
+        else if toUpper (head op2) == 'R' then do
 
             putStrLn "(M)edicamento"
             putStrLn "(E)xame"
 
-            op2 <- prompt "Opção > "
+            op3 <- prompt "Opção > "
 
-            if toUpper (head op2) == 'M' then do
+            if toUpper (head op3) == 'M' then do
 
                 putStrLn "(T)odos"
                 putStrLn "(E)specífico"

@@ -10,7 +10,7 @@ data Medico = Medico {
     idUbs :: Int,
     especialidade :: String,
     horarios :: DateCycle
-} deriving (Show)
+}
 
 toString :: Medico -> String
 toString m = show (idUbs m) ++ ";" ++
@@ -19,6 +19,14 @@ toString m = show (idUbs m) ++ ";" ++
              crm m ++ ";" ++
              especialidade m ++ ";" ++
              show (horarios m)
+
+instance Show Medico where
+    show (Medico id n c idU e _) =  "----------------------------\n" ++
+                                    "MEDICO" ++ (show id) ++ "\n" ++
+                                    "Nome: " ++ n ++ "\n" ++
+                                    "CRM: " ++ c ++ "\n" ++
+                                    "UBS: " ++ (show idU) ++ "\n" ++
+                                    "Especialidade: " ++ e ++ "\n"
 
 instance Read Medico where
     readsPrec _ str = do

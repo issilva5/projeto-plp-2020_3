@@ -1,5 +1,5 @@
 module Haskell.Model.Paciente where
-import Haskell.View.Utils (split)
+import Haskell.View.Utils (split, formataBool)
 import Prelude hiding (id)
 import Data.Char (toUpper)
 
@@ -15,7 +15,7 @@ data Paciente = Paciente {
     cardiopata :: Bool,
     diabetico :: Bool,
     hipertenso :: Bool
-} deriving (Show)
+}
 
 toString :: Paciente -> String
 toString p = show (id p) ++ ";" ++
@@ -29,6 +29,17 @@ toString p = show (id p) ++ ";" ++
              show (cardiopata p) ++ ";" ++
              show (diabetico p) ++ ";" ++
              show (hipertenso p) ++ ";"
+
+instance Show Paciente where
+    show (Paciente id n cpf dt p a s e c d h) = "----------------------------\n" ++
+                                                "PACIENTE " ++ (show id) ++ "\n" ++
+                                                "Nome: " ++ n ++ "\n" ++
+                                                "Endereco: " ++ e ++ "\n" ++
+                                                "CPF: " ++ cpf ++ "\n" ++
+                                                "Data de nascimento: " ++ dt ++ "\n" ++
+                                                "Peso/Altura: " ++ (show p) ++ "/" ++ (show a) ++ "\n" ++
+                                                "Tipo sanguíneo: " ++ s ++ "\n" ++
+                                                "C/D/H: " ++ formataBool c ++ "/" ++ formataBool d ++ "/" ++ formataBool h
 
 instance Read Paciente where
     readsPrec _ str = do

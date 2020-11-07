@@ -8,7 +8,7 @@ data Receita = Receita {
     idMedico :: Int,
     idUBS :: Int,
     remedios :: [(Int, String, Int)]
-} deriving (Show)
+}
 
 toString :: Receita -> String
 toString r =
@@ -17,6 +17,20 @@ toString r =
     show (idMedico r) ++ ";" ++
     show (idUBS r) ++ ";" ++
     show (remedios r)
+
+instance Show Receita where
+    show (Receita id idP idM idU rem) = "----------------------------\n" ++
+                                        "RECEITUÁRIO " ++ (show id) ++ "\n" ++
+                                        "Paciente: " ++ (show idP) ++ "\n" ++
+                                        "Médico responsável: " ++ (show idM) ++ "\n" ++
+                                        "UBS: " ++ (show idU) ++ "\n" ++
+                                        "Remédios" ++ "\n" ++ formataRemedios rem
+
+formataRemedios :: [(Int, String, Int)] -> String
+formataRemedios [] = ""
+formataRemedios ((id, inst, qtd):xs) = "ID Remédio: " ++ (show id) ++ " - " ++ "Qtd: " ++ (show qtd) ++ "\n" ++
+                                       "----- Instruções -------" ++ "\n" ++ inst ++ "\n\n" ++
+                                       formataRemedios xs
 
 instance Read Receita where
     readsPrec _ str = do

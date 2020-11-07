@@ -8,7 +8,7 @@ data Medicamento = Medicamento {
     nome :: String,
     qtdEstoque :: Int,
     bula :: String
-} deriving (Show)
+}
 
 toString :: Medicamento -> String
 toString m =
@@ -17,6 +17,14 @@ toString m =
          (nome m) ++ ";" ++
     show (qtdEstoque m) ++ ";" ++
          (bula m)
+
+instance Show Medicamento where
+    show (Medicamento id idU n qtd b) = "----------------------------\n" ++
+                                        "MEDICAMENTO " ++ (show id) ++ "\n" ++
+                                        "Nome: " ++ n ++ "\n" ++
+                                        "UBS: " ++ (show idU) ++ "\n" ++
+                                        "Quantidade em estoque: " ++ (show qtd) ++ "\n" ++
+                                        "Bula: " ++ b
 
 instance Read Medicamento where
     readsPrec _ str = do

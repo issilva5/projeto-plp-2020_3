@@ -6,13 +6,19 @@ data UBS = UBS {
     id :: Int,
     nome :: String,
     endereco :: String
-} deriving (Show)
+}
 
 toString :: UBS -> String
 toString u =
     show (id u) ++ ";" ++
          (nome u) ++ ";" ++
          (endereco u)
+
+instance Show UBS where
+    show (UBS id n e) = "----------------------------\n" ++
+                        "UBS " ++ (show id) ++ "\n" ++
+                        "Nome: " ++ n ++ "\n" ++
+                        "Endereço: " ++ e
 
 instance Read UBS where
     readsPrec _ str = do

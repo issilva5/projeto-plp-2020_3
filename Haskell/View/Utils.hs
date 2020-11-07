@@ -148,7 +148,7 @@ formataLista (x:xs) = (show x) ++ "\n" ++ (formataLista xs)
 
 imprime :: Show t => [t] -> IO ()
 imprime l = do
-    print (formataLista l)
+    putStrLn (formataLista l)
     return ()
 
 medicoMenu :: String
@@ -185,3 +185,7 @@ dateTimeToString dt =
     show (year dt) ++ " " ++
     show (hour dt) ++ ":" ++
     show (minute dt)
+
+formataBool :: Bool -> String
+formataBool True = "S"
+formataBool False = "N"

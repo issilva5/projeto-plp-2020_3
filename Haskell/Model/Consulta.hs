@@ -10,7 +10,7 @@ data Consulta = Consulta {
     idMedico :: Int,
     idUBS :: Int,
     dia :: DateTime
-} deriving (Show)
+}
 
 toString :: Consulta -> String
 toString c =
@@ -19,6 +19,14 @@ toString c =
     show (idMedico c) ++ ";" ++
     show (idUBS c) ++ ";" ++
     dateTimeToString (dia c)
+
+instance Show Consulta where
+    show (Consulta id idP idM idU date) = "----------------------------\n" ++
+                                          "CONSULTA " ++ (show id) ++ "\n" ++
+                                          "Paciente: " ++ (show idP) ++ "\n" ++
+                                          "Médico responsável: " ++ (show idM) ++ "\n" ++
+                                          "UBS: " ++ (show idU) ++ "\n" ++
+                                          "Data: " ++ (dateTimeToString date)
 
 instance Read Consulta where
     readsPrec _ str = do

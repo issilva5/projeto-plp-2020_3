@@ -7,7 +7,7 @@ data Laudo = Laudo {
      idMed :: Int,
      idExame :: Int,
      texto :: String
-} deriving (Show)
+}
 
 toString :: Laudo -> String
 toString l =
@@ -15,6 +15,13 @@ toString l =
      show (idMed l) ++ ";" ++
      show (idExame l) ++ ";" ++
      texto l
+
+instance Show Laudo where
+    show (Laudo id idM idE t) = "----------------------------\n" ++
+                                "LAUDO " ++ (show id) ++ "\n" ++
+                                "Médico responsável: " ++ (show idM) ++ "\n" ++
+                                "Exame correspondente: " ++ (show idE) ++ "\n" ++
+                                "Resultado: " ++ t
 
 instance Read Laudo where
      readsPrec _ str = do
