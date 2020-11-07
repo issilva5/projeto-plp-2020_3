@@ -10,12 +10,14 @@ import Data.Char ( toUpper )
 import Data.Maybe (fromJust, isNothing)
 import Data.Dates
 import qualified Haskell.Persistence.Persistence as Persistence
+import System.IO (utf8, hSetEncoding, stdout)
 import Data.List (sort)
 
 main :: IO ()
 main = do
+    hSetEncoding stdout utf8
     dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
-    putStr (show dados)
+    writeFile "/tmp/foo" (show dados)
     inicial dados
 
 inicial :: BD.BD -> IO()
@@ -138,6 +140,7 @@ menuPaciente idPac dados = do
     else if toUpper (head op) == 'C' then do
         putStrLn "(L)audo"
         putStrLn "(R)eceita"
+        putStrLn "(C)onsultas"
 
         op2 <- prompt "Opção > "
         
@@ -178,16 +181,16 @@ menuPaciente idPac dados = do
                     clear
                     menuPaciente idPac dados
 
-            else if toUpper (head op2) == 'E' then do
+            else if toUpper (head op3) == 'E' then do
 
                 putStrLn "(T)odos"
                 putStrLn "(E)specífico"
 
-                op3 <- prompt "Opção > "
+                op4 <- prompt "Opção > "
 
-                if toUpper (head op3) == 'T' then do
+                if toUpper (head op4) == 'T' then do
                     leituraConsultaReceitaExame dados idPac
-                else if toUpper (head op3) == 'E' then do
+                else if toUpper (head op4) == 'E' then do
                     leituraConsultaReceitaExameId dados idPac
                 else do
                     clear
@@ -196,6 +199,10 @@ menuPaciente idPac dados = do
             else do
                 clear
                 menuPaciente idPac dados
+        else if toUpper (head op2) == 'C' then do
+
+            imprime (PC.consultarConsultas idPac (BD.consultas dados))
+            menuPaciente idPac dados
 
         else do
             clear
@@ -310,6 +317,7 @@ menuUBS idUBS dados = do
             dadosMedic <- leMedicamento
             let medic = UBSC.adicionaMedicamento idUBS ([show (BD.idAtual dados)] ++ dadosMedic)
             print ("Medicamento criado com ID " ++ (show (BD.idAtual dados)))
+            print medic
             menuUBS idUBS (dados {BD.medicamentos = [medic] ++ (BD.medicamentos dados), BD.idAtual = 1 + (BD.idAtual dados)})
 
         else if toUpper (head op2) == 'A' then do
@@ -479,7 +487,12 @@ menuMedico idMed dados = do
             else do
                 clear
                 menuMedico idMed dados
-
+        
+        else if toUpper (head acessarOp) == 'M' then do
+            
+            imprime (BD.medicamentos dados)
+            menuMedico idMed dados
+        
         else do
             clear
             menuMedico idMed dados
@@ -490,11 +503,11 @@ menuMedico idMed dados = do
 
         if toUpper (head emitirOp) == 'R' then do
             idPac <- prompt "ID do Paciente > "
-            informacoes <- prompt "Informações > "
+            informacoes <- lerReceita []
 
-            if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) then do
-                -- TODO
-                menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.idAtual dados) idMed (read idPac) idUBS (read informacoes))], BD.idAtual = 1 + (BD.idAtual dados)}
+            if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) && (UBSC.validaReceita informacoes (BD.medicamentos dados)) then do
+
+                menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.idAtual dados) idMed (read idPac) idUBS informacoes)], BD.idAtual = 1 + (BD.idAtual dados)}
 
             else do
 
@@ -628,7 +641,7 @@ leituraConsultaLaudoId dados idPaciente = do
 
     if (UBSC.validaIDLaudo (read idLaudo) (BD.laudos dados)) then do
 
-        print (PC.consultarLaudo (read idLaudo) (BD.laudos dados))
+        print (fromJust (PC.consultarLaudo (read idLaudo) (BD.laudos dados)))
         menuPaciente idPaciente dados
 
     else do
@@ -677,4 +690,4 @@ leituraConsultaReceitaExameId dados idPaciente = do
 leituraEmergencia :: IO ()
 leituraEmergencia = do
     endereco <- prompt "Endereço > "
-    print (PC.emergencia endereco)
+    putStrLn (PC.emergencia endereco)

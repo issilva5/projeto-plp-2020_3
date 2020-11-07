@@ -12,8 +12,8 @@ data Medicamento = Medicamento {
 
 toString :: Medicamento -> String
 toString m =
-    show (id m) ++ ";" ++
     show (idUBS m) ++ ";" ++
+    show (id m) ++ ";" ++
          (nome m) ++ ";" ++
     show (qtdEstoque m) ++ ";" ++
          (bula m)

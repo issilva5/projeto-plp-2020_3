@@ -1,10 +1,7 @@
 module Haskell.Persistence.Persistence where
 
 import qualified Haskell.Model.BD as BD
-import qualified Haskell.Model.Medico as Medico
 import Haskell.View.Utils ( split )
-import Data.Dates
-import Haskell.Model.DateCycle
 
 carregaPacientes :: BD.BD -> IO BD.BD
 carregaPacientes dados = do
@@ -61,7 +58,6 @@ leConteudo fileName = readFile ("Haskell/Persistence/" ++ fileName)
 
 encerrar :: BD.BD -> IO()
 encerrar dados = do
-    putStrLn (show dados)
 
     let path = "Haskell/Persistence/"
     let listaPacientes = BD.pacientes dados
@@ -84,9 +80,5 @@ encerrar dados = do
     writeFile (path ++ "laudos.txt") (BD.laudosToString listaLaudos "")
     writeFile (path ++ "logins.txt") (BD.loginsToString listaLogins "")
     writeFile (path ++ "idAtual.txt") (show $ BD.idAtual dados)
-
-write :: String -> String -> IO()
-write content fileName = do
-    writeFile ("Haskell/Persistence/" ++ fileName) content
 
 

@@ -21,6 +21,7 @@ import qualified Haskell.Model.Receita as Receita
 import qualified Haskell.Model.Medico as Medico
 import qualified Haskell.Model.Exame as Exame
 import qualified Haskell.Model.Laudo as Laudo
+import qualified Haskell.Model.Medicamento as Medicamento
 import Data.Dates
 import Data.List ( intercalate )
 import Haskell.Model.DateCycle (newDC, (===), getNextDate, isValid)
@@ -91,8 +92,8 @@ Emite uma receita
 @return receita criada
 
 -}
-emitirReceita :: Int -> Int -> Int -> Int -> [String] -> Receita.Receita
-emitirReceita id idMed idPac idUBS informacoes = read (intercalate ";" ([show id, show idPac, show idMed, show idUBS] ++ informacoes))
+emitirReceita :: Int -> Int -> Int -> Int -> [(Int, String, Int)] -> Receita.Receita
+emitirReceita id idMed idPac idUBS informacoes = read (intercalate ";" ([show id, show idPac, show idMed, show idUBS] ++ [show informacoes]))
 
 {-
 

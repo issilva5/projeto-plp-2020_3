@@ -15,6 +15,7 @@ module Haskell.Controller.UBSController (
   validaIDUBS,
   validaIDReceita,
   validaIDLaudo,
+  validaReceita,
   getConsultasDoDia,
   getStatusMedicos
 ) where
@@ -311,3 +312,7 @@ validaIDLaudo :: Int -> [Laudo.Laudo] -> Bool
 validaIDLaudo _ [] = False
 validaIDLaudo idLaudo (x:xs) | idLaudo == (Laudo.id x) = True
                              | otherwise = validaIDLaudo idLaudo xs
+
+validaReceita :: [(Int, String, Int)] -> [Medicamento.Medicamento] -> Bool
+validaReceita [] _ = True
+validaReceita ((id,_,_):xs) m = (validaIDMedicamento id m) && (validaReceita xs m)

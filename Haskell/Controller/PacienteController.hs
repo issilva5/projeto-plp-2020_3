@@ -11,7 +11,8 @@ module Haskell.Controller.PacienteController (
   consultarReceitasEx,
   consultarReceitaEx,
   emergencia,
-  validaIDPaciente
+  validaIDPaciente,
+  consultarConsultas
 ) where
 
 import Data.List ( intercalate )
@@ -217,3 +218,7 @@ validaIDPaciente :: Int -> [Paciente.Paciente] -> Bool
 validaIDPaciente _ [] = False
 validaIDPaciente idPac (x:xs) | idPac == (Paciente.id x) = True
                               | otherwise = validaIDPaciente idPac xs
+
+consultarConsultas :: Int -> [Consulta.Consulta] -> [Consulta.Consulta]
+consultarConsultas _ [] = []
+consultarConsultas idP (x:xs) | idP == (Consulta.idPaciente x) = [x] ++ (consultarConsultas idP xs)

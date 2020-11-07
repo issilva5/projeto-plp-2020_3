@@ -22,7 +22,7 @@ toString m = show (idUbs m) ++ ";" ++
 
 instance Show Medico where
     show (Medico id n c idU e _) =  "----------------------------\n" ++
-                                    "MEDICO" ++ (show id) ++ "\n" ++
+                                    "MEDICO " ++ (show id) ++ "\n" ++
                                     "Nome: " ++ n ++ "\n" ++
                                     "CRM: " ++ c ++ "\n" ++
                                     "UBS: " ++ (show idU) ++ "\n" ++
