@@ -234,7 +234,6 @@ Lista os médicos disponíveis
 
 -}
 getStatusMedicos :: DateTime -> [Consulta.Consulta] -> [Medico.Medico] -> [(Medico.Medico, Int)]
-getStatusMedicos _ [] _ = []
 getStatusMedicos _ _ [] = []
 getStatusMedicos hj consultas (x:xs) | (dateTimeToTime hj) < pi || (dateTimeToTime hj) > pe = [(x, -1)] ++ (getStatusMedicos hj consultas xs) -- medico esta fora do plantão
                                      | otherwise = [(x, statusMedico x consultas hj)] ++ (getStatusMedicos hj consultas xs)
