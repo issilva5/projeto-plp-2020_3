@@ -14,7 +14,9 @@ module Haskell.Controller.UBSController (
   validaIDExame,
   validaIDUBS,
   validaIDReceita,
-  validaIDLaudo
+  validaIDLaudo,
+  getConsultasDoDia,
+  getStatusMedicos
 ) where
 
 import Data.List ( intercalate )
@@ -47,7 +49,7 @@ Cria um médico
 
 -}
 cadastraMedico :: Int -> Int -> [String] -> Medico.Medico
-cadastraMedico idUBS idMed infos = read (intercalate ";" ([show (idUBS), show (idMed)] ++ infos))
+cadastraMedico idUBS idMed informs = read (intercalate ";" ([show (idUBS), show (idMed)] ++ informs)) :: Medico.Medico
 
 {-
 
@@ -235,6 +237,76 @@ Verifica se existe Laudo com o id dado
 @return True se existir, False c.c.
 
 -}
+validaIDLaudo :: Int -> [Laudo] -> Bool
+validaIDLaudo idReceita laudos = True
+
+{-
+
+Lista as consultas do dia atual
+@param hoje: data do dia atual
+@param consultas: lista de Consultas
+@return consultas do dia.
+
+-}
+getConsultasDoDia :: DateTime -> [Consulta.Consulta] -> [String]
+getConsultasDoDia _ [] = []
+getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [Consulta.formataConsulta x] ++ (getConsultasDoDia hoje xs)
+                              | otherwise = getConsultasDoDia hoje xs
+
+{-
+
+Lista os médicos disponíveis 
+@param consultas: lista de Consultas
+@param medicos: lista de Médicos
+@return -1 se o médico não está de plantão, 0 se o médico está de plantão sem consulta,
+        1 se o médico está em consulta
+
+-}
+getStatusMedicos :: DateTime -> [Consulta.Consulta] -> [Medico.Medico] -> [(Medico.Medico, Int)]
+getStatusMedicos _ [] _ = []
+getStatusMedicos _ _ [] = []
+getStatusMedicos hj consultas (x:xs) | (dateTimeToTime hj) < pi || (dateTimeToTime hj) > pe = [(x, -1)] ++ (getStatusMedicos hj consultas xs) -- medico esta fora do plantão
+                                     | otherwise = [(x, statusMedico x consultas hj)] ++ (getStatusMedicos hj consultas xs)
+                                     where
+                                       weekday = (weekdayNumber (dateWeekDay hj)) - 1 -- dia da semana
+                                       pi = startD weekday (Medico.horarios x) -- inicio do plantao
+                                       pe = endD weekday (Medico.horarios x) -- fim do plantao
+
+statusMedico :: Medico.Medico -> [Consulta.Consulta] -> DateTime -> Int
+statusMedico _ [] _ = 0 -- medico está de plantão e sem consulta
+statusMedico m (x:xs) s | (Consulta.dia x) >= s && (Consulta.dia x) <= e = 1 -- medico está em consulta
+                        | otherwise = statusMedico m xs s
+                        where
+                          e = correctDate (addTime s (Time 0 (timeSc (Medico.horarios m)) 0)) -- termino da consulta
+
+{-
+
+Formata os medicamentos para a dashboard
+@param medicamentos: Lista com os 5 medicamentos com pouco estoque
+@return retorna todos os medicamentos no formato Nome - Estoque 
+
+-}
+formataMedicamentosDashboard :: [Medicamento] -> String
+formataMedicamentosDashboard [] = ""
+formataMedicamentosDashboard (x:xs) = (Medicamento.nome x) ++ " - " ++ (show (Medicamento.qtdEstoque x)) ++ "\n" ++ (formataMedicamentosDashboard xs)
+
+{-
+
+Formata os médicos para a dashboard
+@param medicos: Lista com os médicos a serem mostrados na dashboard
+@return retorna todos os médicos no formato ID - Nome - Status
+
+-}
+formataMedicosDashboard :: [(Medico.Medico, Int)] -> String
+formataMedicosDashboard [] = ""
+formataMedicosDashboard ((a:b):xs) = (show (Medico.id a)) ++ " " ++ (Medico.nome a) ++ " - " ++ (formataStatus b) ++ "\n" ++ (formataMedicosDashboard xs)
+
+formataStatus :: Int -> String
+formataStatus n | n == -1 = "Não está em plantão"
+                | n == 0 = "Está de plantão e sem consulta"
+                | n == 1 = "Está de plantão e em consulta"
+                | otherwise = ""
+
 validaIDLaudo :: Int -> [Laudo.Laudo] -> Bool
 validaIDLaudo _ [] = False
 validaIDLaudo idLaudo (x:xs) | idLaudo == (Laudo.id x) = True

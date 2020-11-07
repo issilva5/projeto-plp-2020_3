@@ -8,6 +8,10 @@ module Haskell.Model.DateCycle (
   seeNextDate,
   nextDay,
   newDC,
+  correctDate,
+  dateTimeToTime,
+  startD,
+  endD,
   (===)
 
 ) where
