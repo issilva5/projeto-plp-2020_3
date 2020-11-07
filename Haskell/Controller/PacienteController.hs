@@ -47,15 +47,10 @@ Buscar as unidades que tem determinada especialidade.
 @return lista das ubs que tem médicos com a dada especialidade
 
 -}
-buscarUnidades :: String -> [Medico.Medico] -> [UBS.UBS] -> [UBS.UBS]
-buscarUnidades _ [] _ = []
-buscarUnidades esp (x:xs) ubss | esp == (Medico.especialidade x) = (_buscarUnidades x ubss) ++ (buscarUnidades esp xs ubss)
-                               | otherwise = buscarUnidades esp xs ubss
-
-_buscarUnidades :: Medico.Medico -> [UBS.UBS] -> [UBS.UBS]
-_buscarUnidades _ [] = []
-_buscarUnidades medico (x:xs) | (Medico.idUbs medico) == (UBS.id x) = [x] ++ _buscarUnidades medico xs
-                              | otherwise = _buscarUnidades medico xs
+buscarUnidades :: String -> [Medico.Medico] -> [Medico.Medico]
+buscarUnidades _ [] = []
+buscarUnidades esp (x:xs) | esp == (Medico.especialidade x) = [x] ++ (buscarUnidades esp xs)
+                          | otherwise = buscarUnidades esp xs 
 
 {-
 
@@ -78,7 +73,7 @@ Cria um exame
 
 -}
 requisitarExame :: [String] -> DateTime -> Exame.Exame
-requisitarExame informs dia = (read (intercalate ";" informs)) {Exame.dia = dia}
+requisitarExame informs dia = (read (intercalate ";" (informs ++ ["Sem Resultado"]))) {Exame.dia = dia}
 
 
 {-

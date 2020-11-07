@@ -570,7 +570,7 @@ menuMedico idMed dados = do
 leituraBuscaUnidades :: BD.BD -> IO ()
 leituraBuscaUnidades dados = do
     especialidade <- prompt "Especialidade > "
-    imprime (PC.buscarUnidades especialidade (BD.medicos dados) (BD.ubs dados))
+    imprime (PC.buscarUnidades especialidade (BD.medicos dados))
 
 leituraRequisitaConsulta :: BD.BD -> Int -> IO()
 leituraRequisitaConsulta dados idPaciente = do

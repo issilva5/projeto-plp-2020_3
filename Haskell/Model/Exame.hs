@@ -19,9 +19,9 @@ toString e =
     show (idPaciente e) ++ ";" ++
     show (idMedico e) ++ ";" ++
     show (idUBS e) ++ ";" ++
-         (tipo e) ++ ";" ++
+    show (tipo e) ++ ";" ++
     dateTimeToString (dia e) ++ ";" ++
-    (resultado e)
+    show (resultado e)
 
 instance Show Exame where
     show (Exame id idP idM idU t d r) = "----------------------------\n" ++
