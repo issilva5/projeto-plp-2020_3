@@ -221,7 +221,7 @@ Lista as consultas do dia atual
 -}
 getConsultasDoDia :: DateTime -> [Consulta.Consulta] -> [String]
 getConsultasDoDia _ [] = []
-getConsultasDoDia hoje (x:xs) | hoje == (Consulta.dia x) = [Consulta.formataConsulta x] ++ (getConsultasDoDia hoje xs)
+getConsultasDoDia hoje (x:xs) | hoje === (Consulta.dia x) = [Consulta.formataConsulta x] ++ (getConsultasDoDia hoje xs)
                               | otherwise = getConsultasDoDia hoje xs
 
 {-
@@ -235,18 +235,28 @@ Lista os médicos disponíveis
 -}
 getStatusMedicos :: DateTime -> [Consulta.Consulta] -> [Medico.Medico] -> [(Medico.Medico, Int)]
 getStatusMedicos _ _ [] = []
-getStatusMedicos hj consultas (x:xs) | (dateTimeToTime hj) < pi || (dateTimeToTime hj) > pe = [(x, -1)] ++ (getStatusMedicos hj consultas xs) -- medico esta fora do plantão
+getStatusMedicos hj consultas (x:xs) | inicioPlantao == (Time (-1) (-1) 0) = [(x, -1)] ++ (getStatusMedicos hj consultas xs)
+                                     | (dateTimeToTime hj) <= inicioPlantao || (dateTimeToTime hj) >= fimPlantao = [(x,-1)] ++ (getStatusMedicos hj consultas xs)
                                      | otherwise = [(x, statusMedico x consultas hj)] ++ (getStatusMedicos hj consultas xs)
                                      where
-                                       weekday = (weekdayNumber (dateWeekDay hj)) - 1 -- dia da semana
-                                       pi = startD weekday (Medico.horarios x) -- inicio do plantao
-                                       pe = endD weekday (Medico.horarios x) -- fim do plantao
+                                      weekd = (weekdayNumber (dateWeekDay hj)) - 1
+                                      inicioPlantao = startD weekd (Medico.horarios x)
+                                      fimPlantao = endD weekd (Medico.horarios x)
+
+-- 0 1 2 3 4 5 6
+-- h h       h h
+--     x x x
+
+-- (hj > ini) && (hj < fim)
+-- ~(hj > ini) || ~(hj < fim)
+-- (hj <= ini) || (hj >= fim)
 
 statusMedico :: Medico.Medico -> [Consulta.Consulta] -> DateTime -> Int
 statusMedico _ [] _ = 0 -- medico está de plantão e sem consulta
-statusMedico m (x:xs) s | (Consulta.dia x) >= s && (Consulta.dia x) <= e = 1 -- medico está em consulta
-                        | otherwise = statusMedico m xs s
-                        where
+statusMedico m (x:xs) hj | s <= hj && e >= hj = 1 -- medico está em consulta
+                         | otherwise = statusMedico m xs hj
+                         where
+                          s = (Consulta.dia x)
                           e = correctDate (addTime s (Time 0 (timeSc (Medico.horarios m)) 0)) -- termino da consulta
 
 {-
@@ -275,7 +285,7 @@ formataStatus :: Int -> String
 formataStatus n | n == -1 = "Não está em plantão"
                 | n == 0 = "Está de plantão e sem consulta"
                 | n == 1 = "Está de plantão e em consulta"
-                | otherwise = ""
+                | otherwise = (show n)
 
 validaIDLaudo :: Int -> [Laudo.Laudo] -> Bool
 validaIDLaudo _ [] = False

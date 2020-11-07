@@ -95,7 +95,7 @@ Dada uma data e um dia da semana, retorna a data do próximo dia da semana espec
 Exemplo nextDay (30/10/2020) Segunda => 02/11/2020
 -}
 nextDay :: DateTime -> Int -> DateTime
-nextDay date wkd | (weekdayNumber (dateWeekDay date)) == wkd = date
+nextDay date wkd | (weekdayNumber (dateWeekDay date)) - 1 == wkd = date
                  | otherwise = (addInterval (nextMonday date) interval)
                  where interval = Days (toInteger wkd)
 

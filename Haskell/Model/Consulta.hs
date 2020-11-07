@@ -29,7 +29,7 @@ instance Show Consulta where
                                           "Data: " ++ (dateTimeToString date)
 
 formataConsulta :: Consulta -> String
-formataConsulta c = "Consulta " ++ (show (id c)) ++ " do paciente " ++ (show (idPaciente c)) ++ " com o médico " ++ (show (idMedico c)) ++ " em " ++ (show (dia c))
+formataConsulta c = "Consulta " ++ (show (id c)) ++ " do paciente " ++ (show (idPaciente c)) ++ " com o doutor(a) " ++ (show (idMedico c)) ++ " em " ++ (dateTimeToString (dia c))
 
 instance Read Consulta where 
     readsPrec _ str = do 
