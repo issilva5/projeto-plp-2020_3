@@ -8,7 +8,6 @@ import Haskell.View.Utils
 import Data.Dates
 import Data.Char ( toUpper )
 import Data.Maybe (fromJust, isNothing)
-import Data.Dates
 import qualified Haskell.Persistence.Persistence as Persistence
 import System.IO (utf8, hSetEncoding, stdout)
 import Data.List (sort)

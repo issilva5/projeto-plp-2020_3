@@ -1,24 +1,4 @@
-module Haskell.Controller.UBSController (
-  criaUBS,
-  cadastraMedico,
-  visualizaAgendamentos,
-  visualizaPacientes,
-  visualizaMedicos,
-  visualizaMedico,
-  adicionaMedicamento,
-  adicionaMedicamentoEstoque,
-  removerMedicamento,
-  visualizaMedicamentos,
-  visualizaMedicamento,
-  validaIDMedicamento,
-  validaIDExame,
-  validaIDUBS,
-  validaIDReceita,
-  validaIDLaudo,
-  validaReceita,
-  getConsultasDoDia,
-  getStatusMedicos
-) where
+module Haskell.Controller.UBSController where
 
 import Data.List ( intercalate )
 import Data.Dates
@@ -30,6 +10,7 @@ import qualified Haskell.Model.UBS as UBS
 import qualified Haskell.Model.Exame as Exame
 import qualified Haskell.Model.Receita as Receita
 import qualified Haskell.Model.Laudo as Laudo
+import Haskell.Model.DateCycle
 
 {-
 
@@ -232,17 +213,6 @@ validaIDReceita idReceita (x:xs) | idReceita == (Receita.id x) = True
 
 {-
 
-Verifica se existe Laudo com o id dado
-@param idLaudo: id do Laudo
-@param laudos: lista dos Laudos
-@return True se existir, False c.c.
-
--}
-validaIDLaudo :: Int -> [Laudo] -> Bool
-validaIDLaudo idReceita laudos = True
-
-{-
-
 Lista as consultas do dia atual
 @param hoje: data do dia atual
 @param consultas: lista de Consultas
@@ -287,7 +257,7 @@ Formata os medicamentos para a dashboard
 @return retorna todos os medicamentos no formato Nome - Estoque 
 
 -}
-formataMedicamentosDashboard :: [Medicamento] -> String
+formataMedicamentosDashboard :: [Medicamento.Medicamento] -> String
 formataMedicamentosDashboard [] = ""
 formataMedicamentosDashboard (x:xs) = (Medicamento.nome x) ++ " - " ++ (show (Medicamento.qtdEstoque x)) ++ "\n" ++ (formataMedicamentosDashboard xs)
 
@@ -300,7 +270,7 @@ Formata os médicos para a dashboard
 -}
 formataMedicosDashboard :: [(Medico.Medico, Int)] -> String
 formataMedicosDashboard [] = ""
-formataMedicosDashboard ((a:b):xs) = (show (Medico.id a)) ++ " " ++ (Medico.nome a) ++ " - " ++ (formataStatus b) ++ "\n" ++ (formataMedicosDashboard xs)
+formataMedicosDashboard ((a, b):xs) = (show (Medico.id a)) ++ " " ++ (Medico.nome a) ++ " - " ++ (formataStatus b) ++ "\n" ++ (formataMedicosDashboard xs)
 
 formataStatus :: Int -> String
 formataStatus n | n == -1 = "Não está em plantão"
