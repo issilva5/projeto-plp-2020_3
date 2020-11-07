@@ -356,16 +356,16 @@ menuUBS idUBS dados = do
         putStrLn "Dashboard[UBS]: Consultas"
         putStrLn "                Consultas do Dia: \n"
         hoje <- getCurrentDateTime
-        imprime (UBSC.getConsultasDoDia hoje (BD.consultas dados))
+        imprime (UBSC.getConsultasDoDia hoje (UBSC.visualizaAgendamentosTodos idUBS (BD.consultas dados)))
 
         putStrLn "Dashboard[UBS]: Medicamentos"
         putStrLn "                Medicamentos com pouco estoque: \n"
-        putStrLn (UBSC.formataMedicamentosDashboard (take 5 (sort (BD.medicamentos dados))))
+        putStrLn (UBSC.formataMedicamentosDashboard (take 5 (sort $ UBSC.visualizaMedicamentos idUBS (BD.medicamentos dados))))
 
         putStrLn "Dashboard[UBS]: Médicos"
         putStrLn "                Status dos médicos: \n"
         hj <- getCurrentDateTime
-        putStrLn (UBSC.formataMedicosDashboard (UBSC.getStatusMedicos hj (BD.consultas dados) (BD.medicos dados)))
+        putStrLn (UBSC.formataMedicosDashboard (UBSC.getStatusMedicos hj (BD.consultas dados) (UBSC.visualizaMedicos idUBS (BD.medicos dados))))
 
         menuUBS idUBS dados
 

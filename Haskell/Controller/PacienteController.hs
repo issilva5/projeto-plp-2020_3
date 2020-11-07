@@ -24,6 +24,7 @@ import qualified Haskell.Model.Paciente as Paciente
 import qualified Haskell.Model.Medico as Medico
 import qualified Haskell.Model.Consulta as Consulta
 import qualified Haskell.Model.Medicamento as Medicamento
+import Haskell.View.Utils
 import Data.Dates
 
 {-
@@ -73,7 +74,7 @@ Cria um exame
 
 -}
 requisitarExame :: [String] -> DateTime -> Exame.Exame
-requisitarExame informs dia = (read (intercalate ";" (informs ++ ["Sem Resultado"]))) {Exame.dia = dia}
+requisitarExame informs dia = (read (intercalate ";" (informs ++ ["Sem Resultado", dateTimeToString dia])))
 
 
 {-

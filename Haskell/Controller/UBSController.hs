@@ -48,6 +48,19 @@ visualizaAgendamentos idUBS (x:xs) hj| idUBS == (Consulta.idUBS x) && hj <= (Con
 
 {-
 
+Ver todas as consultas agendadas na UBS
+@param idUBS: id da ubs
+@param consultas: lista das consultas
+@return lista das consultas agendadas na UBS
+
+-}
+visualizaAgendamentosTodos :: Int -> [Consulta.Consulta] -> [Consulta.Consulta]
+visualizaAgendamentosTodos _ [] = []
+visualizaAgendamentosTodos idUBS (x:xs) | idUBS == (Consulta.idUBS x) = [x] ++ (visualizaAgendamentosTodos idUBS xs)
+                                        | otherwise = visualizaAgendamentosTodos idUBS xs
+
+{-
+
 Ver todos os pacientes na UBS
 @param idUBS: id da ubs
 @param pacientes: lista dos pacientes
@@ -235,7 +248,8 @@ Lista os médicos disponíveis
 -}
 getStatusMedicos :: DateTime -> [Consulta.Consulta] -> [Medico.Medico] -> [(Medico.Medico, Int)]
 getStatusMedicos _ _ [] = []
-getStatusMedicos hj consultas (x:xs) | inicioPlantao == (Time (-1) (-1) 0) = [(x, -1)] ++ (getStatusMedicos hj consultas xs)
+getStatusMedicos hj consultas (x:xs) | isEmpty (Medico.horarios x) = [(x, 2)] ++ (getStatusMedicos hj consultas xs)
+                                     | inicioPlantao == (Time (-1) (-1) 0) = [(x, -1)] ++ (getStatusMedicos hj consultas xs)
                                      | (dateTimeToTime hj) <= inicioPlantao || (dateTimeToTime hj) >= fimPlantao = [(x,-1)] ++ (getStatusMedicos hj consultas xs)
                                      | otherwise = [(x, statusMedico x consultas hj)] ++ (getStatusMedicos hj consultas xs)
                                      where
@@ -277,6 +291,7 @@ formataStatus :: Int -> String
 formataStatus n | n == -1 = "Não está em plantão"
                 | n == 0 = "Está de plantão e sem consulta"
                 | n == 1 = "Está de plantão e em consulta"
+                | n == 2 = "Médico ainda não informou horários"
                 | otherwise = (show n)
 
 validaIDLaudo :: Int -> [Laudo.Laudo] -> Bool

@@ -19,9 +19,10 @@ toString e =
     show (idPaciente e) ++ ";" ++
     show (idMedico e) ++ ";" ++
     show (idUBS e) ++ ";" ++
-    show (tipo e) ++ ";" ++
-    dateTimeToString (dia e) ++ ";" ++
-    show (resultado e)
+    tipo e ++ ";" ++
+    resultado e ++ ";" ++
+    dateTimeToString (dia e)
+    
 
 instance Show Exame where
     show (Exame id idP idM idU t d r) = "----------------------------\n" ++
@@ -41,6 +42,6 @@ instance Read Exame where
     let idMedico = read (l !! 2) :: Int
     let idUBS = read (l !! 3) :: Int
     let tipo = l !! 4
-    let dia = read (l !! 5) :: DateTime
-    let resultado = l !! 6
+    let dia = read (l !! 6) :: DateTime
+    let resultado = l !! 5
     [(Exame id idPaciente idMedico idUBS tipo dia resultado, "")]
