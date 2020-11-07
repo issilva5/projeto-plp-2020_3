@@ -14,8 +14,10 @@ main :: IO ()
 main = do
     dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
     hj <- getCurrentDateTime
-    putStr (show dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
-    inicial (dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
+    --putStr (show dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
+    --inicial (dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
+    putStr (show dados)
+    inicial dados
 
 inicial :: BD.BD -> IO()
 inicial dados  = do

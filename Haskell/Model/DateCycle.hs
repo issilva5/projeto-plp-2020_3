@@ -104,7 +104,11 @@ seeNextDate :: DateCycle -> DateTime -> DateTime
 seeNextDate dc now = fst (getNextDate dc now)
 
 instance Show DateCycle where
-    show (DateCycle _ s e d) = (timeShow s) ++ "|" ++ (timeShow e) ++ "|" ++ (show d)
+    show (DateCycle a s e d) = (showHeap $ Heap.toList a) ++ "|" ++ (timeShow s) ++ "|" ++ (timeShow e) ++ "|" ++ (show d)
+
+showHeap :: [DateTime] -> String
+showHeap [] = ""
+showHeap (x:xs) = (dateTimeToString x) ++ "," ++ (showHeap xs)
 
 {-
 
@@ -121,14 +125,13 @@ exemplo:
 instance Read DateCycle where
     readsPrec _ str = do
       let l = split str '|' ""
-      if length l < 3 then
-        [(empty, "")]
-
+      if length l < 4 then [(empty, "")]
       else do
-      let s = map read (split (l !! 0) ',' "") :: [Time]
-      let e = map read (split (l !! 1) ',' "")  :: [Time]
-      let d = read (l !! 2) :: Int
-      [(DateCycle (Heap.fromList []) s e d, "")]
+        let h = map read (split (l !! 0) ',' "") :: [DateTime]
+        let s = map read (split (l !! 1) ',' "") :: [Time]
+        let e = map read (split (l !! 2) ',' "")  :: [Time]
+        let d = read (l !! 3) :: Int
+        [(DateCycle (Heap.fromList h) s e d, "")]
 
 timeShow :: [Time] -> String
 timeShow [] = ""
