@@ -91,8 +91,8 @@ Emite uma receita
 @return receita criada
 
 -}
-emitirReceita :: Int -> Int -> Int -> Int -> [String] -> Receita.Receita
-emitirReceita id idMed idPac idUBS informacoes = read (intercalate ";" ([show id, show idPac, show idMed, show idUBS] ++ informacoes))
+emitirReceita :: Int -> Int -> Int -> Int -> [(Int, String, Int)] -> Receita.Receita
+emitirReceita id idMed idPac idUBS informacoes = read (intercalate ";" ([show id, show idPac, show idMed, show idUBS] ++ [show informacoes]))
 
 {-
 

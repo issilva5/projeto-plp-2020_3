@@ -5,6 +5,8 @@ import System.Process
 
 import Data.Dates
 
+import Data.Char ( toUpper )
+
 {-
 
 Limpa a tela
@@ -189,3 +191,21 @@ dateTimeToString dt =
 formataBool :: Bool -> String
 formataBool True = "S"
 formataBool False = "N"
+
+lerReceita :: [(Int, String, Int)] -> IO [(Int, String, Int)]
+lerReceita l = do
+    putStr "Insira as informações dos medicamentos\n"
+
+    idMedic <- prompt "ID do medicamento > "
+    instru <- prompt "Instruções de uso > "
+    qtd <- prompt "Quantidade de caixas > "
+
+    op <- prompt "Deseja inserir outro? (S ou N) > "
+    
+    if toUpper (head op) == 'S' then do
+        putStr "\n"
+        lerReceita (l ++ [(read idMedic, instru, read qtd)])
+    else do
+        return (l ++ [(read idMedic, instru, read qtd)])
+
+               

@@ -475,11 +475,11 @@ menuMedico idMed dados = do
 
         if toUpper (head emitirOp) == 'R' then do
             idPac <- prompt "ID do Paciente > "
-            informacoes <- prompt "Informações > "
+            informacoes <- lerReceita []
 
             if (PC.validaIDPaciente (read idPac) (BD.pacientes dados)) then do
-                -- TODO
-                menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.idAtual dados) idMed (read idPac) idUBS (read informacoes))], BD.idAtual = 1 + (BD.idAtual dados)}
+
+                menuMedico idMed dados {BD.receitas = (BD.receitas dados) ++ [(MC.emitirReceita (BD.idAtual dados) idMed (read idPac) idUBS informacoes)], BD.idAtual = 1 + (BD.idAtual dados)}
 
             else do
 
@@ -613,7 +613,7 @@ leituraConsultaLaudoId dados idPaciente = do
 
     if (UBSC.validaIDLaudo (read idLaudo) (BD.laudos dados)) then do
 
-        print (PC.consultarLaudo (read idLaudo) (BD.laudos dados))
+        print (fromJust (PC.consultarLaudo (read idLaudo) (BD.laudos dados)))
         menuPaciente idPaciente dados
 
     else do
@@ -662,4 +662,4 @@ leituraConsultaReceitaExameId dados idPaciente = do
 leituraEmergencia :: IO ()
 leituraEmergencia = do
     endereco <- prompt "Endereço > "
-    print (PC.emergencia endereco)
+    putStrLn (PC.emergencia endereco)
