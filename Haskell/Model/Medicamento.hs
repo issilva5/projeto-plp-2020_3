@@ -35,3 +35,9 @@ instance Read Medicamento where
     let qtdEstoque = read (l !! 3) :: Int
     let bula = l !! 4
     [(Medicamento id idUBS nome qtdEstoque bula, "")]
+
+instance Eq Medicamento where
+    (Medicamento _ _ _ q1 _) == (Medicamento _ _ _ q2 _) = q1 == q2
+
+instance Ord Medicamento where
+    compare (Medicamento _ _ _ q1 _) (Medicamento _ _ _ q2 _) = compare q1 q2

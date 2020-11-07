@@ -5,11 +5,13 @@ import qualified Haskell.Controller.PacienteController as PC
 import qualified Haskell.Controller.AutenticacaoController as Autenticador
 import Haskell.View.Utils
 
+import Data.Dates
 import Data.Char ( toUpper )
 import Data.Maybe (fromJust, isNothing)
 import Data.Dates
 import qualified Haskell.Persistence.Persistence as Persistence
 import System.IO (utf8, hSetEncoding, stdout)
+import Data.List (sort)
 
 main :: IO ()
 main = do
@@ -352,7 +354,20 @@ menuUBS idUBS dados = do
 
     else if toUpper (head op) == 'D' then do
 
-        print "Dashboard"
+        putStrLn "Dashboard[UBS]: Consultas"
+        putStrLn "                Consultas do Dia: \n"
+        hoje <- getCurrentDateTime
+        imprime (UBSC.getConsultasDoDia hoje (BD.consultas dados))
+
+        putStrLn "Dashboard[UBS]: Medicamentos"
+        putStrLn "                Medicamentos com pouco estoque: \n"
+        putStrLn (UBSC.formataMedicamentosDashboard (take 5 (sort (BD.medicamentos dados))))
+
+        putStrLn "Dashboard[UBS]: Médicos"
+        putStrLn "                Status dos médicos: \n"
+        hj <- getCurrentDateTime
+        putStrLn (UBSC.formataMedicosDashboard (UBSC.getStatusMedicos hj (BD.consultas dados) (BD.medicos dados)))
+
         menuUBS idUBS dados
 
     else if toUpper (head op) == 'S' then do
