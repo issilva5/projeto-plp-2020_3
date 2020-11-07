@@ -1,4 +1,0 @@
-3; UNIDADE BÁSICA DE SAÚDE I;Rua Pereira Estéfano, N 89
-4; UNIDADE BÁSICA DE SAÚDE XII;Rua Pereira Estéfano 
-5;nome;end
-22;posto da ufcg;rua da ufcg
