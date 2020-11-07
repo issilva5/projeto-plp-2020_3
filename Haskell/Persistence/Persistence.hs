@@ -21,17 +21,6 @@ carregaMedicos dados = do
     medicos <- leConteudo "medicos.txt"
     carregaMedicamento dados {BD.medicos =  BD.stringToMedico $ split medicos '\n' ""}
 
-inicializa :: DateTime -> [Medico.Medico] -> [Medico.Medico]
-inicializa _ [] = []
-inicializa hj (x:xs) = [_inicializa hj x] ++ (inicializa hj xs)
-
-_inicializa :: DateTime -> Medico.Medico -> Medico.Medico
-_inicializa hj m = m {Medico.horarios = newDC hj s e t}
-                   where
-                       s = start (Medico.horarios m)
-                       e = end (Medico.horarios m)
-                       t = timeSc (Medico.horarios m)
-
 carregaMedicamento :: BD.BD -> IO BD.BD
 carregaMedicamento dados = do
     medicamentos <- leConteudo "medicamentos.txt"

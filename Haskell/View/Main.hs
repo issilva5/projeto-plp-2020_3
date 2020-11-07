@@ -13,9 +13,6 @@ import qualified Haskell.Persistence.Persistence as Persistence
 main :: IO ()
 main = do
     dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
-    hj <- getCurrentDateTime
-    --putStr (show dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
-    --inicial (dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
     putStr (show dados)
     inicial dados
 
