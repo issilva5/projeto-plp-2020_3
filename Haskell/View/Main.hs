@@ -15,7 +15,7 @@ main :: IO ()
 main = do
     hSetEncoding stdout utf8
     dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
-    putStr (show dados)
+    writeFile "/tmp/foo" (show dados)
     inicial dados
 
 inicial :: BD.BD -> IO()
@@ -138,6 +138,7 @@ menuPaciente idPac dados = do
     else if toUpper (head op) == 'C' then do
         putStrLn "(L)audo"
         putStrLn "(R)eceita"
+        putStrLn "(C)onsultas"
 
         op2 <- prompt "Opção > "
         
@@ -196,6 +197,10 @@ menuPaciente idPac dados = do
             else do
                 clear
                 menuPaciente idPac dados
+        else if toUpper (head op2) == 'C' then do
+
+            imprime (PC.consultarConsultas idPac (BD.consultas dados))
+            menuPaciente idPac dados
 
         else do
             clear
