@@ -122,13 +122,13 @@ menuPaciente idPac dados = do
         putStrLn "(E)xame"
         putStrLn "(M)edicamento"
 
-        op <- prompt "Opção > "
+        op2 <- prompt "Opção > "
 
-        if toUpper (head op) == 'C' then do
+        if toUpper (head op2) == 'C' then do
             leituraRequisitaConsulta dados idPac
-        else if toUpper (head op) == 'E' then do
+        else if toUpper (head op2) == 'E' then do
             leituraRequisitaExame dados idPac
-        else if toUpper (head op) == 'M' then do
+        else if toUpper (head op2) == 'M' then do
             leituraRequisitaMedicamento dados idPac
         else do
             clear
@@ -138,16 +138,18 @@ menuPaciente idPac dados = do
         putStrLn "(L)audo"
         putStrLn "(R)eceita"
 
-        op <- prompt "Opção > "
-
-        if toUpper (head op) == 'L' then do
+        op2 <- prompt "Opção > "
+        
+        if toUpper (head op2) == 'L' then do
 
             putStrLn "(T)odos"
             putStrLn "(E)specífico"
 
-            if toUpper (head op) == 'T' then do
+            op3 <- prompt "Opção > "
+
+            if toUpper (head op3) == 'T' then do
                 leituraConsultaLaudo dados idPac
-            else if toUpper (head op) == 'E' then do
+            else if toUpper (head op3) == 'E' then do
                 leituraConsultaLaudoId dados idPac
             else do
                 clear
@@ -158,27 +160,33 @@ menuPaciente idPac dados = do
             putStrLn "(M)edicamento"
             putStrLn "(E)xame"
 
-            if toUpper (head op) == 'M' then do
+            op2 <- prompt "Opção > "
+
+            if toUpper (head op2) == 'M' then do
 
                 putStrLn "(T)odos"
                 putStrLn "(E)specífico"
 
-                if toUpper (head op) == 'T' then do
+                op3 <- prompt "Opção > "
+
+                if toUpper (head op3) == 'T' then do
                     leituraConsultaReceitaMedicamento dados idPac
-                else if toUpper (head op) == 'E' then do
+                else if toUpper (head op3) == 'E' then do
                     leituraConsultaReceitaMedicamentoId dados idPac
                 else do
                     clear
                     menuPaciente idPac dados
 
-            else if toUpper (head op) == 'E' then do
+            else if toUpper (head op2) == 'E' then do
 
                 putStrLn "(T)odos"
                 putStrLn "(E)specífico"
 
-                if toUpper (head op) == 'T' then do
+                op3 <- prompt "Opção > "
+
+                if toUpper (head op3) == 'T' then do
                     leituraConsultaReceitaExame dados idPac
-                else if toUpper (head op) == 'E' then do
+                else if toUpper (head op3) == 'E' then do
                     leituraConsultaReceitaExameId dados idPac
                 else do
                     clear
@@ -499,7 +507,7 @@ menuMedico idMed dados = do
 
             if (UBSC.validaIDExame (read idExame) (BD.exames dados)) then do
 
-                menuMedico idMed dados {BD.laudos = (BD.laudos dados) ++ [(MC.emitirLaudo (BD.idAtual dados) idMed (read idExame) (read informacoes))], BD.idAtual = 1 + (BD.idAtual dados)}
+                menuMedico idMed dados {BD.laudos = (BD.laudos dados) ++ [(MC.emitirLaudo (BD.idAtual dados) idMed (read idExame) [informacoes])], BD.idAtual = 1 + (BD.idAtual dados)}
 
             else do
 
