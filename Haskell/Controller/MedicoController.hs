@@ -23,7 +23,7 @@ import qualified Haskell.Model.Exame as Exame
 import qualified Haskell.Model.Laudo as Laudo
 import Data.Dates
 import Data.List ( intercalate )
-import Haskell.Model.DateCycle (newDC, (===), getNextDate)
+import Haskell.Model.DateCycle (newDC, (===), getNextDate, isValid)
 
 {-
 
@@ -201,8 +201,12 @@ proximoHorarioLivre idMed hj medicos = (_proxHorario idMed hj medicos, _medicosA
 
 _proxHorario :: Int -> DateTime -> [Medico.Medico] -> Maybe DateTime
 _proxHorario _ _ [] = Nothing
-_proxHorario idMed hj (x:xs) | idMed == (Medico.id x) = Just (fst (getNextDate (Medico.horarios x) hj))
+_proxHorario idMed hj (x:xs) | idMed == (Medico.id x) && (not $ isValid (Medico.horarios x)) = Nothing
+                             | idMed == (Medico.id x) = Just (fst (getNextDate (Medico.horarios x) hj))
                              | otherwise = _proxHorario idMed hj xs
+
+
+                             
 
 _medicosAtt :: Int -> DateTime -> [Medico.Medico] -> [Medico.Medico]
 _medicosAtt _ _ [] = []

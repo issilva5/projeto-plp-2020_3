@@ -21,7 +21,6 @@ module Haskell.Controller.UBSController (
 
 import Data.List ( intercalate )
 import Data.Dates
-import Haskell.Model.DateCycle
 import qualified Haskell.Model.Medico as Medico
 import qualified Haskell.Model.Consulta as Consulta
 import qualified Haskell.Model.Paciente as Paciente
@@ -107,7 +106,7 @@ Ver um médico que trabalha na UBS
 
 -}
 visualizaMedico :: Int -> Int -> [Medico.Medico] -> Maybe Medico.Medico
-visualizaMedico _ _ [] = Nothing 
+visualizaMedico _ _ [] = Nothing
 visualizaMedico idUBS idMed (x:xs) | idMed == (Medico.id x) && idUBS == (Medico.idUbs x) = Just x
                                    | otherwise = visualizaMedico idUBS idMed xs
 

@@ -12,9 +12,9 @@ module Haskell.Controller.PacienteController (
   consultarReceitaEx,
   emergencia,
   validaIDPaciente
-) where 
+) where
 
-import Data.List ( intercalate ) 
+import Data.List ( intercalate )
 import qualified Haskell.Model.Receita as Receita
 import qualified Haskell.Model.Exame as Exame
 import qualified Haskell.Model.UBS as UBS
@@ -215,5 +215,5 @@ Verifica se existe paciente com o id dado
 -}
 validaIDPaciente :: Int -> [Paciente.Paciente] -> Bool
 validaIDPaciente _ [] = False
-validaIDPaciente idPac (x:xs) | idPac == (Paciente.id x) = True 
+validaIDPaciente idPac (x:xs) | idPac == (Paciente.id x) = True
                               | otherwise = validaIDPaciente idPac xs
