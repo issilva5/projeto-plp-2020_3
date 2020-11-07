@@ -80,12 +80,10 @@ Recebe os horários de um médico e o horário atual, e retorna uma tupla com do
 Esta função retira o horário.
 
 -}
-getNextDate :: DateCycle -> DateTime -> (Maybe DateTime, DateCycle)
-getNextDate dc now | length cabeca == 0 = (Nothing, dc)
-                   | nextSc < now = getNextDate (snd (nextSc, dc {schedule = Heap.insert (addJump dc nextSc) noHead})) now
-                   | otherwise = (Just nextSc, dc {schedule = Heap.insert (addJump dc nextSc) noHead})
-                   where cabeca = (Heap.take 1 (schedule dc))
-                         nextSc = head cabeca
+getNextDate :: DateCycle -> DateTime -> (DateTime, DateCycle)
+getNextDate dc now | nextSc < now = getNextDate (snd (nextSc, dc {schedule = Heap.insert (addJump dc nextSc) noHead})) now
+                   | otherwise = (nextSc, dc {schedule = Heap.insert (addJump dc nextSc) noHead})
+                   where nextSc = head (Heap.take 1 (schedule dc))
                          noHead = (Heap.drop 1 (schedule dc))
 
 {-
@@ -102,7 +100,7 @@ nextDay date wkd | (weekdayNumber (dateWeekDay date)) == wkd = date
 Retorna a próxima data livre sem alterar retirá-la.
 
 -}
-seeNextDate :: DateCycle -> DateTime -> Maybe DateTime
+seeNextDate :: DateCycle -> DateTime -> DateTime
 seeNextDate dc now = fst (getNextDate dc now)
 
 instance Show DateCycle where

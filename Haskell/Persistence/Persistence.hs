@@ -1,7 +1,10 @@
 module Haskell.Persistence.Persistence where
 
 import qualified Haskell.Model.BD as BD
+import qualified Haskell.Model.Medico as Medico
 import Haskell.View.Utils ( split )
+import Data.Dates
+import Haskell.Model.DateCycle
 
 carregaPacientes :: BD.BD -> IO BD.BD
 carregaPacientes dados = do
@@ -18,10 +21,41 @@ carregaMedicos dados = do
     medicos <- leConteudo "medicos.txt"
     carregaMedicamento dados {BD.medicos =  BD.stringToMedico $ split medicos '\n' ""}
 
+inicializa :: DateTime -> [Medico.Medico] -> [Medico.Medico]
+inicializa _ [] = []
+inicializa hj (x:xs) = [_inicializa hj x] ++ (inicializa hj xs)
+
+_inicializa :: DateTime -> Medico.Medico -> Medico.Medico
+_inicializa hj m = m {Medico.horarios = newDC hj s e t}
+                   where
+                       s = start (Medico.horarios m)
+                       e = end (Medico.horarios m)
+                       t = timeSc (Medico.horarios m)
+
 carregaMedicamento :: BD.BD -> IO BD.BD
 carregaMedicamento dados = do
     medicamentos <- leConteudo "medicamentos.txt"
-    carregaLogins dados {BD.medicamentos =  BD.stringToMedicamento $ split medicamentos '\n' ""}
+    carregaConsulta dados {BD.medicamentos =  BD.stringToMedicamento $ split medicamentos '\n' ""}
+
+carregaConsulta :: BD.BD -> IO BD.BD
+carregaConsulta dados = do
+    consultas <- leConteudo "consultas.txt"
+    carregaExame dados {BD.consultas = BD.stringToConsulta $ split consultas '\n' ""}
+
+carregaExame :: BD.BD -> IO BD.BD
+carregaExame dados = do
+    exames <- leConteudo "exames.txt"
+    carregaLaudo dados {BD.exames = BD.stringToExame $ split exames '\n' ""}
+
+carregaLaudo :: BD.BD -> IO BD.BD
+carregaLaudo dados = do
+    laudos <- leConteudo "laudos.txt"
+    carregaReceita dados {BD.laudos = BD.stringToLaudo $ split laudos '\n' ""}
+
+carregaReceita :: BD.BD -> IO BD.BD
+carregaReceita dados = do
+    receitas <- leConteudo "receitas.txt"
+    carregaLogins dados {BD.receitas = BD.stringToReceita $ split receitas '\n' ""}
 
 carregaLogins :: BD.BD -> IO BD.BD
 carregaLogins dados = do

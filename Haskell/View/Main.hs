@@ -13,8 +13,9 @@ import qualified Haskell.Persistence.Persistence as Persistence
 main :: IO ()
 main = do
     dados <- Persistence.carregaPacientes $ BD.BD [] [] [] [] [] [] [] [] [] 1
-    putStr (show dados)
-    inicial (dados)
+    hj <- getCurrentDateTime
+    putStr (show dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
+    inicial (dados {BD.medicos = Persistence.inicializa hj (BD.medicos dados)})
 
 inicial :: BD.BD -> IO()
 inicial dados  = do
@@ -545,7 +546,7 @@ leituraRequisitaConsulta dados idPaciente = do
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
         hj <- getCurrentDateTime
-        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
+        let medicoHorario = MC.proximoHorarioLivre (read (aux !! 0)) hj (BD.medicos dados)
         
         if isNothing (fst medicoHorario) then do
             putStrLn "Consulta não pôde ser marcada, médico indisponível!"
@@ -567,7 +568,7 @@ leituraRequisitaExame dados idPaciente = do
     if (UBSC.validaIDUBS (read (aux !! 1)) (BD.ubs dados)) && (MC.validaIDMedico (read (aux !! 0)) (BD.medicos dados)) then do
 
         hj <- getCurrentDateTime
-        let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
+        let medicoHorario = MC.proximoHorarioLivre (read (aux !! 0)) hj (BD.medicos dados)
         
         if isNothing (fst medicoHorario) then do
             putStrLn "Exame não pôde ser marcado, médico indisponível!"
