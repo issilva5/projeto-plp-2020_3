@@ -201,7 +201,7 @@ proximoHorarioLivre idMed hj medicos = (_proxHorario idMed hj medicos, _medicosA
 
 _proxHorario :: Int -> DateTime -> [Medico.Medico] -> Maybe DateTime
 _proxHorario _ _ [] = Nothing
-_proxHorario idMed hj (x:xs) | idMed == (Medico.id x) = Just (fst (getNextDate (Medico.horarios x) hj))
+_proxHorario idMed hj (x:xs) | idMed == (Medico.id x) = fst (getNextDate (Medico.horarios x) hj)
                              | otherwise = _proxHorario idMed hj xs
 
 _medicosAtt :: Int -> DateTime -> [Medico.Medico] -> [Medico.Medico]

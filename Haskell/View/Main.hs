@@ -6,7 +6,7 @@ import qualified Haskell.Controller.AutenticacaoController as Autenticador
 import Haskell.View.Utils
 
 import Data.Char ( toUpper )
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust, isNothing)
 import Data.Dates
 import qualified Haskell.Persistence.Persistence as Persistence
 
@@ -25,8 +25,10 @@ inicial dados  = do
     op <- prompt ("Opção > ")
 
     if toUpper (head op) == 'L' then do
+        clear
         login dados
     else if toUpper (head op) == 'C' then do
+        clear
         cadastra dados
     else if toUpper (head op) == 'E' then do
         Persistence.encerrar dados
@@ -544,8 +546,13 @@ leituraRequisitaConsulta dados idPaciente = do
 
         hj <- getCurrentDateTime
         let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
-        print ("Consulta marcada com id " ++ (show (BD.idAtual dados)))
-        menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fromJust (fst medicoHorario))], BD.idAtual = 1 + (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        
+        if isNothing (fst medicoHorario) then do
+            putStrLn "Consulta não pôde ser marcada, médico indisponível!"
+            menuPaciente idPaciente dados
+        else do
+            print ("Consulta marcada com id " ++ (show (BD.idAtual dados)))
+            menuPaciente idPaciente (dados {BD.consultas = (BD.consultas dados) ++ [PC.requisitarConsulta informs (fromJust (fst medicoHorario))], BD.idAtual = 1 + (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 
@@ -561,8 +568,13 @@ leituraRequisitaExame dados idPaciente = do
 
         hj <- getCurrentDateTime
         let medicoHorario = MC.proximoHorarioLivre (read (head informs) :: Int) hj (BD.medicos dados)
-        print ("Exame marcado com id " ++ (show (BD.idAtual dados)))
-        menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fromJust (fst medicoHorario))], BD.idAtual = 1 + (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
+        
+        if isNothing (fst medicoHorario) then do
+            putStrLn "Exame não pôde ser marcado, médico indisponível!"
+            menuPaciente idPaciente dados
+        else do
+            print ("Exame marcado com id " ++ (show (BD.idAtual dados)))
+            menuPaciente idPaciente (dados {BD.exames = (BD.exames dados) ++ [PC.requisitarExame informs (fromJust (fst medicoHorario))], BD.idAtual = 1 + (BD.idAtual dados), BD.medicos = (snd medicoHorario)})
 
     else do
 
