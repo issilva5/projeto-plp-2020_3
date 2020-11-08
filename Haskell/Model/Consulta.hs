@@ -1,5 +1,6 @@
 module Haskell.Model.Consulta where
-import Haskell.View.Utils (split) 
+import Prelude hiding (id)
+import Haskell.View.Utils
 
 import Data.Dates
 
@@ -9,7 +10,26 @@ data Consulta = Consulta {
     idMedico :: Int,
     idUBS :: Int,
     dia :: DateTime
-} deriving (Show)
+}
+
+toString :: Consulta -> String
+toString c =
+    show (id c) ++ ";" ++
+    show (idPaciente c) ++ ";" ++
+    show (idMedico c) ++ ";" ++
+    show (idUBS c) ++ ";" ++
+    dateTimeToString (dia c)
+
+instance Show Consulta where
+    show (Consulta id idP idM idU date) = "----------------------------\n" ++
+                                          "CONSULTA " ++ (show id) ++ "\n" ++
+                                          "Paciente: " ++ (show idP) ++ "\n" ++
+                                          "Médico responsável: " ++ (show idM) ++ "\n" ++
+                                          "UBS: " ++ (show idU) ++ "\n" ++
+                                          "Data: " ++ (dateTimeToString date)
+
+formataConsulta :: Consulta -> String
+formataConsulta c = "Consulta " ++ (show (id c)) ++ " do paciente " ++ (show (idPaciente c)) ++ " com o doutor(a) " ++ (show (idMedico c)) ++ " em " ++ (dateTimeToString (dia c))
 
 instance Read Consulta where 
     readsPrec _ str = do 
@@ -18,6 +38,5 @@ instance Read Consulta where
     let idPaciente = read (l !! 1) :: Int
     let idMedico = read (l !! 2) :: Int
     let idUBS = read (l !! 3) :: Int
-    let dia = DateTime 2020 11 01 00 00 00
-    
+    let dia = read (l !! 4) :: DateTime
     [(Consulta id idPaciente idMedico idUBS dia, "")]

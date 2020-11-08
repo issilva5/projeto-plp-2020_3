@@ -5,19 +5,21 @@ import System.Process
 
 import Data.Dates
 
+import Data.Char ( toUpper )
+
 {-
 
 Limpa a tela
 
 -}
 clear :: IO ()
-clear = do 
+clear = do
     _ <- system "clear"
     return ()
 
 menuInicial :: String -> String
 menuInicial m = m ++ "\n"
-              ++ " -------------\n" 
+              ++ " -------------\n"
               ++ "  (L)ogin     \n"
               ++ "  (C)adastrar \n"
               ++ "  (E)ncerrar \n"
@@ -40,8 +42,8 @@ titleLogin = " -----------------------------------------------------------------
 
 titleUBS :: String
 titleUBS = " -----------------------------------------------------------------\n"
-              ++"  SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - MENU UBS \n"
-              ++" -----------------------------------------------------------------\n"
+         ++"  SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - MENU UBS \n"
+         ++" -----------------------------------------------------------------\n"
 
 titlePaciente :: String
 titlePaciente = " -----------------------------------------------------------------\n"
@@ -80,9 +82,9 @@ prompt text = do
 
 lePaciente :: IO [String]
 lePaciente = do
-    sequence [prompt "Nome > ", prompt "CPF > ", prompt "Data de Nascimento > ", prompt "Peso > ", prompt "Altura > ", prompt "Tipo Sanguineo > ", prompt "Endereço > ", prompt "Cardiopata > ", prompt "Diabético > ", prompt "Hipertenso > "]
+    sequence [prompt "Nome > ", prompt "CPF > ", prompt "Data de Nascimento > ", prompt "Peso > ", prompt "Altura > ", prompt "Tipo Sanguineo > ", prompt "Endereço > ", prompt "Cardiopata (S ou N) > ", prompt "Diabético (S ou N) > ", prompt "Hipertenso (S ou N) > "]
 
-leUBS :: IO [String]
+leUBS :: IO ([String])
 leUBS = do
     sequence [prompt "Nome > ", prompt "Endereco > "]
 
@@ -122,12 +124,25 @@ leHorariosMedico = do
 Converte uma string do tipo HH:MM em Time
 
 -}
-instance Read Time where 
-    readsPrec _ str = do 
-    let l = split str ':' "" 
+instance Read Time where
+    readsPrec _ str = do
+    let l = split str ':' ""
     let hour = read (l !! 0) :: Int
-    let minute = read (l !! 1) :: Int   
+    let minute = read (l !! 1) :: Int
     [(Time hour minute 0, "")]
+
+instance Read DateTime where
+    readsPrec _ str = do 
+    let dt = split str ' ' ""
+    let d = split (dt !! 0) '/' ""
+    let t = if (length dt) == 2 then split (dt !! 1) ':' "" else []
+    let day = read (d !! 0) :: Int
+    let month = read (d !! 1) :: Int
+    let year = read (d !! 2) :: Int
+    let hour = if (length t) >= 1 then read (t !! 0) :: Int else 0
+    let minute = if (length t) >= 2 then read (t !! 1) :: Int else 0
+    let second = if (length t) == 3 then read (t !! 2) :: Int else 0
+    [(DateTime year month day hour minute second, "")]
 
 formataLista :: Show t => [t] -> String
 formataLista [] = ""
@@ -135,7 +150,7 @@ formataLista (x:xs) = (show x) ++ "\n" ++ (formataLista xs)
 
 imprime :: Show t => [t] -> IO ()
 imprime l = do
-    print (formataLista l)
+    putStrLn (formataLista l)
     return ()
 
 medicoMenu :: String
@@ -152,6 +167,7 @@ medicoAcessarDados :: String
 medicoAcessarDados =  "(P)acientes\n"
                     ++ "(E)xames\n"
                     ++ "(A)gendamentos\n"
+                    ++ "(M)edicamentos\n"
 
 medicoEmitir :: String
 medicoEmitir = "(R)eceita\n"
@@ -164,3 +180,33 @@ split "" _ aux = [aux]
 split (h : t) sep aux | h == sep && aux == "" = split t sep aux
                   | h == sep = [aux] ++ split t sep ""
                   | otherwise = split t sep (aux ++ [h])
+
+dateTimeToString :: DateTime -> String
+dateTimeToString dt =
+    show (day dt) ++ "/" ++
+    show (month dt) ++ "/" ++
+    show (year dt) ++ " " ++
+    show (hour dt) ++ ":" ++
+    show (minute dt)
+
+formataBool :: Bool -> String
+formataBool True = "S"
+formataBool False = "N"
+
+lerReceita :: [(Int, String, Int)] -> IO [(Int, String, Int)]
+lerReceita l = do
+    putStr "Insira as informações dos medicamentos\n"
+
+    idMedic <- prompt "ID do medicamento > "
+    instru <- prompt "Instruções de uso > "
+    qtd <- prompt "Quantidade de caixas > "
+
+    op <- prompt "Deseja inserir outro? (S ou N) > "
+    
+    if toUpper (head op) == 'S' then do
+        putStr "\n"
+        lerReceita (l ++ [(read idMedic, instru, read qtd)])
+    else do
+        return (l ++ [(read idMedic, instru, read qtd)])
+
+               

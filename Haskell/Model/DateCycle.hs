@@ -7,13 +7,18 @@ module Haskell.Model.DateCycle (
   isValid,
   seeNextDate,
   nextDay,
+  newDC,
+  correctDate,
+  dateTimeToTime,
+  startD,
+  endD,
   (===)
 
 ) where
 
 import Data.Dates
 import qualified Data.Heap as Heap
-import Haskell.View.Utils (split) 
+import Haskell.View.Utils
 
 data DateCycle = DateCycle {
 
@@ -22,7 +27,7 @@ data DateCycle = DateCycle {
   end :: [Time], -- horarios de termino de plantao, deve ter um Time para cada dia da semana, começando da Segunda
   timeSc :: Int -- duração da consulta
 
-} deriving (Show)
+}
 
 {-
 
@@ -31,6 +36,24 @@ Cria um DateCycle vazio apenas para criação do médico.
 -}
 empty :: DateCycle
 empty = DateCycle (Heap.fromList []) [] [] (-1)
+
+{-
+
+Cria um DateCycle.
+
+-}
+newDC :: DateTime -> [Time] -> [Time] -> Int -> DateCycle
+newDC hj i f t = DateCycle (Heap.fromList (firstTimes hj i 0)) i f t
+
+{-
+
+Função auxiliar da criação de um DateCycle. Cria a lista com os primeiros horários do médico.
+
+-}
+firstTimes :: DateTime -> [Time] -> Int -> [DateTime]
+firstTimes _ [] _ = []
+firstTimes hj (x:xs) d | (tHour x) /= (-1) && (tMinute x) /= (-1) = [(nextDay hj d) {hour = tHour x, minute = tMinute x}] ++ (firstTimes hj xs (d+1))
+                       | otherwise = (firstTimes hj xs (d+1))
 
 {-
 
@@ -68,15 +91,13 @@ getNextDate dc now | nextSc < now = getNextDate (snd (nextSc, dc {schedule = Hea
                          noHead = (Heap.drop 1 (schedule dc))
 
 {-
-
 Dada uma data e um dia da semana, retorna a data do próximo dia da semana especificado.
 Exemplo nextDay (30/10/2020) Segunda => 02/11/2020
-
 -}
-nextDay :: DateTime -> WeekDay -> DateTime
-nextDay date wkd | (weekdayNumber (dateWeekDay date)) == (weekdayNumber wkd) = date
+nextDay :: DateTime -> Int -> DateTime
+nextDay date wkd | (weekdayNumber (dateWeekDay date)) - 1 == wkd = date
                  | otherwise = (addInterval (nextMonday date) interval)
-                 where interval = Days (toInteger ((weekdayNumber wkd) - 1))
+                 where interval = Days (toInteger wkd)
 
 {-
 
@@ -86,18 +107,32 @@ Retorna a próxima data livre sem alterar retirá-la.
 seeNextDate :: DateCycle -> DateTime -> DateTime
 seeNextDate dc now = fst (getNextDate dc now)
 
+instance Show DateCycle where
+    show (DateCycle a s e d) = (showHeap $ Heap.toList a) ++ "|" ++ (timeShow s) ++ "|" ++ (timeShow e) ++ "|" ++ (show d)
+
+showHeap :: [DateTime] -> String
+showHeap [] = ""
+showHeap (x:xs) = (dateTimeToString x) ++ "," ++ (showHeap xs)
+
 {-
 
-Converte uma string do tipo DD/MM/YYYY em DateTime
+Instância do read para DateCycle.
 
 -}
-instance Read DateTime where 
-    readsPrec _ str = do 
-    let l = split str '/' "" 
-    let year = read (l !! 2) :: Int
-    let month = read (l !! 1) :: Int
-    let day = read (l !! 0) :: Int   
-    [(DateTime year month day 00 00 00, "")]
+instance Read DateCycle where
+    readsPrec _ str = do
+      let l = split str '|' ""
+      if length l < 4 then [(empty, "")]
+      else do
+        let h = map read (split (l !! 0) ',' "") :: [DateTime]
+        let s = map read (split (l !! 1) ',' "") :: [Time]
+        let e = map read (split (l !! 2) ',' "")  :: [Time]
+        let d = read (l !! 3) :: Int
+        [(DateCycle (Heap.fromList h) s e d, "")]
+
+timeShow :: [Time] -> String
+timeShow [] = ""
+timeShow (x:xs) = ((show (tHour x)) ++ ":" ++ (show (tMinute x)) ++ ":" ++ (show (tSecond x))) ++ "," ++ (timeShow xs)
 
 {-
 

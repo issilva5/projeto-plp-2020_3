@@ -1,0 +1,2 @@
+2;6;Paracetamol;10;A cada 8h
+2;5;Rivotril;9;Sob recomendação médica
