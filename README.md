@@ -42,4 +42,4 @@ Antes de tudo faça a instalação das dependências descritas [aqui](Haskell/DE
  
  ## Vídeos de demonstração
  
- Os vídeos de demonstração para Haskell e Prolog podem ser acessados nos links respectivos.
+ Os vídeos de demonstração para [Haskell](https://www.youtube.com/watch?v=WGFePs7LXg8) e Prolog podem ser acessados nos links respectivos.
