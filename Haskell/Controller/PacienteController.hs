@@ -218,3 +218,4 @@ validaIDPaciente idPac (x:xs) | idPac == (Paciente.id x) = True
 consultarConsultas :: Int -> [Consulta.Consulta] -> [Consulta.Consulta]
 consultarConsultas _ [] = []
 consultarConsultas idP (x:xs) | idP == (Consulta.idPaciente x) = [x] ++ (consultarConsultas idP xs)
+                              | otherwise = consultarConsultas idP xs
