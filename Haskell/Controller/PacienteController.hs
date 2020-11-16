@@ -18,7 +18,6 @@ module Haskell.Controller.PacienteController (
 import Data.List ( intercalate )
 import qualified Haskell.Model.Receita as Receita
 import qualified Haskell.Model.Exame as Exame
-import qualified Haskell.Model.UBS as UBS
 import qualified Haskell.Model.Laudo as Laudo
 import qualified Haskell.Model.Paciente as Paciente
 import qualified Haskell.Model.Medico as Medico
