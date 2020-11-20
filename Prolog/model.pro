@@ -1,4 +1,6 @@
-:- module(model, [iniciaPaciente/0, iniciaUBS/0, iniciaMedico/0, iniciaReceita/0, iniciaMedicamento/0, iniciaLaudo/0, iniciaExame/0, iniciaId/0, iniciaLogins/0, iniciaSistema/0]).
+:- module(model, [iniciaPaciente/0, iniciaUBS/0, iniciaMedico/0,
+                  iniciaReceita/0, iniciaMedicamento/0, iniciaLaudo/0,
+                  iniciaExame/0, iniciaId/0, iniciaLogins/0, iniciaSistema/0, nextId/1]).
 
 /*
 
@@ -82,6 +84,15 @@ Inicializa os ids do sistema, contando do 0.
 
 */
 iniciaId :- asserta(id(0)).
+
+/*
+
+Pega o próximo ID do sistema.
+nextId(+N).
+
+*/
+nextId(N) :- id(X), retract(id(X)), N is X + 1, asserta(id(N)).
+
 
 /*
 
