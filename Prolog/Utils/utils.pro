@@ -1,6 +1,6 @@
 :- module(utils, [prompt/2, promptString/2, autentica/3]). %% na lista devem entrar as regras publicas do módulo na forma <nome>/<n>
 
-:- use_module('model.pro').
+:- use_module('../Models/model.pro').
 
 
 /*
