@@ -9,7 +9,22 @@
 :- use_module('./Controllers/ubsController.pro').
 
 /* Menu inicial. */
-main :- model:iniciaSistema, cadastro, login.
+main :-
+    iniciaSistema,
+    writeln( '-----------------------------------------------------------------'),
+    writeln( '         SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS)         '),
+    writeln( '-----------------------------------------------------------------'),
+    writeln(' -------------'),
+    writeln('  (L)ogin     '),
+    writeln('  (C)adastrar '),
+    writeln('  (E)ncerrar  '),
+    writeln(' -------------'),
+
+    promptString('Opção > ', OP),
+    ( OP = "L" -> login, tty_clear;
+      OP = "C" -> cadastro, tty_clear;
+      OP = "E" -> writeln('Tchau'), halt;
+      writeln('Opção Inválida'), main).
 
 /* Menu de login. */
 login :- write('-----------------------------------------------------------------\n
