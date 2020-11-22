@@ -1,4 +1,12 @@
-:- module(ubs, [visualizaConsultasFuturas/1, visualizaPacientes/1, visualizaMedicos/1, visualizaMedico/2, consultarMedicamentos/1, consultarMedicamento/2, validaIDMedicamento/2, adicionaMedicamentoEstoque/3, removeMedicamentoEstoque/3]).
+:- module(ubs, [validaIDMedicamento/1, 
+                validaIDExame/1, validaIDReceita/1, validaIDLaudo/1,
+                visualizaConsultasFuturas/1, visualizaPacientes/1, visualizaMedicos/1,
+                visualizaMedico/2, consultarMedicamentos/1, consultarMedicamento/2,
+                adicionaMedicamentoEstoque/3, removeMedicamentoEstoque/3]).
+
+
+/* Cria um médico. */
+cadastraMedico.
 
 /* Visualiza as consultas agendadas na UBS para hoje ou posteriori. */
 visualizaConsultasFuturas(_).
@@ -36,17 +44,37 @@ Um médico pode estar:
 */
 statusMedico.
 
-/* Verifica se o ID pertence a uma UBS. */
-validaIDUBS.
+/* 
+Verifica se o ID pertence a uma UBS. 
 
-/* Verifica se o ID pertence a um medicamento. */
-validaIDMedicamento(_, _).
+@param ID: id da ubs.
+*/
+validaIDUBS(ID).
 
-/* Verifica se o ID pertence a um exame. */
-validaIDExame.
+/* 
+Verifica se o ID pertence a um medicamento. 
 
-/* Verifica se o ID pertence a uma receita. */
-validaIDReceita.
+@param ID: id do medicamento.
+*/
+validaIDMedicamento(ID).
 
-/* Verifica se o ID pertence a um laudo. */
-validaIDLaudo.
+/* 
+Verifica se o ID pertence a um exame. 
+
+@param ID: id do exame.
+*/
+validaIDExame(ID).
+
+/* 
+Verifica se o ID pertence a uma receita. 
+
+@param ID: id da receita.
+*/
+validaIDReceita(ID).
+
+/* 
+Verifica se o ID pertence a um laudo. 
+
+@param ID: id do laudo.
+*/
+validaIDLaudo(ID).
