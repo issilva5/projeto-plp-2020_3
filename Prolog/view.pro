@@ -10,6 +10,7 @@
 
 /* Menu inicial. */
 main :-
+    iniciaSistema,
     writeln( '-----------------------------------------------------------------'),
     writeln( '         SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS)         '),
     writeln( '-----------------------------------------------------------------'),
