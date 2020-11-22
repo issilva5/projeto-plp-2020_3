@@ -1,4 +1,4 @@
-:- module(medico, []).
+:- module(medico, [validaIDMedico/1]).
 
 /* Cria os horários para o médico. */
 informarHorario.
@@ -39,5 +39,9 @@ solicitarTransferencia.
 /* Consulta o id da UBS de um médico. */
 pegaUBS.
 
-/* Verifica se o id pertence a um médico. */
-validaIDMedico.
+/* 
+Verifica se o id pertence a um médico. 
+
+@param ID: id do médico.
+*/
+validaIDMedico(ID).
