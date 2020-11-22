@@ -4,7 +4,21 @@
 :- use_module('model.pro').
 
 /* Menu inicial. */
-main.
+main :-
+    writeln( '-----------------------------------------------------------------'),
+    writeln( '         SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS)         '),
+    writeln( '-----------------------------------------------------------------'),
+    writeln(' -------------'),
+    writeln('  (L)ogin     '),
+    writeln('  (C)adastrar '),
+    writeln('  (E)ncerrar  '),
+    writeln(' -------------'),
+
+    promptString('Opção > ', OP),
+    ( OP = "L" -> login, tty_clear;
+      OP = "C" -> cadastro, tty_clear;
+      OP = "E" -> writeln('Tchau'), halt;
+      writeln('Opção Inválida'), main).
 
 /* Menu de login. */
 login :- write('-----------------------------------------------------------------\n
@@ -50,7 +64,7 @@ cadastraUBS :- promptString('Nome > ', Nome),
                promptString('Senha > ', Senha),
                model:nextId(N),
                assertz(model:ubs(N, Nome, Endereco)),
-               assertz(model:logins(N, Senha, 1)).     
+               assertz(model:logins(N, Senha, 1)).
 
 /* Menu do paciente. */
 menuPaciente.
