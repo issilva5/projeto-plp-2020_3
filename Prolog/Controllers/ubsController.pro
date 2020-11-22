@@ -1,35 +1,36 @@
-:- module(ubs, [validaIDUBS/2, validaIDMedicamento/1, 
-                validaIDExame/1, validaIDReceita/1, validaIDLaudo/1]).
+:- module(ubs, [validaIDMedicamento/1, 
+                validaIDExame/1, validaIDReceita/1, validaIDLaudo/1,
+                visualizaConsultasFuturas/1, visualizaPacientes/1, visualizaMedicos/1,
+                visualizaMedico/2, consultarMedicamentos/1, consultarMedicamento/2,
+                adicionaMedicamentoEstoque/3, removeMedicamentoEstoque/3]).
+
 
 /* Cria um médico. */
 cadastraMedico.
 
 /* Visualiza as consultas agendadas na UBS para hoje ou posteriori. */
-visualizaConsultasFuturas.
-
-/* Visualiza todo o histórico de consultas agendadas. */
-visualizaConsultas.
+visualizaConsultasFuturas(_).
 
 /* Visualiza as informações dos pacientes com consultas agendadas. */
-visualizaPacientes.
+visualizaPacientes(_).
 
 /* Visualiza os médicos que trabalham na UBS. */
-visualizaMedicos.
+visualizaMedicos(_).
 
-/* Cria um medicamento. */
-criaMedicamento.
+/* Visualiza os médico que trabalham na UBS. */
+visualizaMedico(_, _).
 
 /* Adiciona uma quantidade no estoque de um medicamento. */
-adicionaMedicamentoEstoque.
+adicionaMedicamentoEstoque(_, _, _).
 
 /* Retira uma quantiade do estoque de um medicamento. */
-removeMedicamentoEstoque.
+removeMedicamentoEstoque(_, _, _).
 
 /* Visualiza informações de todos os medicamentos da UBS. */
-consultarMedicamentos.
+consultarMedicamentos(_).
 
 /* Visualiza informações de um medicamento específico da UBS. */
-consultarMedicamento.
+consultarMedicamento(_, _).
 
 /*
 
