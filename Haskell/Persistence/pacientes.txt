@@ -1,1 +1,2 @@
 1;Rafael;11111;12/03/1993;70.0;180.0;B+;Rua De Cima;False;False;False;
+11;Thiago;11111;22/05/2001;56.0;180.0;B+;Rua A;False;False;False;

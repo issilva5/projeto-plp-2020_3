@@ -1,6 +1,7 @@
 :- module(model, [iniciaPaciente/0, iniciaUBS/0, iniciaMedico/0,
                   iniciaReceita/0, iniciaMedicamento/0, iniciaLaudo/0,
-                  iniciaExame/0, iniciaId/0, iniciaLogins/0, iniciaSistema/0, nextId/1]).
+                  iniciaExame/0, iniciaId/0, iniciaLogins/0, iniciaConsulta/0,
+                  iniciaSistema/0, nextId/1]).
 
 /*
 
@@ -61,6 +62,14 @@ iniciaLaudo :- dynamic laudo/4.
 
 /*
 
+Inicializa a tabela de consultas.
+Os campos são: id:: Int, idPaciente :: Int, idMedico :: Int, idUBS :: Int, dia :: String
+
+*/
+iniciaConsulta :- dynamic consulta/5.
+
+/*
+
 Inicializa a tabela de exame.
 Os campos são: id :: Int, idPaciente :: Int, idMedico :: Int, idUBS :: Int,
 tipo :: String, dia :: TBD, resultado :: String.
@@ -101,5 +110,4 @@ Inicializa todas as tabelas do sistema de uma só vez.
 */
 iniciaSistema :- iniciaPaciente, iniciaUBS, iniciaMedico, iniciaReceita,
                  iniciaMedicamento, iniciaLaudo, iniciaExame, iniciaLogins,
-                 iniciaId.
-
+                 iniciaConsulta, iniciaId.
