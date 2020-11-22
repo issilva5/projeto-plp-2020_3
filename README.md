@@ -30,7 +30,7 @@ O sistema atua como uma plataforma de gerenciamento de uma rede de saúde, por e
   * Dashboard para visualizar a situação atual do sistema (e.g., médicos livres, em consulta, etc)
 * Os dados serão persistidos utilizando arquivos.
 
-O projeto foi desenvolvido em [Haskell](Haskell) e em Prolog.
+O projeto foi desenvolvido em [Haskell](Haskell) e em [Prolog](Prolog).
 
 ## Como executar
 
@@ -39,7 +39,9 @@ O projeto foi desenvolvido em [Haskell](Haskell) e em Prolog.
 Antes de tudo faça a instalação das dependências descritas [aqui](Haskell/DEPENDENCIES.md), tendo feito isso, no diretório raiz do repositório, faça:
  - `ghc Haskell/View/Main.hs` para compilar;
  - com a compilação terminada faça `./Haskell/View/Main` para executar o sistema.
+
+### Prolog
  
- ## Vídeos de demonstração
+## Vídeos de demonstração
  
- Os vídeos de demonstração para [Haskell](https://www.youtube.com/watch?v=WGFePs7LXg8) e Prolog podem ser acessados nos links respectivos.
+Os vídeos de demonstração para [Haskell](https://www.youtube.com/watch?v=WGFePs7LXg8) e Prolog podem ser acessados nos links respectivos.
