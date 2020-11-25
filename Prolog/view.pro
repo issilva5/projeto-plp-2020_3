@@ -1,30 +1,32 @@
 :- encoding(utf8).
 
-:- module(view, [main/0, login/0, cadastro/0, menuPaciente/1, menuUBS/0, menuMedico/0]).
-
+:- module(view, [main/0, begin/0, cadastro/0, login/0, cadastro/0, menuPaciente/1, menuUBS/1, menuMedico/1]).
+%
 :- use_module('./Utils/utils.pro').
 :- use_module('./Models/model.pro').
 :- use_module('./Controllers/pacienteController.pro').
 :- use_module('./Controllers/medicoController.pro').
 :- use_module('./Controllers/ubsController.pro').
 
+begin :- model:iniciaSistema,
+         main.
+
 /* Menu inicial. */
 main :-
-    iniciaSistema,
     writeln( '-----------------------------------------------------------------'),
     writeln( '         SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS)         '),
     writeln( '-----------------------------------------------------------------'),
-    writeln(' -------------'),
+    writeln('--------------'),
     writeln('  (L)ogin     '),
     writeln('  (C)adastrar '),
     writeln('  (E)ncerrar  '),
-    writeln(' -------------'),
+    writeln('--------------'),
 
     promptString('Opção > ', OP),
-    ( OP = "L" -> login, tty_clear;
-      OP = "C" -> cadastro, tty_clear;
-      OP = "E" -> writeln('Tchau'), halt;
-      writeln('Opção Inválida'), main).
+    ( OP = "L" -> tty_clear, login;
+      OP = "C" -> tty_clear, cadastro;
+      OP = "E" -> writeln('Tchau');
+      writeln('Opção Inválida'), nl, promptString('Pressione qualquer tecla para continuar', _), tty_clear, main).
 
 /* Menu de login. */
 login :- write('-----------------------------------------------------------------\n
@@ -32,9 +34,9 @@ login :- write('----------------------------------------------------------------
 -----------------------------------------------------------------\n'),
          prompt('Insira seu ID > ', ID),
          promptString('Insira sua senha > ', S), autentica(ID, S, T),
-         (T =:= 0 -> menuPaciente(ID) ;
-          T =:= 1 -> menuUBS(ID);
-          T =:= 2 -> menuMedico ;
+         (T =:= 0 -> tty_clear, menuPaciente(ID);
+          T =:= 1 -> tty_clear, menuUBS(ID);
+          T =:= 2 -> tty_clear, menuMedico(ID) ;
           write('ID não encontrado\n'), login).
 
 /* Menu de cadastro. */
@@ -43,9 +45,9 @@ cadastro :- write('-------------------------------------------------------------
 -----------------------------------------------------------------\n'),
     write('(P)aciente'), nl, write('(U)BS'), nl, write('(V)oltar'), nl,
     promptString('Opção > ', O),
-    (O = "P" -> cadastraPac, tty_clear;
-     O = "U" -> cadastraUBS, tty_clear;
-     O = "V" -> tty_clear;
+    (O = "P" -> cadastraPac, tty_clear, main;
+     O = "U" -> cadastraUBS, tty_clear, main;
+     O = "V" -> tty_clear, main;
      write('Opção inválida\n'), cadastro).
 
 /* Lê as opções de cadastro do paciente e faz seu cadastro. */
@@ -64,7 +66,7 @@ cadastraPac :- promptString('Nome > ', Nome),
                assertz(model:paciente(N, Nome, CPF, Nascimento, Peso, Altura, Sangue, Endereco, Cardiopata, Diabetico, Hipertenso)),
                assertz(model:logins(N, Senha, 0)),
                format('\nCadastrado de paciente realizado com sucesso, id: ~d', [N]),
-               promptString('\n\nPress to continue', _).
+               promptString('\n\nPressione qualquer tecla para continuar', _).
 
 /* Lê as opções de cadastro da UBS e faz seu cadastro. */
 cadastraUBS :- promptString('Nome > ', Nome),
@@ -94,11 +96,11 @@ menuPaciente(ID) :- write('-----------------------------------------------------
                 O = "R" -> menuPacienteRequisitar(ID), tty_clear, menuPaciente(ID);
                 O = "C" -> menuPacienteConsultar(ID), tty_clear, menuPaciente(ID);
                 O = "E" -> menuPacienteEmergencia, tty_clear, menuPaciente(ID);
-                O = "S" -> tty_clear, login;
+                O = "S" -> tty_clear, main;
                 write('Opcao Invalida\n'), menuPaciente(ID)).
 
 menuPacienteBuscarUBSPorEspecialidade :- promptString('Especialidade > ', E),
-                                        forall(paciente:buscarUnidadesEspec(E, I, U, End), format('~w, ~w ~n', [U, End])).
+                                        forall(paciente:buscarUnidadesEspec(E, I, U, End), format('----------------------------~nUBS ~d~nNome: ~w~nEndereço: ~w~n', [I, U, End])).
 
 menuPacienteRequisitar(ID) :- write('(C)onsulta'), nl,
                               write('(E)xame'), nl,
@@ -109,26 +111,26 @@ menuPacienteRequisitar(ID) :- write('(C)onsulta'), nl,
                               O = "M" -> leituraRequisitaMedicamento(ID), tty_clear, menuPaciente(ID);
                               write('Opção Inválida\n'), menuPacienteRequisitar(ID)).
 
-leituraRequisitaConsulta(ID) :- promptString('ID do Médico > ', IDM),
+leituraRequisitaConsulta(ID) :- prompt('ID do Médico > ', IDM),
                                 medico:validaIDMedico(IDM),
-                                promptString('ID da UBS > ', IDU),
+                                prompt('ID da UBS > ', IDU),
                                 ubs:validaIDUBS(IDU),
                                 promptString('Informe a data desejada: ', Data),
                                 model:nextId(N),
                                 paciente:requisitarConsulta(N, ID, IDM, IDU, Data),
                                 format('Consulta ~d Marcada com o Médico ~d, na UBS ~d e no dia ~w ~n', [N, IDM, IDU, Data]).
 
-leituraRequisitaExame(ID) :- promptString('ID do Médico > ', IDM),
+leituraRequisitaExame(ID) :- prompt('ID do Médico > ', IDM),
                              medico:validaIDMedico(IDM),
-                             promptString('ID da UBS > ', IDU),
+                             prompt('ID da UBS > ', IDU),
                              ubs:validaIDUBS(IDU),
                              promptString('Tipo de Exame > ', Tipo),
                              promptString('Informe a data desejada: ', Data),
                              model:nextId(N),
-                             paciente:requisitarExame(N, ID, IDM, IDU, TIPO, Data),
+                             paciente:requisitarExame(N, ID, IDM, IDU, Tipo, Data),
                              format('Exame ~d marcado na UBS ~d e no dia ~w ~n', [N, IDU, Data]).
 
-leituraRequisitaMedicamento(ID) :- promptString('ID da Receita > ', IDR),
+leituraRequisitaMedicamento(ID) :- prompt('ID da Receita > ', IDR),
                                     ubs:validaIDReceita(IDR),
                                     paciente:requisitarMedicamento(IDR, R),
                                     writeln(R).
@@ -154,7 +156,7 @@ leituraConsultaLaudo(ID) :- write('(T)odos'), nl,
 leituraConsultaTodosLaudos(ID) :- forall(paciente:consultarLaudos(ID, IDL, IDM, IDU, Dia), 
                                   format('Laudo ~d: ~d, ~d, ~w', [IDL, IDM, IDU, Dia])).
 
-leituraConsultaLaudoEspecifico(ID) :- promptString('ID do Laudo > ', IDL),
+leituraConsultaLaudoEspecifico(ID) :- prompt('ID do Laudo > ', IDL),
                                       ubs:validaIDLaudo(IDL),
                                       paciente:consultaLaudo(ID, IDL, IDM, IDU, Dia),
                                       format('Laudo ~d: ~d, ~d, ~w', [IDL, IDM, IDU, Dia]).
@@ -169,7 +171,7 @@ leituraConsultaReceita :- write('(T)odas'), nl,
 leituraConsultaTodasReceitas :- forall(paciente:consultarReceitas(IDR, IDM, IDU), 
                                     format('Receita ~d: ~d, ~d, ~w', [IDR, IDM, IDU])).
 
-leituraConsultaReceitaEspecifica :- promptString('ID da Receita > ', IDR),
+leituraConsultaReceitaEspecifica :- prompt('ID da Receita > ', IDR),
                                         ubs:validaIDReceita(IDR),
                                         paciente:consultarReceita(IDR, IDM, IDU),
                                         format('Receita ~d: ~d, ~d, ~w', [IDR, IDM, IDU]).
@@ -184,7 +186,7 @@ leituraConsultaExame :- write('(T)odos'), nl,
 leituraConsultaTodosExames :- forall(paciente:consultarExames(IDE, IDM, T, Dia, Resultado), 
                                   format('Exame ~d: ~d, ~w, ~w, ~w', [IDE, IDM, T, Dia, Resultado])).
 
-leituraConsultaExameEspecifico :- promptString('ID do Exame > ', IDE),
+leituraConsultaExameEspecifico :- prompt('ID do Exame > ', IDE),
                                       paciente:consultarExame(IDE, IDM, T, Dia, Resultado),
                                       format('Exame ~d: ~d, ~w, ~w, ~w', [IDE, IDM, T, Dia, Resultado]).
 
@@ -198,7 +200,7 @@ leituraConsultaConsultas :- write('(T)odas'), nl,
 leituraConsultaTodasConsultas :- forall(paciente:consultarConsultas(IDC, IDM, IDU, Dia), 
                                 format('Consulta ~d: ~d, ~d, ~w', [IDC, IDM, IDU, Dia])).
 
-leituraConsultaConsultaEspecifica :- promptString('ID da Consulta > ', IDC),
+leituraConsultaConsultaEspecifica :- prompt('ID da Consulta > ', IDC),
                                      paciente:consultarConsulta(IDC, IDM, IDU, Dia), 
                                      format('Consulta ~d: ~d, ~d, ~w', [IDC, IDM, IDU, Dia]).
 
@@ -210,12 +212,13 @@ menuUBS(IdUBS) :- write('-------------------------------------------------------
     SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - UBS  \n
 -----------------------------------------------------------------\n'),
     write('(C)adastrar corpo médico'), nl, write('(V)isualizar informações'), nl,
-    write('(F)armácia'), nl, write('(D)ashboard'), nl,
+    write('(F)armácia'), nl, write('(D)ashboard'), nl, write('(S)air'), nl,
     promptString('Opção > ', Op),
-    (Op = "C" -> cadastraMedico(IdUBS), tty_clear, main ;
-     Op = "V" -> visualizaUBS(IdUBS), tty_clear, main ;
-     Op = "F" -> farmaciaUBS(IdUBS), tty_clear, main ;
-     Op = "D" -> dashBoard(IdUBS), tty_clear, main;
+    (Op = "C" -> cadastraMedico(IdUBS) ;
+     Op = "V" -> visualizaUBS(IdUBS) ;
+     Op = "F" -> farmaciaUBS(IdUBS) ;
+     Op = "D" -> dashBoard(IdUBS) ;
+     Op = "S" -> tty_clear, main;
      write('Opção inválida\n'), menuUBS(IdUBS)).
 
 cadastraMedico(IdUBS) :- promptString('Nome > ', Nome),
@@ -230,53 +233,53 @@ cadastraMedico(IdUBS) :- promptString('Nome > ', Nome),
 
 visualizaUBS(IdUBS) :- write('(A)gendamentos'), nl, write('(P)aciente'), nl, write('(M)édico'), nl,
     promptString('Opção > ', Op),
-    (Op = "A" -> ubs:visualizaConsultasFuturas(IdUBS), tty_clear, main;
-    Op = "P" -> ubs:visualizaPacientes(IdUBS), tty_clear, main;
-    Op = "M" -> visualizaUBSMedicos(IdUBS), tty_clear, main;
-    write('Opção inválida\n'), menuUBS(IdUBS)).
+    (Op = "A" -> ubs:visualizaConsultasFuturas(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    Op = "P" -> ubs:visualizaPacientes(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    Op = "M" -> visualizaUBSMedicos(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    write('Opção inválida\n'), tty_clear, menuUBS(IdUBS)).
 
 visualizaUBSMedicos(IdUBS) :- write('(T)odos'), nl, write('(E)specífico'), nl,
     promptString('Opção > ', Op),
-    (Op = "T" -> ubs:visualizaMedicos(IdUBS), tty_clear, main;
-    Op = "E" -> visualizaUBSMedico(IdUBS), tty_clear, main;
-    write('Opção inválida\n'), menuUBS(IdUBS)).
+    (Op = "T" -> ubs:visualizaMedicos(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    Op = "E" -> visualizaUBSMedico(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    write('Opção inválida\n'), tty_clear, menuUBS(IdUBS)).
 
-visualizaUBSMedico(IdUBS) :- promptString('Id Médico > ', IdMed), 
-    (medico:validaIDMedico(IdUBS, IdMed) -> ubs:visualizaMedico(IdUBS, IdMed);
-    format('ID: ~d inválido\n', [IdMed]), visualizaUBSMedicos(IdUBS)).
+visualizaUBSMedico(IdUBS) :- prompt('Id Médico > ', IdMed), 
+    (medico:validaIDMedico(IdMed) -> ubs:visualizaMedico(IdUBS, IdMed); % Fazer a visualização
+    format('ID: ~d inválido\n', [IdMed])).
 
 farmaciaUBS(IdUBS) :- write('(C)onsultar'), nl, write('(N)ovo'), nl, write('(A)dicionar'), nl, write('(R)emover'), nl,
     promptString('Opção > ', Op),
-    (Op = "C" -> farmaciaUBSConsultar(IdUBS), tty_clear, main;
-    Op = "N" -> novoMedicamento(IdUBS), tty_clear, main;
-    Op = "A" -> adicionaMedicamentoEstoque(IdUBS), tty_clear, main;
-    Op = "R" -> removeMedicamentoEstoque(IdUBS), tty_clear, main;
+    (Op = "C" -> farmaciaUBSConsultar(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    Op = "N" -> novoMedicamento(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    Op = "A" -> adicionaMedicamentoEstoque(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
+    Op = "R" -> removeMedicamentoEstoque(IdUBS), tty_clear, menuUBS(IdUBS); % Fazer a visualização
     write('Opção inválida\n'), menuUBS(IdUBS)).
 
 farmaciaUBSConsultar(IdUBS) :- write('(T)odos'), nl, write('(E)specífico'), nl,
     promptString('Opção > ', Op),
-    (Op = "T" -> ubs:consultarMedicamentos(IdUBS), tty_clear, main;
-    Op = "E" -> promptString('Id Medicamento > ', IdMed), ubs:validaIDMedicamento(IdUBS, IdMed),ubs:consultarMedicamento(IdUBS, IdMed), tty_clear, main;
-    write('Opção inválida\n'), farmaciaUBS(IdUBS)).
+    (Op = "T" -> ubs:consultarMedicamentos(IdUBS); % Fazer a visualização
+    Op = "E" -> promptString('Id Medicamento > ', IdMed), ubs:validaIDMedicamento(IdMed),ubs:consultarMedicamento(IdUBS, IdMed);
+    write('Opção inválida\n')).
 
 novoMedicamento(IdUBS) :- promptString('Nome > ', Nome),
     promptString('Nome > ', Nome),
-    promptString('Quantidade > ', Quantidade),
+    prompt('Quantidade > ', Quantidade),
     promptString('Bula > ', Bula),
     model:nextId(N),
     assertz(model:medicamento(N, IdUBS, Nome, Quantidade, Bula)),
     format('\nCadastrado de medicamento realizado com sucesso, id: ~d', [N]),
     promptString('\n\nPress to continue', _). 
 
-adicionaMedicamentoEstoque(IdUBS) :- promptString('Id Medicamento > ', IdMed), 
-    promptString('Quantidade a adicionar > ', Qtd),
-    (ubs:validaIDMedicamento(IdUBS, IdMed) -> ubs:adicionaMedicamentoEstoque(IdUBS, IdMed, Qtd);
-    format('ID: ~d inválido\n', [IdMed]), farmaciaUBS(IdUBS)).
+adicionaMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed), 
+    prompt('Quantidade a adicionar > ', Qtd),
+    (ubs:validaIDMedicamento(IdMed) -> ubs:adicionaMedicamentoEstoque(IdUBS, IdMed, Qtd);
+    format('ID: ~d inválido\n', [IdMed])).
 
-removeMedicamentoEstoque(IdUBS) :- promptString('Id Medicamento > ', IdMed), 
-    promptString('Quantidade a remover > ', Qtd),
-    (ubs:validaIDMedicamento(IdUBS, IdMed) -> ubs:removeMedicamentoEstoque(IdUBS, IdMed, Qtd);
-    format('ID: ~d inválido\n', [IdMed]), farmaciaUBS(IdUBS)).
+removeMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed), 
+    prompt('Quantidade a remover > ', Qtd),
+    (ubs:validaIDMedicamento(IdMed) -> ubs:removeMedicamentoEstoque(IdUBS, IdMed, Qtd);
+    format('ID: ~d inválido\n', [IdMed])).
 
 dashBoard(_).
 
@@ -303,24 +306,24 @@ menuMedicoAcessarDados(IDM) :- write('(P)acientes'), nl,
                                write('(E)xames'), nl,
                                write('(A)gendamento'), nl,
                                write('(M)edicamentos'), nl,
-                               promptString('Opção > ', O)
+                               promptString('Opção > ', O), % Fazer a visualização
                                (O = "P" -> acessarDadosPacientes(ID), tty_clear, menuMedico(IDM);
                                O = "E" -> menuMedicoAcessarExames(IDM), tty_clear, menuMedico(IDM);
                                P = "A" -> menuMedicoAcessarAgendamentos(IDM), tty_clear, menuMedico(IDM);
                                O = "M" -> consultarMedicamentos(IDM), tty_clear, menuMedico(IDM);
-                               write('Opção Inválida\n'), menuMedicoAcessarDados(IDM).
+                               write('Opção Inválida\n'), menuMedicoAcessarDados(IDM)).
 
-acessarDadosPacientes(ID) :- promptString('ID do Paciente > ', ID),
+acessarDadosPacientes(ID) :- prompt('ID do Paciente > ', ID),
                              paciente:validaIDPaciente(ID),
                              /*write('ID informado é inválido!\n'), acessarDadosPaciente(ID)).*/
-                             (medico:acessarDadosPaciente[IDM, Data]).
+                             medico:acessarDadosPaciente(ID).
  
 menuMedicoAcessarExames(IDM) :- write('(T)odos'), nl,
                                 write('(E)specíficos'), nl,
                                 promptString('Opção > ', O),
                                 (O = "T" -> medico:acessarExames(IdExame), tty_clear, menuMedico(IDM);
                                 O = "E" -> menuMedicoAcessarExamesEspecifico(IdExame), tty_clear, menuMedico(IDM);
-                                write('Opção Inválida\n'), menuMedicoAcessarExames(IDM).
+                                write('Opção Inválida\n'), menuMedicoAcessarExames(IDM)).
 
 menuMedicoAcessarExamesEspecifico(IDM) :- write('ID do (E)xame'), nl,
                                           /*medico:validaIDExame(IdExame)*/
@@ -329,14 +332,14 @@ menuMedicoAcessarExamesEspecifico(IDM) :- write('ID do (E)xame'), nl,
                                           promptString('Opção > ', O),
                                           (O = "E" -> medico:acessarExame(IdExame), tty_clear, menuMedico(IDM);
                                           O = "P" -> medico:acessarExame(IdExame), tty_clear, menuMedico(IDM);
-                                          write('ID informado é inválido!\n'), menuMedicoAcessarExamesEspecifico(IDM).
+                                          write('ID informado é inválido!\n'), menuMedicoAcessarExamesEspecifico(IDM)).
 
 menuMedicoAcessarAgendamentos(IDM) :- write('(T)odos'), nl,
                                       write('(E)specíficos'), nl,
                                       promptString('Opção > ', O),
                                       (O = "T" -> medico:acessarConsultas(IDM), tty_clear, menuMedico(IDM);
                                       O = "E" -> menuMedicoAcessarExamesAgendamentosEspecifico(IDM), tty_clear, menuMedico(IDM);
-                                      write('Opção Inválida\n'), menuMedicoAcessarAgendamentos(IDM).                  
+                                      write('Opção Inválida\n'), menuMedicoAcessarAgendamentos(IDM)).                  
 
 menuMedicoAcessarAgendamentosEspecifico(IDM) :- write('Data > '), nl,
                                                 promptString('Data > ', Data),
@@ -352,26 +355,26 @@ menuMedicoEmitir(IDM) :- write('(R)eceita'), nl,
                          O = "L" -> menuMedicoEmitirLaudo(IDM), tty_clear, menuMedico(IDM);
                          write('Opção Inválida\n'), menuMedicoEmitir(IDM)).
                                                       
-menuMedicoEmitirReceita(IDM) :- promptString('ID do Paciente > ', ID),
+menuMedicoEmitirReceita(IDM) :- prompt('ID do Paciente > ', ID),
                                 paciente:validaIDPaciente(ID),
-                                medico:emitirReceitas, tty_clear, menuMedico(IDM).
+                                medico:emitirReceitas, tty_clear, menuMedico(ID),
                                 write('ID informado é inválido!\n'), menuMedicoEmitirReceita(IDM).
 
-menuMedicoEmitirResultado(IDM) :- promptString('ID do Exame > ', IdExame),
-                                  /*medico:validaIDExame(IdExame)*/,
-                                  medico.emitirResultadoExame, tty_clear, menuMedico(IDM).
+menuMedicoEmitirResultado(IDM) :- prompt('ID do Exame > ', IdExame),
+                                  /*medico:validaIDExame(IdExame)*/
+                                  medico:emitirResultadoExame, tty_clear, menuMedico(IDM),
                                   /*format('Resultado > ')*/
                                   write('ID informado é inválido!\n'), menuMedicoEmitirResultado(IDM).
 
-menuMedicoEmitirLaudo(IDM) :- promptString('ID do Exame > ', IdExame),
-                              /*medico:validaIDExame(IdExame)*/,
-                              medico.emitirLaude, tty_clear, menuMedico(IDM).
+menuMedicoEmitirLaudo(IDM) :- prompt('ID do Exame > ', IdExame),
+                              /*medico:validaIDExame(IdExame)*/
+                              medico:emitirLaudo, tty_clear, menuMedico(IDM),
                               /*format('Resultado > ')*/
                               write('ID informado é inválido!\n'), menuMedicoEmitirLaudo(IDM).   
 
-menuMedicoTransferencia(IDM) :- promptString('ID da UBS > ', IdUBS),
+menuMedicoTransferencia(IDM) :- prompt('ID da UBS > ', IdUBS),
                                 ubs:validaIDUBS(IdUBS),
-                                /*medico:validaIDExame(IdExame)*/,
-                                medico.solicitarTransferencia, tty_clear, menuMedico(IDM).
+                                /*medico:validaIDExame(IdExame)*/
+                                medico:solicitarTransferencia, tty_clear, menuMedico(IDM),
                                 /*format('Resultado > ')*/
                                 write('ID informado é inválido!\n'), menuMedicoEmitirLaudo(IDM).
