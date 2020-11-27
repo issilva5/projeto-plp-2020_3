@@ -1,0 +1,190 @@
+:- use_module('utils.pro').
+
+/*
+
+Guarda as tabelas de horários dos médicos.
+
+Um médico tem um conjunto de horários de inicio e fim de plantão, um tempo de consulta e um conjunto de
+datas disponíveis para marcar consultas ou exames.
+
+*/
+:- dynamic m_inicio/4, m_fim/4, m_tempo/2, m_horarios/2.
+
+/*
+
+Faz o rolê acontecer. ¯\_(ツ)_/¯
+
+*/
+fazORoleAcontecer(Id) :- informaHorarios(Id), iniciaDatas(Id).
+
+/*
+
+Inicia a tabela de horários de consulta de um médico.
+@param +Id: Id do médico.
+
+*/
+iniciaDatas(Id) :- forall(
+    (today(T),
+    m_inicio(Id, H, M, W),
+    next_weekday(T, W, D),
+    combine_dt(D, time(H, M), O),
+    today_weekday(Tw)),
+    Tw == W -> asserta(m_horarios(Id, O)) ; assertz(m_horarios(Id, O))).
+
+/*
+
+Faz a coleta dos horários de início e fim de plantão do médico.
+@param +Id: Id do médico.
+
+O horário informado deve ser no formato HH:MM, com H entre 0 e 23, e M entre 0 e 59.
+Para pular um horário apenas aperte ENTER, ou digite qualquer coisa inválida.
+Caso o horário de início ou de fim seja inválido, ambos serão considerados inválidos e desconsiderados.
+
+*/
+informaHorarios(Id) :- forall(between(1,7,WeekD), (informaHorario(Id,WeekD) ; true)).
+
+/*
+
+Faz a coleta dos horários de início e fim de plantão do médico para um dado dia da semana.
+@param +Id: Id do médico.
+@param +WeekD: dia da semana, onde 1 é Segunda-feira e 7 é Domingo.
+
+@see informaHorarios
+
+*/
+informaHorario(Id, WeekD) :- informaHorarioInicio(Id, WeekD, MInicio),
+    informaHorarioFim(Id, WeekD, MFim),
+    assertz(MInicio),
+    assertz(MFim).
+
+/*
+
+Faz a coleta dos horários de início do médico para um dado dia da semana.
+@param +Id: Id do médico.
+@param +WeekD: dia da semana, onde 1 é Segunda-feira e 7 é Domingo.
+@param -MInicio: átomo no formato m_inicio(Id, Hora, Minuto, DiaSemana)
+
+@see informaHorario
+
+*/
+informaHorarioInicio(Id, WeekD, MInicio) :- weekday_name(WeekD, Name),
+    format(atom(Question), 'Informe seu horário de início na ~w (HH:MM) > ', [Name]),
+    utils:promptString(Question, HourString),
+    split_string(HourString, ":", "", [HourS, MinuteS]),
+    atom_number(HourS, Hour),
+    atom_number(MinuteS, Minute),
+    validaTempo(Hour, Minute),
+    MInicio = m_inicio(Id, Hour, Minute, WeekD).
+
+/*
+
+Faz a coleta dos horários de início do médico para um dado dia da semana.
+@param +Id: Id do médico.
+@param +WeekD: dia da semana, onde 1 é Segunda-feira e 7 é Domingo.
+@param -MFim: átomo no formato m_fim(Id, Hora, Minuto, DiaSemana)
+
+@see informaHorario
+
+*/
+informaHorarioFim(Id, WeekD, MFim) :- weekday_name(WeekD, Name),
+    format(atom(Question), 'Informe seu horário de fim na ~w (HH:MM) > ', [Name]),
+    utils:promptString(Question, HourString),
+    split_string(HourString, ":", "", [HourS, MinuteS]),
+    atom_number(HourS, Hour),
+    atom_number(MinuteS, Minute),
+    validaTempo(Hour, Minute),
+    MFim = m_fim(Id, Hour, Minute, WeekD).
+
+/*
+
+Verifica se um horário é válido.
+@param +Hour: um inteiro que deve estar entre 0 e 23 para retornar true.
+@param +Minute: um inteiro que deve estar entre 0 e 59 para retornar true.
+
+*/
+validaTempo(Hour, Minute) :- Hour >= 0, Hour < 24, Minute >= 0, Minute < 60.
+
+/*
+
+Adiciona uma quantidade de minutos a uma data.
+@param +date(Y, M, D, H, MN, S, TZ, _, _): data no formato padrão da estrutura de data de Prolog
+@param +Minutes: quantidade de minutos a ser adicionada
+@param -DateOut: data com os minutos adicionados
+
+*/
+add_minutes(date(Y, M, D, H, MN, S, TZ, _, _), Minutes, DateOut) :-
+    Aux is MN + Minutes,
+    date_time_stamp(date(Y,M,D,H,Aux,S,TZ,-,-), Stamp),
+    stamp_date_time(Stamp, DateOut, TZ).
+
+/*
+
+Adiciona uma quantidade de dias a uma data.
+@param +Date: data no formato padrão da estrutura de data de Prolog - date(Y, M, D, H, MN, S, TZ, -, -)
+@param +Minutes: quantidade de minutos a ser adicionada
+@param -DateOut: data com os minutos adicionados
+
+*/
+add_days(Date, Days, DateOut) :-
+    Minutes is Days * 24 * 60,
+    add_minutes(Date, Minutes, DateOut).
+
+
+/*
+
+Pega a data do próximo dia da semana a partir de uma dada data.
+@param +date(Y, M, D): data base
+@param +WeekD: dia da semana
+@param -DateOut: data do próximo dia da semana a partir da data base.
+
+*/
+next_weekday(_, WeekD, DateOut) :- (WeekD < 1 ; WeekD > 7), DateOut = "impossivel", !.
+
+next_weekday(date(Y, M, D), WeekD, DateOut) :-
+    day_of_the_week(date(Y, M, D), DWeek),
+    WeekD == DWeek,
+    DateOut = date(Y, M, D), !.
+
+next_weekday(date(Y, M, D), WeekD, DateOut) :-
+    add_days(date(Y, M, D, 0, 0, 0, 0, -, -), 1, DateAux1),
+    date_time_value(date, DateAux1, DateAux2),
+    next_weekday(DateAux2, WeekD, DateOut).
+
+/*
+
+Nomes dos dias da semana.
+
+*/
+weekday_name(1, "Segunda-feira").
+weekday_name(2, "Terça-feira").
+weekday_name(3, "Quarta-feira").
+weekday_name(4, "Quinta-feira").
+weekday_name(5, "Sexta-feira").
+weekday_name(6, "Sábado").
+weekday_name(7, "Domingo").
+
+/*
+
+Recupera a data do dia corrente, no horário oficial de Brasília.
+@param -T: data de hoje
+
+*/
+today(T) :- get_time(X), stamp_date_time(X, D, 10800), date_time_value(date, D, T).
+
+/*
+
+Recupera o dia da semana do dia corrente, no horário oficial de Brasília.
+@param -W: dia da semana de hoje
+
+*/
+today_weekday(W) :- today(T), day_of_the_week(T, W).
+
+/*
+
+Combina uma data no formato date(Y, M, D) e um horário no formato time(H, MN).
+@param +date: data no formato date(Y, M, D)
+@param +time: horário no formato time(H, MN)
+@param -O: data no formato date(Y, M, D, H, MN, S, TZ, -, -), com segundos igual a 0 e TZ sendo GMT-3
+
+*/
+combine_dt(date(Y, M, D), time(H, MN), O) :- O = date(Y, M, D, H, MN, 0, 10800, -, -). 
