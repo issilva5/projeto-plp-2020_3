@@ -17,8 +17,26 @@ Faz o rolê acontecer. ¯\_(ツ)_/¯
 */
 fazORoleAcontecer(Id) :- informaHorarios(Id), iniciaDatas(Id).
 
+/*
+
+Obtem o próximo horário livre de um médico.
+@param +Id: Id do médico
+@param -D: próximo horário livre
+
+*/
 getNextDate(Id, D) :- m_horarios(Id, D), retract(m_horarios(Id, D)), !, putNextDate(Id, D).
 
+/*
+
+Salva no BD a próxima data do médico.
+@param +Id: Id do médico
+@param +D: última data retirada.
+
+É chamado, internamente, após o getNextDate.
+
+@see getNextDate.
+
+*/
 putNextDate(Id, D) :- m_tempo(Id, T),
     add_minutes(D, T, NewDate),
     date_time_value(date, D, OnlyDate),
