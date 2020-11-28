@@ -8,7 +8,7 @@ Um médico tem um conjunto de horários de inicio e fim de plantão, um tempo de
 datas disponíveis para marcar consultas ou exames.
 
 */
-:- dynamic m_inicio/4, m_fim/4, m_tempo/2, m_horarios/2.
+:- dynamic m_inicio/3, m_fim/3, m_tempo/2, m_horarios/2.
 
 /*
 
@@ -16,6 +16,19 @@ Faz o rolê acontecer. ¯\_(ツ)_/¯
 
 */
 fazORoleAcontecer(Id) :- informaHorarios(Id), iniciaDatas(Id).
+
+getNextDate(Id, D) :- m_horarios(Id, D), retract(m_horarios(Id, D)), !, putNextDate(Id, D).
+
+putNextDate(Id, D) :- m_tempo(Id, T),
+    add_minutes(D, T, NewDate),
+    date_time_value(date, D, OnlyDate),
+    day_of_the_week(OnlyDate, DayOfTheWeek),
+    m_fim(Id, TF, DayOfTheWeek),
+    combine_dt(OnlyDate, TF, MaxDate),
+    compare_dates(NewDate, MaxDate, C),
+    (C =:= -1 -> asserta(m_horarios(Id, NewDate)) ; assertz(m_horarios(Id, NewDate))), !.
+
+
 
 /*
 
@@ -25,7 +38,7 @@ Inicia a tabela de horários de consulta de um médico.
 */
 iniciaDatas(Id) :- forall(
     (today(T),
-    m_inicio(Id, H, M, W),
+    m_inicio(Id, time(H, M), W),
     next_weekday(T, W, D),
     combine_dt(D, time(H, M), O),
     today_weekday(Tw)),
@@ -74,7 +87,7 @@ informaHorarioInicio(Id, WeekD, MInicio) :- weekday_name(WeekD, Name),
     atom_number(HourS, Hour),
     atom_number(MinuteS, Minute),
     validaTempo(Hour, Minute),
-    MInicio = m_inicio(Id, Hour, Minute, WeekD).
+    MInicio = m_inicio(Id, time(Hour, Minute), WeekD).
 
 /*
 
@@ -93,7 +106,7 @@ informaHorarioFim(Id, WeekD, MFim) :- weekday_name(WeekD, Name),
     atom_number(HourS, Hour),
     atom_number(MinuteS, Minute),
     validaTempo(Hour, Minute),
-    MFim = m_fim(Id, Hour, Minute, WeekD).
+    MFim = m_fim(Id, time(Hour, Minute), WeekD).
 
 /*
 
@@ -114,7 +127,7 @@ Adiciona uma quantidade de minutos a uma data.
 */
 add_minutes(date(Y, M, D, H, MN, S, TZ, _, _), Minutes, DateOut) :-
     Aux is MN + Minutes,
-    date_time_stamp(date(Y,M,D,H,Aux,S,TZ,-,-), Stamp),
+    date_time_stamp(date(Y,M,D,H,Aux,0.0,TZ,-,-), Stamp),
     stamp_date_time(Stamp, DateOut, TZ).
 
 /*
@@ -187,4 +200,16 @@ Combina uma data no formato date(Y, M, D) e um horário no formato time(H, MN).
 @param -O: data no formato date(Y, M, D, H, MN, S, TZ, -, -), com segundos igual a 0 e TZ sendo GMT-3
 
 */
-combine_dt(date(Y, M, D), time(H, MN), O) :- O = date(Y, M, D, H, MN, 0, 10800, -, -). 
+combine_dt(date(Y, M, D), time(H, MN), O) :- O = date(Y, M, D, H, MN, 0.0, 10800, -, -).
+
+/*
+
+Compara duas datas.
+@param +D1: data 1
+@param +D2: data 2
+@param -C: 1 se data1 > data2, -1 se data1 < data2 e 0 se forem iguais.
+
+*/
+compare_dates(D1, D2, C) :- D1 @< D2 -> C is -1, !.
+compare_dates(D1, D2, C) :- D1 @> D2 -> C is 1, !.
+compare_dates(D1, D2, C) :- C is 0.
