@@ -1,4 +1,4 @@
-:- module(utils, [prompt/2, promptString/2, autentica/3]). %% na lista devem entrar as regras publicas do módulo na forma <nome>/<n>
+:- module(utils, [prompt/2, promptString/2, autentica/3, mensagemEspera/0]). %% na lista devem entrar as regras publicas do módulo na forma <nome>/<n>
 
 :- use_module('../Models/model.pro').
 
@@ -29,3 +29,11 @@ autentica(+ID, +Senha, -Tipo).
 */
 autentica(ID, Senha, Tipo) :- model:logins(ID, Senha, Tipo), !.
 autentica(_, _, Tipo) :- Tipo is -1.
+
+/*
+
+Imprime mensagem e para a execução até receba uma entrada.
+
+*/
+
+mensagemEspera :- promptString('\n\nPressione qualquer tecla para continuar', _).

@@ -1,36 +1,52 @@
 :- module(ubs, [validaIDMedicamento/1, 
                 validaIDExame/1, validaIDReceita/1, validaIDLaudo/1,
-                visualizaConsultasFuturas/1, visualizaPacientes/1, visualizaMedicos/1,
-                visualizaMedico/2, consultarMedicamentos/1, consultarMedicamento/2,
-                adicionaMedicamentoEstoque/3, removeMedicamentoEstoque/3]).
+                visualizaConsultasFuturas/5, visualizaPacientes/12, visualizaMedicos/5,
+                visualizaMedico/5, consultarMedicamentos/5, consultarMedicamento/5,
+                adicionaMedicamentoEstoque/5, removeMedicamentoEstoque/5]).
 
 
 /* Cria um médico. */
 cadastraMedico.
 
-/* Visualiza as consultas agendadas na UBS para hoje ou posteriori. */
-visualizaConsultasFuturas(_).
+/* Visualiza as consultas agendadas na UBS para hoje ou posteriori.
+    visualizaConsultasFuturas(?IdUBS, -IdConsulta, -IdPaciente, -IdMedico, -Dia)
+*/
+visualizaConsultasFuturas(IdUBS, IdConsulta, IdPaciente, IdMedico, Dia).
 
-/* Visualiza as informações dos pacientes com consultas agendadas. */
-visualizaPacientes(_).
+/* Visualiza as informações dos pacientes com consultas agendadas. 
+    visualizaPacientes(?IdUBS, -IdPaciente, -Nome, -Endereco, -CPF, -Dia, -Peso, -Altura, -TipoSanguineo, -C, -D, -H)
+*/
+visualizaPacientes(IdUBS, IdPaciente, Nome, Endereco, CPF, Dia, Peso, Altura, TipoSanguineo, C, D, H).
 
-/* Visualiza os médicos que trabalham na UBS. */
-visualizaMedicos(_).
+/* Visualiza os médicos que trabalham na UBS. 
+    visualizaMedicos(-IdMed, -Nome, -CRM, ?IdUBS, -Especialidade)
+*/
+visualizaMedicos(IdMed, Nome, CRM, IdUBS, Especialidade).
 
-/* Visualiza os médico que trabalham na UBS. */
-visualizaMedico(_, _).
+/* Visualiza os médico que trabalham na UBS.
+    visualizaMedico(?IdMed, -Nome, -CRM, ?IdUBS, -Especialidade)
+*/
+visualizaMedico(IdMed, Nome, CRM, IdUBS, Especialidade).
 
-/* Adiciona uma quantidade no estoque de um medicamento. */
-adicionaMedicamentoEstoque(_, _, _).
+/* Adiciona uma quantidade no estoque de um medicamento.
+    adicionaMedicamentoEstoque(?IdMed, ?IdUBS, -Nome, ?Qtd, -Bula)
+*/
+adicionaMedicamentoEstoque(IdMed, IdUBS, Nome, Qtd, Bula).
 
-/* Retira uma quantiade do estoque de um medicamento. */
-removeMedicamentoEstoque(_, _, _).
+/* Retira uma quantiade do estoque de um medicamento. 
+    removeMedicamentoEstoque(?IdMed, ?IdUBS, -Nome, ?Qtd, -Bula)
+*/
+removeMedicamentoEstoque(IdMed, IdUBS, Nome, Qtd, Bula).
 
-/* Visualiza informações de todos os medicamentos da UBS. */
-consultarMedicamentos(_).
+/* Visualiza informações de todos os medicamentos da UBS. 
+    consultarMedicamentos(-IdMed, ?IdUBS, -Nome, -Qtd, -Bula)
+*/
+consultarMedicamentos(IdMed, IdUBS, Nome, Qtd, Bula).
 
-/* Visualiza informações de um medicamento específico da UBS. */
-consultarMedicamento(_, _).
+/* Visualiza informações de um medicamento específico da UBS. 
+    consultarMedicamentos(?IdMed, ?IdUBS, -Nome, -Qtd, -Bula)
+*/
+consultarMedicamento(IdMed, IdUBS, Nome, Qtd, Bula).
 
 /*
 
