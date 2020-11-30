@@ -1,4 +1,4 @@
-:- module(time, [medicoHorarios/1, getNextDate/2]).
+:- module(time, [medicoHorarios/1, getNextDate/2, string_to_date/2]).
 
 :- use_module('utils.pro').
 :- use_module('../Models/model.pro').
@@ -265,3 +265,5 @@ Compara duas datas.
 compare_dates(D1, D2, C) :- D1 @< D2 -> C is -1, !.
 compare_dates(D1, D2, C) :- D1 @> D2 -> C is 1, !.
 compare_dates(_, _, C) :- C is 0.
+
+string_to_date(String, Date).

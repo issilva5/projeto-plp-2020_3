@@ -318,14 +318,14 @@ menuMedico(IDM) :- write('------------------------------------------------------
 
 menuMedicoAcessarDados(IDM) :- write('(P)acientes'), nl,
                                write('(E)xames'), nl,
-                               write('(A)gendamento'), nl,
+                               write('(C)onsultas agendadas'), nl,
                                write('(M)edicamentos'), nl,
                                write('(V)oltar'), nl,
                                promptString('Opção > ', O), % Fazer a visualização
                                (O = "P" -> acessarDadosPacientes, mensagemEspera, menuMedico(IDM);
                                O = "E" -> menuMedicoAcessarExames(IDM), mensagemEspera, menuMedico(IDM);
-                               P = "A" -> menuMedicoAcessarAgendamentos(IDM), mensagemEspera, menuMedico(IDM);
-                               O = "M" -> consultarMedicamentos(IDM), mensagemEspera, menuMedico(IDM);
+                               O = "A" -> menuMedicoAcessarAgendamentos(IDM), mensagemEspera, menuMedico(IDM);
+                               O = "M" -> menuMedicoAcessarMedicamentos(IDM), mensagemEspera, menuMedico(IDM);
                                O = "V" -> tty_clear, menuMedico(IDM) ;
                                write('Opção Inválida\n\n'), menuMedicoAcessarDados(IDM)).
 
@@ -334,45 +334,56 @@ acessarDadosPacientes :- prompt('ID do Paciente > ', ID),
  
 menuMedicoAcessarExames(IDM) :- write('(T)odos'), nl,
                                 write('(E)specíficos'), nl,
+                                write('(V)oltar'), nl,
                                 promptString('Opção > ', O),
-                                (O = "T" -> medico:acessarExames(IDM);
+                                (O = "T" -> medico:acessarExames(IDM, 0);
                                 O = "E" -> menuMedicoAcessarExamesEspecifico;
+                                O = "V" -> tty_clear, menuMedicoAcessarDados(IDM);
                                 write('Opção Inválida\n\n')).
 
 menuMedicoAcessarExamesEspecifico :- write('ID do (E)xame'), nl,
-                                          /*medico:validaIDExame(IdExame)*/
-                                          write('ID do (P)aciente'), nl,
-                                          paciente:validaIDPaciente(ID),
-                                          promptString('Opção > ', O),
-                                          (O = "E" -> medico:acessarExame(IdExame), tty_clear, menuMedico(IDM);
-                                          O = "P" -> medico:acessarExame(IdExame), tty_clear, menuMedico(IDM);
-                                          write('ID informado é inválido!\n'), menuMedicoAcessarExamesEspecifico(IDM)).
+                                    write('ID do (P)aciente'), nl,
+                                    promptString('Opção > ', O),
+                                    prompt('Insira o ID > ', ID),
+                                    ((O = "E", ubs:validaIDExame(ID)) -> medico:acessarExames(ID, 1);
+                                    (O = "P", paciente:validaIDPaciente(ID)) -> medico:acessarExames(ID, 2);
+                                    write('Opção ou ID informado é inválido!\n\n')).
+
 
 menuMedicoAcessarAgendamentos(IDM) :- write('(T)odos'), nl,
                                       write('(E)specíficos'), nl,
+                                      write('(V)oltar'), nl,
                                       promptString('Opção > ', O),
-                                      (O = "T" -> medico:acessarConsultas(IDM), tty_clear, menuMedico(IDM);
-                                      O = "E" -> menuMedicoAcessarExamesAgendamentosEspecifico(IDM), tty_clear, menuMedico(IDM);
-                                      write('Opção Inválida\n'), menuMedicoAcessarAgendamentos(IDM)).                  
+                                      (O = "T" -> medico:acessarConsultas(IDM, 0);
+                                      O = "E" -> menuMedicoAcessarAgendamentosEspecifico(IDM);
+                                      O = "V" -> tty_clear, menuMedicoAcessarDados(IDM);
+                                      write('Opção Inválida\n\n')).                  
 
 menuMedicoAcessarAgendamentosEspecifico(IDM) :- write('Data > '), nl,
                                                 promptString('Data > ', Data),
-                                                (Data -> medico:acessarConsultasData), tty_clear, menuMedico(IDM);
-                                                write('Data Inválida\n'), menuMedicoAcessarAgendamentosEspecifico(IDM).
+                                                (medico:acessarConsultas(IDM, Data); write('Data Inválida\n')).
+
+menuMedicoAcessarMedicamentos(IDM) :- write('(T)odos'), nl,
+                                      write('(E)specíficos'), nl,
+                                      write('(V)oltar'), nl,
+                                      promptString('Opção > ', O),
+                                      (O = "T" -> medico:acessarMedicamentos ;
+                                      O = "E" -> prompt('Insira o ID > ', ID), medico:acessarMedicamentos(ID) ;
+                                      O = "V" -> tty_clear, menuMedicoAcessarDados(IDM);
+                                      write('Opção Inválida\n\n')).
 
 menuMedicoEmitir(IDM) :- write('(R)eceita'), nl,
                          write('Resultado de (E)xame'), nl,
                          write('(L)audo Médico'), nl,
+                         write('(V)oltar'), nl,
                          promptString('Opção > ', O),
-                         (O = "R" -> menuMedicoEmitirReceita(IDM), tty_clear, menuMedico(IDM);
-                         O = "E" -> menuMedicoEmitirResultado(IDM), tty_clear, menuMedico(IDM);
-                         O = "L" -> menuMedicoEmitirLaudo(IDM), tty_clear, menuMedico(IDM);
+                         (O = "R" -> menuMedicoEmitirReceita(IDM);
+                         O = "E" -> menuMedicoEmitirResultado(IDM);
+                         O = "L" -> menuMedicoEmitirLaudo(IDM);
+                         O = "V" -> tty_clear, menuMedico(IDM) ;
                          write('Opção Inválida\n'), menuMedicoEmitir(IDM)).
                                                       
-menuMedicoEmitirReceita(IDM) :- prompt('ID do Paciente > ', ID),
-                                paciente:validaIDPaciente(ID),
-                                medico:emitirReceitas, tty_clear, menuMedico(ID),
-                                write('ID informado é inválido!\n'), menuMedicoEmitirReceita(IDM).
+menuMedicoEmitirReceita(IDM) :- prompt('ID do Paciente > ', ID), paciente:validaIDPaciente(ID) ->  medico:emitirReceitas ; write('ID informado é inválido!\n\n').
 
 menuMedicoEmitirResultado(IDM) :- prompt('ID do Exame > ', IdExame),
                                   /*medico:validaIDExame(IdExame)*/
@@ -386,9 +397,5 @@ menuMedicoEmitirLaudo(IDM) :- prompt('ID do Exame > ', IdExame),
                               /*format('Resultado > ')*/
                               write('ID informado é inválido!\n'), menuMedicoEmitirLaudo(IDM).   
 
-menuMedicoTransferencia(IDM) :- prompt('ID da UBS > ', IdUBS),
-                                ubs:validaIDUBS(IdUBS),
-                                /*medico:validaIDExame(IdExame)*/
-                                medico:solicitarTransferencia, tty_clear, menuMedico(IDM),
-                                /*format('Resultado > ')*/
-                                write('ID informado é inválido!\n'), menuMedicoEmitirLaudo(IDM).
+menuMedicoTransferencia(IDM) :- prompt('ID da UBS de destino > ', IdUBS),
+                                ubs:validaIDUBS(IdUBS), medico:solicitarTransferencia(IDM, IdUBS) ; write('ID informado é inválido!\n').
