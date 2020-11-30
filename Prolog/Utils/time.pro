@@ -1,4 +1,7 @@
+:- module(time, [medicoHorarios/1, getNextDate/2]).
+
 :- use_module('utils.pro').
+:- use_module('../Models/model.pro').
 
 /*
 
@@ -8,14 +11,14 @@ Um médico tem um conjunto de horários de inicio e fim de plantão, um tempo de
 datas disponíveis para marcar consultas ou exames.
 
 */
-:- dynamic m_inicio/3, m_fim/3, m_tempo/2, m_horarios/2.
+%:- dynamic m_inicio/3, m_fim/3, m_tempo/2, m_horarios/2.
 
 /*
 
 Faz o rolê acontecer. ¯\_(ツ)_/¯
 
 */
-fazORoleAcontecer(Id) :- informaHorarios(Id), iniciaDatas(Id).
+medicoHorarios(Id) :- informaHorarios(Id), iniciaDatas(Id).
 
 /*
 
@@ -24,7 +27,7 @@ Obtem o próximo horário livre de um médico.
 @param -D: próximo horário livre
 
 */
-getNextDate(Id, D) :- m_horarios(Id, D), retract(m_horarios(Id, D)), !, putNextDate(Id, D).
+getNextDate(Id, D) :- model:m_horarios(Id, D), retract(model:m_horarios(Id, D)), !, putNextDate(Id, D).
 
 /*
 
@@ -37,14 +40,19 @@ Salva no BD a próxima data do médico.
 @see getNextDate.
 
 */
-putNextDate(Id, D) :- m_tempo(Id, T),
+putNextDate(Id, D) :- model:m_tempo(Id, T),
     add_minutes(D, T, NewDate),
     date_time_value(date, D, OnlyDate),
     day_of_the_week(OnlyDate, DayOfTheWeek),
-    m_fim(Id, TF, DayOfTheWeek),
+    model:m_fim(Id, TF, DayOfTheWeek),
     combine_dt(OnlyDate, TF, MaxDate),
     compare_dates(NewDate, MaxDate, C),
-    (C =:= -1 -> asserta(m_horarios(Id, NewDate)) ; assertz(m_horarios(Id, NewDate))), !.
+    (C =:= -1 -> asserta(model:m_horarios(Id, NewDate)) ; 
+        model:m_inicio(Id, TI, DayOfTheWeek),
+        add_days(NewDate, 7, OutputDate),
+        date_time_value(date, OutputDate, OnlyDate2),
+        combine_dt(OnlyDate2, TI, NewDate2),
+        assertz(model:m_horarios(Id, NewDate2))), !.
 
 
 
@@ -56,11 +64,11 @@ Inicia a tabela de horários de consulta de um médico.
 */
 iniciaDatas(Id) :- forall(
     (today(T),
-    m_inicio(Id, time(H, M), W),
+    model:m_inicio(Id, time(H, M), W),
     next_weekday(T, W, D),
     combine_dt(D, time(H, M), O),
     today_weekday(Tw)),
-    Tw == W -> asserta(m_horarios(Id, O)) ; assertz(m_horarios(Id, O))).
+    Tw == W -> asserta(model:m_horarios(Id, O)) ; assertz(model:m_horarios(Id, O))).
 
 /*
 
@@ -72,7 +80,33 @@ Para pular um horário apenas aperte ENTER, ou digite qualquer coisa inválida.
 Caso o horário de início ou de fim seja inválido, ambos serão considerados inválidos e desconsiderados.
 
 */
-informaHorarios(Id) :- forall(between(1,7,WeekD), (informaHorario(Id,WeekD) ; true)).
+informaHorarios(Id) :- limpaTudo(Id), !, tempoConsulta(Id),
+    forall(between(1,7,WeekD),
+    (informaHorario(Id,WeekD) ; true)).
+
+/*
+
+Limpa informações anteriores sobre os horários do médico.
+@param +Id: Id do médico.
+
+*/
+limpaTudo(Id) :- (model:m_horarios(Id, D) ; true),
+    (retract(model:m_horarios(Id, D)) ; true),
+    (model:m_inicio(Id, I, W) ; true),
+    (retract(model:m_inicio(Id, I, W)) ; true),
+    (model:m_fim(Id, F, W2) ; true),
+    (retract(model:m_fim(Id, F, W2)) ; true),
+    (model:m_tempo(Id, T) ; true),
+    (retract(model:m_tempo(Id, T)) ; true).
+
+/*
+
+Faz a coleta do tempo de consulta do médico.
+Permanece em loop até o valor que o valor lido seja maior que 0.
+@param +Id: id do médico.
+
+*/
+tempoConsulta(Id) :- (prompt('Insira seu tempo médio de consulta > ', T), T > 0) -> asserta(model:m_tempo(Id, T)) ; tempoConsulta(Id).
 
 /*
 
@@ -105,7 +139,7 @@ informaHorarioInicio(Id, WeekD, MInicio) :- weekday_name(WeekD, Name),
     atom_number(HourS, Hour),
     atom_number(MinuteS, Minute),
     validaTempo(Hour, Minute),
-    MInicio = m_inicio(Id, time(Hour, Minute), WeekD).
+    MInicio = model:m_inicio(Id, time(Hour, Minute), WeekD).
 
 /*
 
@@ -124,7 +158,7 @@ informaHorarioFim(Id, WeekD, MFim) :- weekday_name(WeekD, Name),
     atom_number(HourS, Hour),
     atom_number(MinuteS, Minute),
     validaTempo(Hour, Minute),
-    MFim = m_fim(Id, time(Hour, Minute), WeekD).
+    MFim = model:m_fim(Id, time(Hour, Minute), WeekD).
 
 /*
 
@@ -143,7 +177,7 @@ Adiciona uma quantidade de minutos a uma data.
 @param -DateOut: data com os minutos adicionados
 
 */
-add_minutes(date(Y, M, D, H, MN, S, TZ, _, _), Minutes, DateOut) :-
+add_minutes(date(Y, M, D, H, MN, _, TZ, _, _), Minutes, DateOut) :-
     Aux is MN + Minutes,
     date_time_stamp(date(Y,M,D,H,Aux,0.0,TZ,-,-), Stamp),
     stamp_date_time(Stamp, DateOut, TZ).
@@ -230,4 +264,4 @@ Compara duas datas.
 */
 compare_dates(D1, D2, C) :- D1 @< D2 -> C is -1, !.
 compare_dates(D1, D2, C) :- D1 @> D2 -> C is 1, !.
-compare_dates(D1, D2, C) :- C is 0.
+compare_dates(_, _, C) :- C is 0.
