@@ -1,8 +1,8 @@
 :- encoding(utf8).
 
-:- module(view, [main/0, begin/0, cadastro/0, login/0, cadastro/0, menuPaciente/1, menuUBS/1, menuMedico/1]).
 %
 :- use_module('./Utils/utils.pro').
+:- use_module('./Utils/time.pro').
 :- use_module('./Models/model.pro').
 :- use_module('./Controllers/pacienteController.pro').
 :- use_module('./Controllers/medicoController.pro').
@@ -309,39 +309,37 @@ menuMedico(IDM) :- write('------------------------------------------------------
                 write('(T)ransferência'), nl,
                 write('(S)air'), nl,
                 promptString('Opção > ', O),
-                (O = "I" -> menuMedicoInformarHorario(IDM), tty_clear, menuMedico(ID);
-                O = "A" -> menuMedicoAcessarDados(IDM), tty_clear, menuMedico(ID);
-                O = "E" -> menuMedicoEmitir(IDM), tty_clear, menuMedico(ID);
-                O = "T" -> menuMedicoTransferencia(IDM), tty_clear, menuMedico(ID);
+                (O = "I" -> time:medicoHorarios(IDM), mensagemEspera, menuMedico(IDM);
+                O = "A" -> menuMedicoAcessarDados(IDM), mensagemEspera, menuMedico(IDM);
+                O = "E" -> menuMedicoEmitir(IDM), mensagemEspera, menuMedico(IDM);
+                O = "T" -> menuMedicoTransferencia(IDM), mensagemEspera, menuMedico(IDM);
                 O = "S" -> tty_clear, login;
-                write('Opcao Invalida\n'), menuMedico(IDM)).
-
-/*menuMedicoInformarHorario(IDM)*/
+                write('Opcao Invalida\n'), mensagemEspera, menuMedico(IDM)).
 
 menuMedicoAcessarDados(IDM) :- write('(P)acientes'), nl,
                                write('(E)xames'), nl,
                                write('(A)gendamento'), nl,
                                write('(M)edicamentos'), nl,
+                               write('(V)oltar'), nl,
                                promptString('Opção > ', O), % Fazer a visualização
-                               (O = "P" -> acessarDadosPacientes(ID), tty_clear, menuMedico(IDM);
-                               O = "E" -> menuMedicoAcessarExames(IDM), tty_clear, menuMedico(IDM);
-                               P = "A" -> menuMedicoAcessarAgendamentos(IDM), tty_clear, menuMedico(IDM);
-                               O = "M" -> consultarMedicamentos(IDM), tty_clear, menuMedico(IDM);
-                               write('Opção Inválida\n'), menuMedicoAcessarDados(IDM)).
+                               (O = "P" -> acessarDadosPacientes, mensagemEspera, menuMedico(IDM);
+                               O = "E" -> menuMedicoAcessarExames(IDM), mensagemEspera, menuMedico(IDM);
+                               P = "A" -> menuMedicoAcessarAgendamentos(IDM), mensagemEspera, menuMedico(IDM);
+                               O = "M" -> consultarMedicamentos(IDM), mensagemEspera, menuMedico(IDM);
+                               O = "V" -> tty_clear, menuMedico(IDM) ;
+                               write('Opção Inválida\n\n'), menuMedicoAcessarDados(IDM)).
 
-acessarDadosPacientes(ID) :- prompt('ID do Paciente > ', ID),
-                             paciente:validaIDPaciente(ID),
-                             /*write('ID informado é inválido!\n'), acessarDadosPaciente(ID)).*/
-                             medico:acessarDadosPaciente(ID).
+acessarDadosPacientes :- prompt('ID do Paciente > ', ID),
+                         (paciente:validaIDPaciente(ID), medico:acessarDadosPaciente(ID) ; write('ID informado é inválido!\n')).
  
 menuMedicoAcessarExames(IDM) :- write('(T)odos'), nl,
                                 write('(E)specíficos'), nl,
                                 promptString('Opção > ', O),
-                                (O = "T" -> medico:acessarExames(IdExame), tty_clear, menuMedico(IDM);
-                                O = "E" -> menuMedicoAcessarExamesEspecifico(IdExame), tty_clear, menuMedico(IDM);
-                                write('Opção Inválida\n'), menuMedicoAcessarExames(IDM)).
+                                (O = "T" -> medico:acessarExames(IDM);
+                                O = "E" -> menuMedicoAcessarExamesEspecifico;
+                                write('Opção Inválida\n\n')).
 
-menuMedicoAcessarExamesEspecifico(IDM) :- write('ID do (E)xame'), nl,
+menuMedicoAcessarExamesEspecifico :- write('ID do (E)xame'), nl,
                                           /*medico:validaIDExame(IdExame)*/
                                           write('ID do (P)aciente'), nl,
                                           paciente:validaIDPaciente(ID),

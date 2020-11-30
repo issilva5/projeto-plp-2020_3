@@ -36,4 +36,4 @@ Imprime mensagem e para a execução até receba uma entrada.
 
 */
 
-mensagemEspera :- promptString('\n\nPressione qualquer tecla para continuar', _).
+mensagemEspera :- promptString('\n\nPressione qualquer tecla para continuar', _), tty_clear.
