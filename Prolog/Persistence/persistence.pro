@@ -1,10 +1,12 @@
 :- module(persistence, []).
+:- use_module('../Models/model.pro').
 
 /*
 Verifica se o arquivo 'paciente.bd' existe, se existir o lê,
 c.c. chama model:iniciaPaciente.
 */
-lePaciente.
+lePaciente :- exists_file('paciente.bd'), consult('paciente.bd').
+
 
 /*
 Verifica se o arquivo 'ubs.bd' existe, se existir o lê,
@@ -55,7 +57,7 @@ c.c. chama model:iniciaId.
 leId.
 
 /* Persiste a tabela paciente no arquivo 'paciente.bd'. */
-escrevePaciente.
+escrevePaciente :- tell('paciente.bd'), listing(model:paciente), told.
 
 /* Persiste a tabela UBS no arquivo 'ubs.bd'. */
 escreveUBS.

@@ -7,6 +7,7 @@
 :- use_module('./Controllers/pacienteController.pro').
 :- use_module('./Controllers/medicoController.pro').
 :- use_module('./Controllers/ubsController.pro').
+:- use_module('./Persistence/persistence.pro').
 
 begin :- model:iniciaSistema,
          main.
@@ -65,6 +66,7 @@ cadastraPac :- promptString('Nome > ', Nome),
                model:nextId(N),
                assertz(model:paciente(N, Nome, CPF, Nascimento, Peso, Altura, Sangue, Endereco, Cardiopata, Diabetico, Hipertenso)),
                assertz(model:logins(N, Senha, 0)),
+               persistence:escrevePaciente,
                format('\nCadastrado de paciente realizado com sucesso, id: ~d', [N]),
                promptString('\n\nPressione qualquer tecla para continuar', _).
 
