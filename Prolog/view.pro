@@ -66,7 +66,6 @@ cadastraPac :- promptString('Nome > ', Nome),
                model:nextId(N),
                assertz(model:paciente(N, Nome, CPF, Nascimento, Peso, Altura, Sangue, Endereco, Cardiopata, Diabetico, Hipertenso)),
                assertz(model:logins(N, Senha, 0)),
-               persistence:escrevePaciente,
                format('\nCadastrado de paciente realizado com sucesso, id: ~d', [N]),
                promptString('\n\nPressione qualquer tecla para continuar', _).
 
