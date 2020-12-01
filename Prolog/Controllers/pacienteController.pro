@@ -1,7 +1,11 @@
-:- module(paciente, [buscarUnidadesEspec/4, requisitarConsulta/5, requisitarExame/6, 
+:- module(paciente, [buscarTodasUnidades/0, especialidadeDaUBS/1, buscarUnidadesEspec/2, requisitarConsulta/5, requisitarExame/6, 
                     requisitarMedicamento/2, consultarLaudos/5, consultarLaudo/5, consultarReceitas/3,
                     consultarReceita/3, consultarExames/5, consultarExame/5, consultarConsultas/4,
                     consultarConsulta/4, emergencia/1, validaIDPaciente/1]).
+
+:- use_module('../Models/model.pro').
+:- use_module('../Utils/show.pro').
+:- use_module('../Utils/utils.pro').
 
 /*
 Buscar as unidades que tem determinada especialidade.
@@ -14,13 +18,13 @@ Obs.: implementei esse método como um teste, pois ele ficará dando warning de 
 não foi definido. Porém ao utilizar o método após definir ele funciona, então ignorem os
 warnings.
 */
-buscarUnidadesEspec(E, I, U, End) :- model:medico(_,_,_,I,E), model:ubs(I, U, End).
+buscarUnidadesEspec(E, I) :- model:medico(_,_,_,I,E), forall(model:ubs(I, U, End), show:showUbs(model:ubs(I, U, End))).
 
 /* Listar todas as unidades. */
-buscarTodasUnidades.
+buscarTodasUnidades :- forall(model:ubs(I, U, End), show:showUbs(model:ubs(I, U, End)).
 
 /* Listar todas as especialidades de uma UBS. */
-especialidadeDaUBS.
+especialidadeDaUBS(I) :- model:ubs(I, _, _), format('Especialidades UBS ~d~n', [I]), forall(model:medico(Id, Nome, CRM, I, Especialidade), format('~w~n', [Especialidade]))).
 
 /* 
 Cria uma consulta.
@@ -31,7 +35,7 @@ Cria uma consulta.
 @param IDUbs: id da UBS.
 @param Dia: data da consulta.
 */
-requisitarConsulta(ID, IDPac, IDMed, IDUbs, Dia).
+requisitarConsulta(ID, IDPac, IDMed, IDUbs, Dia) :- assertz(model:consulta(ID, IDPac, IDMed, IDUbs, Dia)).
 
 /* 
 Cria um exame. 
@@ -43,7 +47,7 @@ Cria um exame.
 @param Tipo: tipo do exame,.
 @param Dia: dia do exame,.
 */
-requisitarExame(ID, IDPac, IDMed, IDUbs, Tipo, Dia).
+requisitarExame(ID, IDPac, IDMed, IDUbs, Tipo, Dia) :- assertz(model:exame(ID, IDPac, IDMed, IDUbs, Tipo, Dia, '-')).
 
 /* 
 Deduz do estoque os medicamentos de um dada receita. 

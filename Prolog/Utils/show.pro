@@ -1,4 +1,4 @@
-:- module(show, [showPaciente/1, showExame/1, showMedicamento/1, showConsulta/1]).
+:- module(show, [showPaciente/1, showExame/1, showMedicamento/1, showConsulta/1, showUbs/1]).
 
 :- use_module('../Models/model.pro').
 
@@ -37,3 +37,9 @@ showMedicamento(model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula)) :-
     format('Nome: ~w~n', [Nome]),
     format('Bula: ~w~n', [Bula]),
     format('Quantidade em estoque: ~d~n', [Estoque]).
+
+showUbs(model:ubs(Id, Nome, End)) :- 
+    write('----------------------------'), nl,
+    format('UBS ~d~n', [Id]),
+    format('Nome: ~w~n', [Nome]),
+    format('Endereço: ~w~n', [End]).
