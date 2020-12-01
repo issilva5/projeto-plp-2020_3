@@ -24,14 +24,20 @@ iniciaUBS :- dynamic ubs/3.
 
 /*
 
-Inicializa a tabela de médico e a tabela auxiliar dos horários.
+Inicializa a tabela de médico e as tabelas auxiliares dos horários.
 Os campos de médico são: id :: Int, nome :: String, crm :: String,
 idUbs :: Int, especialidade :: String.
 
-Os campos de horário são: idMed :: Int, horario :: TBD.
+Os campos de horário (m_horarios) são: idMed :: Int, horario :: date(Y, M, D, H, MN, 0.0, 10800, -, -).
+As datas sempre tem 0.0 segundos, e o 10800 indica que o fuso é GMT-3, ou seja, horário de Brasilia.
+
+Os campos de horário de início e fim (m_inicio, m_fim) são idMed :: Int, horario :: time(H, M),
+dia da semana :: Int (1 a 7).
+
+Os campos de tempo de atendimento (m_tempo) são idMed :: Int, tempo de consulta em minutos :: Int.
 
 */
-iniciaMedico :- dynamic medico/5, medico_horarios/2.
+iniciaMedico :- dynamic medico/5, m_inicio/3, m_fim/3, m_tempo/2, m_horarios/2.
 
 /*
 
