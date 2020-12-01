@@ -1,56 +1,91 @@
-:- module(ubs, [validaIDMedicamento/1, 
+:- module(ubs, [validaIDMedicamento/1,
                 validaIDExame/1, validaIDReceita/1, validaIDLaudo/1,
                 visualizaConsultasFuturas/5, visualizaPacientes/12, visualizaMedicos/5,
                 visualizaMedico/5, consultarMedicamentos/5, consultarMedicamento/5,
                 adicionaMedicamentoEstoque/5, removeMedicamentoEstoque/5]).
 
+:- use_module('../Models/model.pro').
+:- use_module('../Utils/show.pro').
+:- use_module('../Utils/utils.pro').
 
 /* Cria um médico. */
-cadastraMedico.
+cadastraMedico(IdUBS) :-
+    promptString('Nome > ', Nome),
+    promptString('CRM > ', CRM),
+    promptString('Especialidade > ', Especialidade),
+    promptString('Senha > ', Senha),
+    model:nextId(N),
+    assertz(model:medico(N, Nome, CRM, IdUBS, Especialidade) ),
+    assertz(model:logins(N, Senha, 2)),
+    format('\nCadastrado de médico realizado com sucesso, id: ~d', [N]),
+    promptString('\n\nPressione qualquer tecla para continuar', _).
+
+/* Cria um medicamento */
+cadastraMedicamento(IdUBS) :-
+    promptString('Nome > ', Nome),
+    utils:prompt('Quantidade > ', Qtd),
+    promptString('Bula > ', Bula),
+    model:nextId(N),
+    assertz(model:medicamento(N, IdUBS, Nome, Qtd, Bula)),
+    format('\nCadastrado de medicamento realizado com sucesso, id: ~d', [N]),
+    promptString('\n\nPressione qualquer tecla para continuar', _).
 
 /* Visualiza as consultas agendadas na UBS para hoje ou posteriori.
     visualizaConsultasFuturas(?IdUBS, -IdConsulta, -IdPaciente, -IdMedico, -Dia)
 */
 visualizaConsultasFuturas(IdUBS, IdConsulta, IdPaciente, IdMedico, Dia).
 
-/* Visualiza as informações dos pacientes com consultas agendadas. 
+/* Visualiza as informações dos pacientes com consultas agendadas.
     visualizaPacientes(?IdUBS, -IdPaciente, -Nome, -Endereco, -CPF, -Dia, -Peso, -Altura, -TipoSanguineo, -C, -D, -H)
 */
 visualizaPacientes(IdUBS, IdPaciente, Nome, Endereco, CPF, Dia, Peso, Altura, TipoSanguineo, C, D, H).
 
-/* Visualiza os médicos que trabalham na UBS. 
+/* Visualiza os médicos que trabalham na UBS.
     visualizaMedicos(-IdMed, -Nome, -CRM, ?IdUBS, -Especialidade)
 */
-visualizaMedicos(IdMed, Nome, CRM, IdUBS, Especialidade).
+visualizaMedicos(IdUBS) :-
+    forall(model:medico(IdMed, Nome, CRM, IdUBS, Especialidade),
+    show:showMedico(model:medico(IdMed, Nome, CRM, IdUBS, Especialidade))).
 
 /* Visualiza os médico que trabalham na UBS.
     visualizaMedico(?IdMed, -Nome, -CRM, ?IdUBS, -Especialidade)
 */
-visualizaMedico(IdMed, Nome, CRM, IdUBS, Especialidade).
+visualizaMedico(IdMed, IdUBS) :-
+    model:medico(IdMed, Nome, CRM, IdUBS, Especialidade),
+    show:showMedico(model:medico(IdMed, Nome, CRM, IdUBS, Especialidade)).
 
 /* Adiciona uma quantidade no estoque de um medicamento.
     adicionaMedicamentoEstoque(?IdMed, ?IdUBS, -Nome, ?Qtd, -Bula)
 */
-adicionaMedicamentoEstoque(IdMed, IdUBS, Nome, Qtd, Bula).
+adicionaMedicamentoEstoque(IdMed, IdUBS, Qtd) :-
+    model:medicamento(IdMed, IdUBS, Nome, QtdAtual, Bula),
+    QuantidadeAtualizada is QtdAtual + Qtd,
+    retract(model:medicamento(IdMed, IdUbs, Nome, QtdAtual, Bula)),
+    assertz(model:medicamento(IdMed, IdUbs, Nome, QuantidadeAtualizada, Bula)).
 
-/* Retira uma quantiade do estoque de um medicamento. 
+/* Retira uma quantiade do estoque de um medicamento.
     removeMedicamentoEstoque(?IdMed, ?IdUBS, -Nome, ?Qtd, -Bula)
 */
-removeMedicamentoEstoque(IdMed, IdUBS, Nome, Qtd, Bula).
+removeMedicamentoEstoque(IdMed, IdUBS, Qtd) :-
+    adicionaMedicamentoEstoque(IdMed, IdUbs, (Qtd * -1)).
 
-/* Visualiza informações de todos os medicamentos da UBS. 
+/* Visualiza informações de todos os medicamentos da UBS.
     consultarMedicamentos(-IdMed, ?IdUBS, -Nome, -Qtd, -Bula)
 */
-consultarMedicamentos(IdMed, IdUBS, Nome, Qtd, Bula).
+consultarMedicamentos(IdUBS) :-
+    forall(model:medicamento(IdMed, IdUbs, Nome, Qtd, Bula),
+    show:showMedicamento(model:medicamento(IdMed, IdUBS, Nome, Qtd, Bula))).
 
-/* Visualiza informações de um medicamento específico da UBS. 
+/* Visualiza informações de um medicamento específico da UBS.
     consultarMedicamentos(?IdMed, ?IdUBS, -Nome, -Qtd, -Bula)
 */
-consultarMedicamento(IdMed, IdUBS, Nome, Qtd, Bula).
+consultarMedicamento(IdMed, IdUBS) :-
+    model:medicamento(IdMed, IdUbs, Nome, Qtd, Bula),
+    show:showMedicamento(model:medicamento(IdMed, IdUbs, Nome, Qtd, Bula)).
 
 /*
 
-Determina o status dos médicos da UBS. 
+Determina o status dos médicos da UBS.
 
 Um médico pode estar:
 0 - sem plantão,
@@ -60,37 +95,37 @@ Um médico pode estar:
 */
 statusMedico.
 
-/* 
-Verifica se o ID pertence a uma UBS. 
+/*
+Verifica se o ID pertence a uma UBS.
 
 @param ID: id da ubs.
 */
-validaIDUBS(ID).
+validaIDUBS(ID) :- model:ubs(ID, _, _).
 
-/* 
-Verifica se o ID pertence a um medicamento. 
+/*
+Verifica se o ID pertence a um medicamento.
 
 @param ID: id do medicamento.
 */
-validaIDMedicamento(ID).
+validaIDMedicamento(ID) :- model:medicamento(ID, _, _, _, _).
 
-/* 
-Verifica se o ID pertence a um exame. 
+/*
+Verifica se o ID pertence a um exame.
 
 @param ID: id do exame.
 */
-validaIDExame(ID).
+validaIDExame(ID) :- model:exame(ID, _, _, _, _, _, _).
 
-/* 
-Verifica se o ID pertence a uma receita. 
+/*
+Verifica se o ID pertence a uma receita.
 
 @param ID: id da receita.
 */
-validaIDReceita(ID).
+validaIDReceita(ID) :- model:receita(ID, _, _, _).
 
-/* 
-Verifica se o ID pertence a um laudo. 
+/*
+Verifica se o ID pertence a um laudo.
 
 @param ID: id do laudo.
 */
-validaIDLaudo(ID).
+validaIDLaudo(ID) :- model:laudo(ID, _, _, _).
