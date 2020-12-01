@@ -30,15 +30,15 @@ acessarExames(ID, O) :- (O =:= 0 -> acessarExamesMed(ID) ; O =:= 1 -> acessarExa
 
 acessarExamesMed(IDM) :-
     forall(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado),
-           show:showPaciente(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado))). % ; true
+           show:showExame(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado))). % ; true
 
 acessarExamesPac(IdPac) :-
     forall(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado),
-           show:showPaciente(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado))).
+           show:showExame(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado))).
 
 acessarExame(IdEx) :-
     forall(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado),
-            show:showPaciente(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado))).
+            show:showExame(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado))).
 
 
 /* 
