@@ -5,16 +5,6 @@
 
 /*
 
-Guarda as tabelas de horários dos médicos.
-
-Um médico tem um conjunto de horários de inicio e fim de plantão, um tempo de consulta e um conjunto de
-datas disponíveis para marcar consultas ou exames.
-
-*/
-%:- dynamic m_inicio/3, m_fim/3, m_tempo/2, m_horarios/2.
-
-/*
-
 Faz o rolê acontecer. ¯\_(ツ)_/¯
 
 */
@@ -266,4 +256,8 @@ compare_dates(D1, D2, C) :- D1 @< D2 -> C is -1, !.
 compare_dates(D1, D2, C) :- D1 @> D2 -> C is 1, !.
 compare_dates(_, _, C) :- C is 0.
 
-string_to_date(String, Date).
+string_to_date(String, Date) :- split_string(String, '/', '', [D, M, A]),
+    atom_number(D, Dia),
+    atom_number(M, Mes),
+    atom_number(A, Ano),
+    Date = date(Ano, Mes, Dia, 0, 0, 0.0, 10800, -, -).
