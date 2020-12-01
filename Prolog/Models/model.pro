@@ -3,6 +3,8 @@
                   iniciaExame/0, iniciaId/0, iniciaLogins/0, iniciaConsulta/0,
                   iniciaSistema/0, nextId/1]).
 
+:- use_module('../Persistence/persistence.pro').
+
 /*
 
 Inicializa a tabela de pacientes.
@@ -110,4 +112,7 @@ Inicializa todas as tabelas do sistema de uma só vez.
 */
 iniciaSistema :- iniciaPaciente, iniciaUBS, iniciaMedico, iniciaReceita,
                  iniciaMedicamento, iniciaLaudo, iniciaExame, iniciaLogins,
-                 iniciaConsulta, iniciaId.
+                 iniciaConsulta, iniciaId, persistence:lePaciente, persistence:leUBS,
+                 persistence:leMedico, persistence:leReceita, persistence:leMedicamento,
+                 persistence:leLaudo, persistence:leExame, persistence:leLogins,
+                 persistence:leId.
