@@ -1,4 +1,7 @@
-:- module(persistence, []).
+:- module(persistence, [lePaciente/0, leUBS/0, leMedico/0, leMedico/0, leReceita/0, leMedicamento/0,
+                        leLaudo/0, leExame/0, leLogins/0, leId/0, escrevePaciente/0, escreveUBS/0,
+                        escreveMedico/0, escreveReceita/0, escreveReceitaRem/0, escreveMedicamento/0, escreveLaudo/0,
+                        escreveConsulta/0, escreveExame/0, escreveLogins/0, escreveId/0]).
 :- use_module('../Models/model.pro').
 
 /*
@@ -68,11 +71,17 @@ escreveMedico :- tell('medico.bd'), listing(model:medico), told.
 /* Persiste a tabela receita no arquivo 'receita.bd'. */
 escreveReceita :- tell('receita.bd'), listing(model:receita), told.
 
+/* Persiste a tabela receita no arquivo 'receita.bd'. */
+escreveReceitaRem :- tell('receita_rem.bd'), listing(model:receita_remedio), told.
+
 /* Persiste a tabela medicamento no arquivo 'medicamento.bd'. */
 escreveMedicamento :- tell('medicamento.bd'), listing(model:medicamento), told.
 
 /* Persiste a tabela laudo no arquivo 'laudo.bd'. */
 escreveLaudo :- tell('laudo.bd'), listing(model:laudo), told.
+
+/* Persiste a tabela consulta no arquivo 'consulta.bd'. */
+escreveConsulta :- tell('consulta.bd'), listing(model:consulta), told.
 
 /* Persiste a tabela exame no arquivo 'exame.bd'. */
 escreveExame :- tell('exame.bd'), listing(model:exame), told.

@@ -97,29 +97,29 @@ menuPaciente(ID) :- write('-----------------------------------------------------
                 write('(E)mergência'), nl,
                 write('(S)air'), nl,
                 promptString('Opção > ', O),
-                (O = "B" -> menuPacienteBuscarUBS, utils:mensagemEspera, tty_clear, menuPaciente(ID);
+                (O = "B" -> menuPacienteBuscarUBS(ID), utils:mensagemEspera, tty_clear, menuPaciente(ID);
                 O = "R" -> menuPacienteRequisitar(ID), utils:mensagemEspera, tty_clear, menuPaciente(ID);
                 O = "C" -> menuPacienteConsultar(ID), utils:mensagemEspera, tty_clear, menuPaciente(ID);
                 O = "E" -> menuPacienteEmergencia, utils:mensagemEspera, tty_clear, menuPaciente(ID);
                 O = "S" -> tty_clear, main;
                 write('Opcao Invalida\n'), menuPaciente(ID)).
 
-menuPacienteBuscarUBS :- write('(T)odas as UBS'), nl,
+menuPacienteBuscarUBS(ID) :- write('(T)odas as UBS'), nl,
                             write('(E)specilidades da UBS'), nl,
                             write('(U)BS por especialidade'), nl,
                             promptString('Opção > ', O),
-                            (O = "T" -> menuPacienteBuscarTodasUbs.
-                            O = "E" -> menuPacienteBuscarEspecialidadesUbs.
-                            O = "U" -> menuPacienteBuscarUBSPorEspecialidade.
+                            (O = "T" -> menuPacienteBuscarTodasUbs;
+                            O = "E" -> menuPacienteBuscarEspecialidadesUbs(ID);
+                            O = "U" -> menuPacienteBuscarUBSPorEspecialidade;
                             write('Opcao Invalida\n'), menuPaciente(ID)).
 
 menuPacienteBuscarUBSPorEspecialidade :- promptString('Especialidade > ', E), paciente:buscarUnidadesEspec(E).
 
-menuPacienteBuscarTodasUbs :- buscarTodasUnidades.
+menuPacienteBuscarTodasUbs :- paciente:buscarTodasUnidades.
 
-menuPacienteBuscarEspecialidadesUbs :- promptString('Id da UBS > ', I), 
+menuPacienteBuscarEspecialidadesUbs(ID) :- promptString('Id da UBS > ', I), 
                                         (ubs:validaIDUBS(I) -> paciente:especialidadeDaUBS(I);
-                                        write('Id inválido\n'), menuPacienteBuscarUBS).
+                                        write('Id inválido\n'), menuPacienteBuscarUBS(ID)).
 
 menuPacienteRequisitar(ID) :- write('(C)onsulta'), nl,
                               write('(E)xame'), nl,

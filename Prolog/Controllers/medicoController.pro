@@ -7,6 +7,7 @@
 :- use_module('../Models/model.pro').
 :- use_module('../Utils/show.pro').
 :- use_module('../Utils/time.pro').
+:- use_module('./Persistence/persistence.pro').
 :- use_module('../Controllers/ubsController.pro', [validaIDMedicamento/1]).
 
 /*
@@ -88,7 +89,9 @@ Cria uma receita.
 */
 emitirReceita(IDM, IdPac) :- model:nextId(Id),
     pegaUBS(IDM, IdUBS),
+    persistence:escreveId,
     assertz(model:receita(Id, IdPac, IDM, IdUBS)),
+    persistence:escreveReceita,
     lerRemedios(Id).
 
 lerRemedios(IdRec) :-
@@ -97,6 +100,7 @@ lerRemedios(IdRec) :-
     utils:prompt('Insira a quantidade de caixas > ', Q),
     (ubs:validaIDMedicamento(IdMedic), ! ; write('ID inválido\n\n'), lerRemedios(IdRec)),
     assertz(model:receita_remedio(IdRec, IdMedic, Inst, Q)),
+    persistence:escreveReceitaRem,
     utils:promptString('Deseja inserir outro medicamento (s/n) > ', O),
     (O = "s" -> lerRemedios(IdRec) ; true).
 
@@ -105,12 +109,15 @@ lerRemedios(IdRec) :-
 emitirResultadoExame(IdExame) :- utils:promptString('Insira o resultado > ', Resultado),
     model:exame(IdExame, IdPac, IDM, IdUBS, Tipo, Data, R),
     retract(model:exame(IdExame, IdPac, IDM, IdUBS, Tipo, Data, R)), !,
-    assertz(model:exame(IdExame, IdPac, IDM, IdUBS, Tipo, Data, Resultado)).
+    assertz(model:exame(IdExame, IdPac, IDM, IdUBS, Tipo, Data, Resultado)),
+    persistence:escreveExame.
 
 /* Cria um laudo. */
 emitirLaudo(IdMed, IdExame) :- model:nextId(Id),
+    persistence:escreveId,
     utils:promptString('Insira o texto do laudo > ', Texto),
-    assertz(model:laudo(Id, IdMed, IdExame, Texto)).
+    assertz(model:laudo(Id, IdMed, IdExame, Texto)),
+    persistence:escreveLaudo.
 
 /*
 
