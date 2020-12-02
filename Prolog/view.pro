@@ -120,9 +120,9 @@ menuPacienteRequisitar(ID) :- write('(C)onsulta'), nl,
                               write('(E)xame'), nl,
                               write('(M)edicamento'), nl,
                               promptString('Opção > ', O),
-                              (O ="C" -> leituraRequisitaConsulta(ID), tty_clear, menuPaciente(ID);
-                              O = "E" -> leituraRequisitaExame(ID), tty_clear, menuPaciente(ID);
-                              O = "M" -> leituraRequisitaMedicamento(ID), tty_clear, menuPaciente(ID);
+                              (O ="C" -> leituraRequisitaConsulta(ID);
+                              O = "E" -> leituraRequisitaExame(ID);
+                              O = "M" -> leituraRequisitaMedicamento(ID);
                               write('Opção Inválida\n'), menuPacienteRequisitar(ID)).
 
 leituraRequisitaConsulta(ID) :- prompt('ID do Médico > ', IDM),
@@ -145,7 +145,7 @@ leituraRequisitaExame(ID) :- prompt('ID do Médico > ', IDM),
                              format('Exame ~d marcado na UBS ~d e no dia ~w ~n', [N, IDU, Data]).
 
 leituraRequisitaMedicamento(ID) :- prompt('ID da Receita > ', IDR),
-                                    (ubs:validaIDReceita(IDR) -> paciente:requisitarMedicamento(IDR);
+                                    (ubs:validaIDReceita(IDR) -> paciente:requisitarMedicamento(IDR, ID);
                                     write('Id inválido\n'), menuPacienteRequisitar(ID)).
 
 menuPacienteConsultar(ID) :- write('(L)audo'), nl,
@@ -153,10 +153,10 @@ menuPacienteConsultar(ID) :- write('(L)audo'), nl,
                              write('(E)xame'), nl,
                              write('(C)onsultas'), nl,
                              promptString('Opção > ', O),
-                             (O = "L" -> leituraConsultaLaudo(ID), tty_clear, menuPaciente(ID);
-                             O = "R" -> leituraConsultaReceita(ID), tty_clear, menuPaciente(ID);
-                             O = "E" -> leituraConsultaExame(ID), tty_clear, menuPaciente(ID);
-                             O = "C" -> leituraConsultaConsultas(ID), tty_clear, menuPaciente(ID);
+                             (O = "L" -> leituraConsultaLaudo(ID);
+                             O = "R" -> leituraConsultaReceita(ID);
+                             O = "E" -> leituraConsultaExame(ID);
+                             O = "C" -> leituraConsultaConsultas(ID);
                              write('Opção Inválida\n'), menuPacienteConsultar(ID)).
 
 leituraConsultaLaudo(ID) :- write('(T)odos'), nl,
@@ -169,21 +169,21 @@ leituraConsultaLaudo(ID) :- write('(T)odos'), nl,
 leituraConsultaTodosLaudos(ID) :- paciente:consultarLaudos(ID).
 
 leituraConsultaLaudoEspecifico(ID) :- prompt('ID do Laudo > ', IDL),
-                                      ubs:validaIDLaudo(IDL),
-                                      paciente:consultaLaudo(ID, IDL).
+                                      (ubs:validaIDLaudo(IDL) -> paciente:consultarLaudo(ID, IDL);
+                                      write('Id inválido\n'), leituraConsultaLaudo(ID)).
 
 leituraConsultaReceita(ID) :- write('(T)odas'), nl,
                               write('(E)specífica'), nl,
                               promptString('Opção > ', O),
                               (O = "T" -> leituraConsultaTodasReceitas(ID);
                               O = "E" -> leituraConsultaReceitaEspecifica(ID);
-                              write('Opção Inválida\n'), leituraConsultaReceita).
+                              write('Opção Inválida\n'), leituraConsultaReceita(ID)).
 
 leituraConsultaTodasReceitas(ID) :- paciente:consultarReceitas(ID).
 
 leituraConsultaReceitaEspecifica(ID) :- prompt('ID da Receita > ', IDR),
-                                        ubs:validaIDReceita(IDR),
-                                        paciente:consultarReceita(ID, IDR).
+                                        (ubs:validaIDReceita(IDR) -> paciente:consultarReceita(ID, IDR);
+                                        write('Id inválido\n'), leituraConsultaReceita(ID)).
 
 leituraConsultaExame(ID) :- write('(T)odos'), nl,
                             write('(E)specífico'), nl,
@@ -195,8 +195,8 @@ leituraConsultaExame(ID) :- write('(T)odos'), nl,
 leituraConsultaTodosExames(ID) :- paciente:consultarExames(ID).
 
 leituraConsultaExameEspecifico(ID) :- prompt('ID do Exame > ', IdEx),
-                                      ubs:validaIDExame(IdEx),
-                                      paciente:consultarExame(ID, IdEx).
+                                      (ubs:validaIDExame(IdEx) -> paciente:consultarExame(ID, IdEx);
+                                      write('Id inválido\n'), leituraConsultaExame(ID)).
 
 leituraConsultaConsultas(ID) :- write('(T)odas'), nl,
                                 write('(E)specífica'), nl,
@@ -208,8 +208,8 @@ leituraConsultaConsultas(ID) :- write('(T)odas'), nl,
 leituraConsultaTodasConsultas(ID) :- paciente:consultarConsultas(ID).
 
 leituraConsultaConsultaEspecifica(ID) :- prompt('ID da Consulta > ', IDC),
-                                     ubs:validaIDConsulta(IDC),
-                                     paciente:consultarConsulta(ID, IDC).
+                                     (ubs:validaIDConsulta(IDC) -> paciente:consultarConsulta(ID, IDC);
+                                     write('Id inválido\n'), leituraConsultaConsultas(ID)).
 
 menuPacienteEmergencia :- promptString('Endereço > ', E),
                           paciente:emergencia(E).

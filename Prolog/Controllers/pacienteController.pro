@@ -1,4 +1,8 @@
-:- module(paciente, [buscarUnidadesEspec/1, buscarTodasUnidades/0, especialidadeDaUBS/1]).
+:- module(paciente, [buscarUnidadesEspec/1, buscarTodasUnidades/0, especialidadeDaUBS/1, 
+                    requisitarConsulta/5, requisitarExame/6, requisitarMedicamento/2,
+                    consultarLaudos/1, consultarLaudo/2, consultarReceitas/1, consultarReceita/2,
+                    consultarExames/1, consultarExame/2, consultarConsultas/1, consultarConsulta/2,
+                    emergencia/1, validaIDPaciente/1]).
 
 :- use_module('../Models/model.pro').
 :- use_module('../Utils/show.pro').
@@ -47,8 +51,10 @@ Deduz do estoque os medicamentos de um dada receita.
 
 @param ID: id da receita.
 */
-requisitarMedicamento(ID) :- model:receita_remedio(ID, IdMed, _,Qtd), model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula),
-    NovaQuantidade is Estoque - Qtd, 
+requisitarMedicamento(ID, IDPac) :- model:receita(ID, IDPac, IdMed, IdUbs), model:receita_remedio(ID, IdMed,Int,Qtd), model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula),
+    NovaQuantidade is Estoque - Qtd,
+    retract(model:receita(ID, IDPac, IdMed, IdUbs)),
+    retract(model:receita_remedio(ID, IdMed,Int,Qtd)),
     retract(model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula)),
     assertz(model:medicamento(IdMed, IdUBS, Nome, NovaQuantidade, Bula)).
     
