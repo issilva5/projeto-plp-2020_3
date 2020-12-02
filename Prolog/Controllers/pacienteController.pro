@@ -1,26 +1,27 @@
-:- module(paciente, [buscarUnidadesEspec/4, requisitarConsulta/5, requisitarExame/6, 
-                    requisitarMedicamento/2, consultarLaudos/5, consultarLaudo/5, consultarReceitas/3,
-                    consultarReceita/3, consultarExames/5, consultarExame/5, consultarConsultas/4,
-                    consultarConsulta/4, emergencia/1, validaIDPaciente/1]).
+:- module(paciente, [buscarUnidadesEspec/1, buscarTodasUnidades/0, especialidadeDaUBS/1, 
+                    requisitarConsulta/5, requisitarExame/6, requisitarMedicamento/2,
+                    consultarLaudos/1, consultarLaudo/2, consultarReceitas/1, consultarReceita/2,
+                    consultarExames/1, consultarExame/2, consultarConsultas/1, consultarConsulta/2,
+                    emergencia/1, validaIDPaciente/1]).
+
+:- use_module('../Models/model.pro').
+:- use_module('../Utils/show.pro').
+:- use_module('../Utils/utils.pro').
 
 /*
 Buscar as unidades que tem determinada especialidade.
-@param E: especialidade buscada.
-@param I: variável de resposta, Id da unidade.
-@param U: nome da ubs do médico.
-@param End: endereço da ubs.
 
-Obs.: implementei esse método como um teste, pois ele ficará dando warning de que medico
-não foi definido. Porém ao utilizar o método após definir ele funciona, então ignorem os
-warnings.
+@param E: especialidade buscada.
+
+
 */
-buscarUnidadesEspec(E, I, U, End) :- model:medico(_,_,_,I,E), model:ubs(I, U, End).
+buscarUnidadesEspec(E) :- model:medico(_,_,_,IdUbs,E), forall(model:ubs(IdUbs, Nome, End), show:showUbs(model:ubs(IdUbs, Nome, End))).
 
 /* Listar todas as unidades. */
-buscarTodasUnidades.
+buscarTodasUnidades :- forall(model:ubs(IdUbs, Nome, End), show:showUbs(model:ubs(IdUbs, Nome, End)).
 
 /* Listar todas as especialidades de uma UBS. */
-especialidadeDaUBS.
+especialidadeDaUBS(I) :- model:ubs(I, _, _), format('Especialidades UBS ~d~n', [I]), forall(model:medico(Id, Nome, CRM, I, Especialidade), format('~w~n', [Especialidade]))).
 
 /* 
 Cria uma consulta.
@@ -31,7 +32,7 @@ Cria uma consulta.
 @param IDUbs: id da UBS.
 @param Dia: data da consulta.
 */
-requisitarConsulta(ID, IDPac, IDMed, IDUbs, Dia).
+requisitarConsulta(ID, IDPac, IDMed, IDUbs, Dia) :- assertz(model:consulta(ID, IDPac, IDMed, IDUbs, Dia)).
 
 /* 
 Cria um exame. 
@@ -43,94 +44,88 @@ Cria um exame.
 @param Tipo: tipo do exame,.
 @param Dia: dia do exame,.
 */
-requisitarExame(ID, IDPac, IDMed, IDUbs, Tipo, Dia).
+requisitarExame(ID, IDPac, IDMed, IDUbs, Tipo, Dia) :- assertz(model:exame(ID, IDPac, IDMed, IDUbs, Tipo, Dia, -)).
 
 /* 
 Deduz do estoque os medicamentos de um dada receita. 
 
 @param ID: id da receita.
 */
-requisitarMedicamento(ID, R).
+requisitarMedicamento(ID, IDPac) :- model:receita(ID, IDPac, IdMed, IdUbs), model:receita_remedio(ID, IdMed,Int,Qtd), model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula),
+    NovaQuantidade is Estoque - Qtd,
+    retract(model:receita(ID, IDPac, IdMed, IdUbs)),
+    retract(model:receita_remedio(ID, IdMed,Int,Qtd)),
+    retract(model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula)),
+    assertz(model:medicamento(IdMed, IdUBS, Nome, NovaQuantidade, Bula)).
+    
 
 /* 
 Listar todos os laudos do paciente. 
 
-@param IDPac: id do paciente.
-@param IDL: id do laudo.
-@param IDM: id do médico.
-@param IDU: id da ubs.
-@param Dia: dia.
+@param IDPac: id do paciente. 
+
 */
-consultarLaudos(IDPac, IDL, IDM, IDU, Dia).
+consultarLaudos(IDPac) :- model:exame(IdEx, IDPac,_,_,_,_,_), forall(model:laudo(Id, IdMed, IdEx, Text), show:showLaudo(model:laudo(Id, IdMed, IdEx, Text))).
 
 /* 
 Ver um laudo específico do paciente. 
 
 @param IDPac: id do paciente.
-@param IDL: id do laudo.
-@param IDM: id do médico.
-@param IDU: id do ubs.
-@param Dia: dia que o laudo foi gerado.
+@param IDLaudo: id do laudo.
+
 */
-consultarLaudo(IDPac, IDL, IDM, IDU, Dia).
+consultarLaudo(IDPac, IDLaudo) :- model:laudo(IdLaudo, IdMed, IdEx, Text), show:showLaudo(model:laudo(IdLaudo, IdMed, IdEx, Text)).
 
 /* 
 Listar todas as receitas do paciente. 
 
-@param IDR: id da receita.
-@param IDM: id do médico.
-@param IDU: id da ubs.
+@param IDPac: id do paciente.
+
 */
-consultarReceitas(IDR, IDM, IDU).
+consultarReceitas(IDPac) :- forall(model:receita(Id, IDPac, IdMed, IdUbs), show:showReceita(model:receita(Id, IDPac, IdMed, IdUbs))).
 
 /* 
 Ver uma receita específica do paciente. 
 
-@param IDR: id da receita.
-@param IDM: id do médico.
-@param IDU: id da ubs.
+@param IDPac: id do paciente.
+@param IdReceita: id da receita.
+
 */
-consultarReceita(IDR, IDM, IDU).
+consultarReceita(IdPac, IdReceita) :- model:receita(IdReceita, IDPac, IdMed, IdUbs), show:showReceita(model:receita(IdReceita, IDPac, IdMed, IdUbs)).
 
 /* 
 Listar todos os exames do paciente. 
 
-@param IDE: id do exame.
-@param IDM: id do médico.
-@param T: tipo do exame.
-@param Resultado: resultado do exame.
+@param IDPac: id do paciente.
+
 */
-consultarExames(IDE, IDM, T, Dia, Resultado).
+consultarExames(IDPac) :- forall(model:exame(IdEx, IDPac, IDM, IdUBS, Tipo, Data, Resultado), show:showExame(model:exame(IdEx, IDPac, IDM, IdUBS, Tipo, Data, Resultado))).
 
 /* 
 Ver um exame específico do paciente. 
 
-@param IDE: id do exame.
-@param IDM: id do médico.
-@param T: tipo do exame.
-@param Resultado: resultado do exame.
+@param IDPac: id do paciente.
+@param IdEx: id do Exame.
+
 */
-consultarExame(IDE, IDM, T, Dia, Resultado).
+consultarExame(IDPac, IdEx) :- model:exame(IdEx, IDPac, IDM, IdUBS, Tipo, Data, Resultado), show:showExame(model:exame(IdEx, IDPac, IDM, IdUBS, Tipo, Data, Resultado)).
 
 /* 
 Listar todas as consultas do paciente. 
 
-@param IDC: id da consulta.
-@param IDM: id do médico.
-@param IDU: id da ubs.
-@param Dia: dia da consulta.
+@param IDPac: id do paciente. id:: Int, idPaciente :: Int, idMedico :: Int, idUBS :: Int, dia :: String
+
 */
-consultarConsultas(IDC, IDM, IDU, Dia).
+consultarConsultas(IDPac) :- forall(model:consulta(IDC, IDPac, IdMed, IdUBS, Data), show:showConsulta(model:consulta(IDC, IDPac, IdMed, IdUBS, Data))).
 
 /* 
 Ver uma consulta específica do paciente. 
 
+@param IDPac: id do paciente.
 @param IDC: id da consulta.
-@param IDM: id do médico.
-@param IDU: id da ubs.
-@param Dia: dia da consulta.
+
 */
-consultarConsulta(IDC, IDM, IDU, Dia).
+consultarConsulta(IDPAC, IDC) :- model:consulta(IDC, IDPac, IdMed, IdUBS, Data), show:showConsulta(model:consulta(IDC, IDPac, IdMed, IdUBS, Data)).
 
 /* 
 Recebe um pedido de emergência. 
