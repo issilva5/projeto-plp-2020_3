@@ -1,8 +1,8 @@
 :- module(ubs, [validaIDMedicamento/1,
                 validaIDExame/1, validaIDReceita/1, validaIDLaudo/1,
-                visualizaConsultasFuturas/1, visualizaPacientes/1, visualizaMedicos/5,
-                visualizaMedico/5, consultarMedicamentos/5, consultarMedicamento/5,
-                adicionaMedicamentoEstoque/5, removeMedicamentoEstoque/5]).
+                visualizaConsultasFuturas/1, visualizaPacientes/1, visualizaMedicos/1,
+                visualizaMedico/2, consultarMedicamentos/1, consultarMedicamento/2,
+                adicionaMedicamentoEstoque/3, removeMedicamentoEstoque/3]).
 
 :- use_module('../Models/model.pro').
 :- use_module('../Utils/show.pro').

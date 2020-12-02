@@ -7,7 +7,7 @@
 :- use_module('../Models/model.pro').
 :- use_module('../Utils/show.pro').
 :- use_module('../Utils/time.pro').
-:- use_module('./Persistence/persistence.pro').
+:- use_module('../Persistence/persistence.pro').
 :- use_module('../Controllers/ubsController.pro', [validaIDMedicamento/1]).
 
 /*

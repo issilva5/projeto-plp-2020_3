@@ -119,22 +119,22 @@ Inicializa todas as tabelas do sistema de uma só vez.
 iniciaSistema :- verificaPaciente, verificaMedico, verificaUBS, verificaReceita, verificaMedicamento,
                  verificaLaudo, verificaExame, verificaLogins, verificaConsulta, verificaId.
 
-verificaPaciente :- exists_file('paciente.bd') -> persistence:lePaciente; iniciaPaciente.
+verificaPaciente :- exists_file('bd/paciente.bd') -> persistence:lePaciente ; iniciaPaciente.
 
-verificaMedico :- exists_file('medico.bd') -> persistence:leMedico; iniciaMedico.
+verificaMedico :- exists_file('bd/medico.bd') -> persistence:leMedico ; iniciaMedico.
 
-verificaUBS :- exists_file('ubs.bd') -> persistence:leUBS; iniciaUBS.
+verificaUBS :- exists_file('bd/ubs.bd') -> persistence:leUBS ; iniciaUBS.
 
-verificaReceita :- exists_file('receita.bd') -> persistence:leReceita; iniciaReceita.
+verificaReceita :- exists_file('bd/receita.bd') -> persistence:leReceita ; iniciaReceita.
 
-verificaMedicamento :- exists_file('medicamento.bd') -> persistence:leMedicamento; iniciaMedicamento.
+verificaMedicamento :- exists_file('bd/medicamento.bd') -> persistence:leMedicamento ; iniciaMedicamento.
 
-verificaLaudo :- exists_file('laudo.bd') -> persistence:leLaudo; iniciaLaudo.
+verificaLaudo :- exists_file('bd/laudo.bd') -> persistence:leLaudo ; iniciaLaudo.
 
-verificaExame :- exists_file('exame.bd') -> persistence:leExame; iniciaExame.
+verificaExame :- exists_file('bd/exame.bd') -> persistence:leExame ; iniciaExame.
 
-verificaLogins :- exists_file('logins.bd') -> persistence:leLogins; iniciaLogins.
+verificaLogins :- exists_file('bd/logins.bd') -> persistence:leLogins ; iniciaLogins.
 
-verificaConsulta :- exists_file('consulta.bd') -> persistence:leConsulta; iniciaConsulta.
+verificaConsulta :- exists_file('bd/consulta.bd') -> persistence:leConsulta ; iniciaConsulta.
 
-verificaId :- exists_file('id.bd') -> persistence:leId; iniciaId.
+verificaId :- exists_file('bd/id.bd') -> persistence:leId ; iniciaId.

@@ -18,10 +18,10 @@ Buscar as unidades que tem determinada especialidade.
 buscarUnidadesEspec(E) :- model:medico(_,_,_,IdUbs,E), forall(model:ubs(IdUbs, Nome, End), show:showUbs(model:ubs(IdUbs, Nome, End))).
 
 /* Listar todas as unidades. */
-buscarTodasUnidades :- forall(model:ubs(IdUbs, Nome, End), show:showUbs(model:ubs(IdUbs, Nome, End)).
+buscarTodasUnidades :- forall(model:ubs(IdUbs, Nome, End), show:showUbs(model:ubs(IdUbs, Nome, End))).
 
 /* Listar todas as especialidades de uma UBS. */
-especialidadeDaUBS(I) :- model:ubs(I, _, _), format('Especialidades UBS ~d~n', [I]), forall(model:medico(Id, Nome, CRM, I, Especialidade), format('~w~n', [Especialidade]))).
+especialidadeDaUBS(I) :- model:ubs(I, _, _), format('Especialidades UBS ~d~n', [I]), forall(model:medico(_, _, _, I, Especialidade), format('~w~n', [Especialidade])).
 
 /* 
 Cria uma consulta.
