@@ -1,5 +1,5 @@
 :- module(ubs, [validaIDMedicamento/1, 
-                validaIDExame/1, validaIDReceita/1, validaIDLaudo/1,
+                validaIDExame/1, validaIDReceita/1, validaIDLaudo/1, validaIDConsulta/1,
                 visualizaConsultasFuturas/5, visualizaPacientes/12, visualizaMedicos/5,
                 visualizaMedico/5, consultarMedicamentos/5, consultarMedicamento/5,
                 adicionaMedicamentoEstoque/5, removeMedicamentoEstoque/5]).
@@ -94,3 +94,11 @@ Verifica se o ID pertence a um laudo.
 @param ID: id do laudo.
 */
 validaIDLaudo(ID).
+
+
+/* 
+Verifica se o ID pertence a uma consulta. 
+
+@param ID: id da Consulta.
+*/
+validaIDConsulta(ID).

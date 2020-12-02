@@ -43,3 +43,17 @@ showUbs(model:ubs(Id, Nome, End)) :-
     format('UBS ~d~n', [Id]),
     format('Nome: ~w~n', [Nome]),
     format('Endereço: ~w~n', [End]).
+
+showLaudo(model:laudo(Id, IdMed, IdEx, Text)) :-
+    write('----------------------------'), nl,
+    format('LAUDO ~d~n', [Id]),
+    format('Médico: ~d~n', [IdMed]),
+    format('Exame: ~d~n', [IdEx]),
+    format('Resultado: ~w~n', [Text]).
+
+showReceita(model:receita(Id, IdPac, IdMed, IdUbs)) :-
+    write('----------------------------'), nl,
+    format('RECEITA ~d~n', [Id]),
+    format('Paciente: ~d~n', [IdPac]),
+    format('Médico responsável: ~d~n', [IdMed]),
+    format('UBS: ~w~n', [IdUbs]).
