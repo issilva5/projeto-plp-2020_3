@@ -7,6 +7,7 @@
 :- use_module('./Controllers/pacienteController.pro').
 :- use_module('./Controllers/medicoController.pro').
 :- use_module('./Controllers/ubsController.pro').
+:- use_module('./Persistence/persistence.pro').
 
 begin :- model:iniciaSistema,
          main.
@@ -63,8 +64,10 @@ cadastraPac :- promptString('Nome > ', Nome),
                promptString('Hipertenso (n/s) > ', Hipertenso),
                promptString('Senha > ', Senha),
                model:nextId(N),
+               persistence:escreveId,
                assertz(model:paciente(N, Nome, CPF, Nascimento, Peso, Altura, Sangue, Endereco, Cardiopata, Diabetico, Hipertenso)),
                assertz(model:logins(N, Senha, 0)),
+               persistence:escrevePaciente,
                format('\nCadastrado de paciente realizado com sucesso, id: ~d', [N]),
                promptString('\n\nPressione qualquer tecla para continuar', _).
 
@@ -73,8 +76,10 @@ cadastraUBS :- promptString('Nome > ', Nome),
                promptString('Endereço > ', Endereco),
                promptString('Senha > ', Senha),
                model:nextId(N),
+               persistence:escreveId,
                assertz(model:ubs(N, Nome, Endereco)),
                assertz(model:logins(N, Senha, 1)),
+               persistence:escreveUBS,
                format('\nCadastrado de UBS realizado com sucesso, id: ~d', [N]),
                promptString('\n\nPress to continue', _). 
 
@@ -117,7 +122,9 @@ leituraRequisitaConsulta(ID) :- prompt('ID do Médico > ', IDM),
                                 ubs:validaIDUBS(IDU),
                                 promptString('Informe a data desejada: ', Data),
                                 model:nextId(N),
+                                persistence:escreveId,
                                 paciente:requisitarConsulta(N, ID, IDM, IDU, Data),
+                                persistence:escreveConsulta,
                                 format('Consulta ~d Marcada com o Médico ~d, na UBS ~d e no dia ~w ~n', [N, IDM, IDU, Data]).
 
 leituraRequisitaExame(ID) :- prompt('ID do Médico > ', IDM),
@@ -127,12 +134,15 @@ leituraRequisitaExame(ID) :- prompt('ID do Médico > ', IDM),
                              promptString('Tipo de Exame > ', Tipo),
                              promptString('Informe a data desejada: ', Data),
                              model:nextId(N),
+                             persistence:escreveId,
                              paciente:requisitarExame(N, ID, IDM, IDU, Tipo, Data),
+                             persistence:escreveExame,
                              format('Exame ~d marcado na UBS ~d e no dia ~w ~n', [N, IDU, Data]).
 
 leituraRequisitaMedicamento(ID) :- prompt('ID da Receita > ', IDR),
                                     ubs:validaIDReceita(IDR),
                                     paciente:requisitarMedicamento(IDR, R),
+                                    persistence:escreveMedicamento,
                                     writeln(R).
 
 menuPacienteConsultar(ID) :- write('(L)audo'), nl,
@@ -226,8 +236,10 @@ cadastraMedico(IdUBS) :- promptString('Nome > ', Nome),
     promptString('Especialidade > ', Especialidade),
     promptString('Senha > ', Senha),
     model:nextId(N),
+    persistence:escreveId,
     assertz(model:medico(N, Nome, CRM, IdUBS, Especialidade)),
     assertz(model:logins(N, Senha, 2)),
+    persistence:escreveMedico,
     format('----------------------------~nMEDICO ~d~nNome: ~w~nCRM: ~w~nUBS: ~d~nEspecialidade: ~w~n', [N, Nome, CRM, IdUBS, Especialidade]),
     utils:mensagemEspera, tty_clear, menuUBS(IdUBS). 
 
@@ -279,13 +291,16 @@ novoMedicamento(IdUBS) :- promptString('Nome > ', Nome),
     prompt('Quantidade > ', Qtd),
     promptString('Bula > ', Bula),
     model:nextId(N),
+    persistence:escreveId,
     assertz(model:medicamento(N, IdUBS, Nome, Qtd, Bula)),
+    persistence:escreveMedicamento,
     format('----------------------------~nMEDICAMENTO ~d~nNome: ~w~nUBS: ~d~nQuantidade: ~d~nBula: ~w~n', [N, IdUBS, Nome, Qtd, Bula]),
     utils:mensagemEspera. 
 
 adicionaMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed), 
     prompt('Quantidade a adicionar > ', Qtd),
     (ubs:validaIDMedicamento(IdMed) -> ubs:adicionaMedicamentoEstoque(IdMed, IdUBS, Nome, Qtd, Bula),
+    persistence:escreveMedicamento,
     format('----------------------------~nMEDICAMENTO ~d~nNome: ~w~nUBS: ~d~nQuantidade: ~d~nBula: ~w~n', [IdMed, IdUBS, Nome, Qtd, Bula]),
     utils:mensagemEspera;
     format('ID: ~d inválido\n', [IdMed])).
@@ -293,6 +308,7 @@ adicionaMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed),
 removeMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed), 
     prompt('Quantidade a remover > ', Qtd),
     (ubs:validaIDMedicamento(IdMed) -> ubs:adicionaMedicamentoEstoque(IdMed, IdUBS, Nome, Qtd, Bula),
+    persistence:escreveMedicamento,
     format('----------------------------~nMEDICAMENTO ~d~nNome: ~w~nUBS: ~d~nQuantidade: ~d~nBula: ~w~n', [IdMed, IdUBS, Nome, Qtd, Bula]),
     utils:mensagemEspera;
     format('ID: ~d inválido\n', [IdMed])).

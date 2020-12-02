@@ -1,82 +1,84 @@
 :- module(persistence, []).
+:- use_module('../Models/model.pro').
 
 /*
 Verifica se o arquivo 'paciente.bd' existe, se existir o lê,
 c.c. chama model:iniciaPaciente.
 */
-lePaciente.
+lePaciente :- exists_file('paciente.bd'), consult('paciente.bd').
+
 
 /*
 Verifica se o arquivo 'ubs.bd' existe, se existir o lê,
 c.c. chama model:iniciaUBS.
 */
-leUBS.
+leUBS :- exists_file('ubs.bd'), consult('ubs.bd').
 
 /*
 Verifica se o arquivo 'medico.bd' existe, se existir o lê,
 c.c. chama model:iniciaMedico.
 */
-leMedico.
+leMedico :- exists_file('medico.bd'), consult('medico.bd').
 
 /*
 Verifica se o arquivo 'receita.bd' existe, se existir o lê,
 c.c. chama model:iniciaReceita.
 */
-leReceita.
+leReceita :- exists_file('receita.bd'), consult('receita.bd').
 
 /*
 Verifica se o arquivo 'medicamento.bd' existe, se existir o lê,
 c.c. chama model:iniciaMedicamento.
 */
-leMedicamento.
+leMedicamento :- exists_file('medicamento.bd'), consult('medicamento.bd').
 
 /*
 Verifica se o arquivo 'laudo.bd' existe, se existir o lê,
 c.c. chama model:iniciaLaudo.
 */
-leLaudo.
+leLaudo :- exists_file('laudo.bd'), consult('laudo.bd').
 
 /*
 Verifica se o arquivo 'exame.bd' existe, se existir o lê,
 c.c. chama model:iniciaExame.
 */
-leExame.
+leExame :- exists_file('exame.bd'), consult('exame.bd').
 
 /*
 Verifica se o arquivo 'logins.bd' existe, se existir o lê,
 c.c. chama model:iniciaLogin.
 */
-leLogins.
+leLogins :- exists_file('logins.bd'), consult('logins.bd').
 
 /*
 Verifica se o arquivo 'id.bd' existe, se existir o lê,
 c.c. chama model:iniciaId.
 */
-leId.
+leId :- exists_file('id.bd'), consult('id.bd').
 
 /* Persiste a tabela paciente no arquivo 'paciente.bd'. */
-escrevePaciente.
+escrevePaciente :- tell('paciente.bd'), listing(model:paciente), told.
 
 /* Persiste a tabela UBS no arquivo 'ubs.bd'. */
-escreveUBS.
+escreveUBS :- tell('ubs.bd'), listing(model:ubs), told.
 
 /* Persiste as tabelas medico e medico_horarios no arquivo 'medico.bd'. */
-escreveMedico.
+escreveMedico :- tell('medico.bd'), listing(model:medico), told.
 
 /* Persiste a tabela receita no arquivo 'receita.bd'. */
-escreveReceita.
+escreveReceita :- tell('receita.bd'), listing(model:receita), told.
 
 /* Persiste a tabela medicamento no arquivo 'medicamento.bd'. */
-escreveMedicamento.
+escreveMedicamento :- tell('medicamento.bd'), listing(model:medicamento), told.
 
 /* Persiste a tabela laudo no arquivo 'laudo.bd'. */
-escreveLaudo.
+escreveLaudo :- tell('laudo.bd'), listing(model:laudo), told.
 
 /* Persiste a tabela exame no arquivo 'exame.bd'. */
-escreveExame.
+escreveExame :- tell('exame.bd'), listing(model:exame), told.
 
 /* Persiste a tabela logins no arquivo 'logins.bd'. */
-escreveLogins.
+escreveLogins :- tell('logins.bd'), listing(model:logins), told.
 
 /* Persiste a tabela id no arquivo 'id.bd'. */
-escreveId.
+escreveId :- tell('id.bd'), listing(model:id), told.
