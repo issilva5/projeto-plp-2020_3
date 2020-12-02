@@ -27,7 +27,7 @@ main :-
     ( OP = "L" -> tty_clear, login;
       OP = "C" -> tty_clear, cadastro;
       OP = "E" -> writeln('Tchau');
-      writeln('Opção Inválida'), nl, promptString('Pressione qualquer tecla para continuar', _), tty_clear, main).
+      writeln('Opção Inválida'), nl, utils:mensagemEspera, tty_clear, main).
 
 /* Menu de login. */
 login :- write('-----------------------------------------------------------------\n
@@ -46,8 +46,8 @@ cadastro :- write('-------------------------------------------------------------
 -----------------------------------------------------------------\n'),
     write('(P)aciente'), nl, write('(U)BS'), nl, write('(V)oltar'), nl,
     promptString('Opção > ', O),
-    (O = "P" -> cadastraPac, tty_clear, main;
-     O = "U" -> cadastraUBS, tty_clear, main;
+    (O = "P" -> cadastraPac, main;
+     O = "U" -> cadastraUBS, main;
      O = "V" -> tty_clear, main;
      write('Opção inválida\n'), cadastro).
 
@@ -64,24 +64,26 @@ cadastraPac :- promptString('Nome > ', Nome),
                promptString('Hipertenso (n/s) > ', Hipertenso),
                promptString('Senha > ', Senha),
                model:nextId(N),
-               persistence:escreveId,
                assertz(model:paciente(N, Nome, CPF, Nascimento, Peso, Altura, Sangue, Endereco, Cardiopata, Diabetico, Hipertenso)),
                assertz(model:logins(N, Senha, 0)),
+               persistence:escreveId,
                persistence:escrevePaciente,
+               persistence:escreveLogins,
                format('\nCadastrado de paciente realizado com sucesso, id: ~d', [N]),
-               promptString('\n\nPressione qualquer tecla para continuar', _).
+               utils:mensagemEspera.
 
 /* Lê as opções de cadastro da UBS e faz seu cadastro. */
 cadastraUBS :- promptString('Nome > ', Nome),
                promptString('Endereço > ', Endereco),
                promptString('Senha > ', Senha),
                model:nextId(N),
-               persistence:escreveId,
                assertz(model:ubs(N, Nome, Endereco)),
                assertz(model:logins(N, Senha, 1)),
+               persistence:escreveId,
                persistence:escreveUBS,
+               persistence:escreveLogins,
                format('\nCadastrado de UBS realizado com sucesso, id: ~d', [N]),
-               promptString('\n\nPress to continue', _). 
+               utils:mensagemEspera. 
 
 /* 
 Menu do paciente. 

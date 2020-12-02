@@ -1,0 +1,4 @@
+:- dynamic ubs/3.
+
+ubs(3, "upa ufcg", "ufcg").
+

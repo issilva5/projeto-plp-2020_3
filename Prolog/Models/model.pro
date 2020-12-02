@@ -119,22 +119,83 @@ Inicializa todas as tabelas do sistema de uma só vez.
 iniciaSistema :- verificaPaciente, verificaMedico, verificaUBS, verificaReceita, verificaMedicamento,
                  verificaLaudo, verificaExame, verificaLogins, verificaConsulta, verificaId.
 
-verificaPaciente :- exists_file('bd/paciente.bd') -> persistence:lePaciente ; iniciaPaciente.
+verificaPaciente :- exists_file('bd/paciente.bd') -> lePaciente ; iniciaPaciente.
 
-verificaMedico :- exists_file('bd/medico.bd') -> persistence:leMedico ; iniciaMedico.
+verificaMedico :- exists_file('bd/medico.bd') -> leMedico ; iniciaMedico.
 
-verificaUBS :- exists_file('bd/ubs.bd') -> persistence:leUBS ; iniciaUBS.
+verificaUBS :- exists_file('bd/ubs.bd') -> leUBS ; iniciaUBS.
 
-verificaReceita :- exists_file('bd/receita.bd') -> persistence:leReceita ; iniciaReceita.
+verificaReceita :- exists_file('bd/receita.bd') -> leReceita ; iniciaReceita.
 
-verificaMedicamento :- exists_file('bd/medicamento.bd') -> persistence:leMedicamento ; iniciaMedicamento.
+verificaMedicamento :- exists_file('bd/medicamento.bd') -> leMedicamento ; iniciaMedicamento.
 
-verificaLaudo :- exists_file('bd/laudo.bd') -> persistence:leLaudo ; iniciaLaudo.
+verificaLaudo :- exists_file('bd/laudo.bd') -> leLaudo ; iniciaLaudo.
 
-verificaExame :- exists_file('bd/exame.bd') -> persistence:leExame ; iniciaExame.
+verificaExame :- exists_file('bd/exame.bd') -> leExame ; iniciaExame.
 
-verificaLogins :- exists_file('bd/logins.bd') -> persistence:leLogins ; iniciaLogins.
+verificaLogins :- exists_file('bd/logins.bd') -> leLogins ; iniciaLogins.
 
-verificaConsulta :- exists_file('bd/consulta.bd') -> persistence:leConsulta ; iniciaConsulta.
+verificaConsulta :- exists_file('bd/consulta.bd') -> leConsulta ; iniciaConsulta.
 
-verificaId :- exists_file('bd/id.bd') -> persistence:leId ; iniciaId.
+verificaId :- exists_file('bd/id.bd') -> leId ; iniciaId.
+
+/*
+Verifica se o arquivo 'paciente.bd' existe, se existir o lê,
+c.c. chama model:iniciaPaciente.
+*/
+lePaciente :- consult('bd/paciente.bd').
+
+
+/*
+Verifica se o arquivo 'ubs.bd' existe, se existir o lê,
+c.c. chama model:iniciaUBS.
+*/
+leUBS :- consult('bd/ubs.bd').
+
+/*
+Verifica se o arquivo 'medico.bd' existe, se existir o lê,
+c.c. chama model:iniciaMedico.
+*/
+leMedico :- consult('bd/medico.bd').
+
+/*
+Verifica se o arquivo 'paciente.bd' existe, se existir o lê,
+c.c. chama model:iniciaPaciente.
+*/
+leConsulta :- consult('bd/consulta.bd').
+
+/*
+Verifica se o arquivo 'receita.bd' existe, se existir o lê,
+c.c. chama model:iniciaReceita.
+*/
+leReceita :- consult('bd/receita.bd').
+
+/*
+Verifica se o arquivo 'medicamento.bd' existe, se existir o lê,
+c.c. chama model:iniciaMedicamento.
+*/
+leMedicamento :- consult('bd/medicamento.bd').
+
+/*
+Verifica se o arquivo 'laudo.bd' existe, se existir o lê,
+c.c. chama model:iniciaLaudo.
+*/
+leLaudo :- consult('bd/laudo.bd').
+
+/*
+Verifica se o arquivo 'exame.bd' existe, se existir o lê,
+c.c. chama model:iniciaExame.
+*/
+leExame :- consult('bd/exame.bd').
+
+/*
+Verifica se o arquivo 'logins.bd' existe, se existir o lê,
+c.c. chama model:iniciaLogin.
+*/
+leLogins :- consult('bd/logins.bd').
+
+/*
+Verifica se o arquivo 'id.bd' existe, se existir o lê,
+c.c. chama model:iniciaId.
+*/
+leId :- consult('bd/id.bd').

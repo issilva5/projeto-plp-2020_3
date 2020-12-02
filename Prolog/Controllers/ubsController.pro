@@ -71,20 +71,20 @@ adicionaMedicamentoEstoque(IdMed, IdUBS, Qtd) :-
 /* Retira uma quantiade do estoque de um medicamento.
     removeMedicamentoEstoque(?IdMed, ?IdUBS, -Nome, ?Qtd, -Bula)
 */
-removeMedicamentoEstoque(IdMed, IdUBS, Qtd) :-
+removeMedicamentoEstoque(IdMed, IdUbs, Qtd) :-
     adicionaMedicamentoEstoque(IdMed, IdUbs, (Qtd * -1)).
 
 /* Visualiza informações de todos os medicamentos da UBS.
     consultarMedicamentos(-IdMed, ?IdUBS, -Nome, -Qtd, -Bula)
 */
 consultarMedicamentos(IdUBS) :-
-    forall(model:medicamento(IdMed, IdUbs, Nome, Qtd, Bula),
+    forall(model:medicamento(IdMed, IdUBS, Nome, Qtd, Bula),
     show:showMedicamento(model:medicamento(IdMed, IdUBS, Nome, Qtd, Bula))).
 
 /* Visualiza informações de um medicamento específico da UBS.
     consultarMedicamentos(?IdMed, ?IdUBS, -Nome, -Qtd, -Bula)
 */
-consultarMedicamento(IdMed, IdUBS) :-
+consultarMedicamento(IdMed, IdUbs) :-
     model:medicamento(IdMed, IdUbs, Nome, Qtd, Bula),
     show:showMedicamento(model:medicamento(IdMed, IdUbs, Nome, Qtd, Bula)).
 
@@ -131,4 +131,4 @@ validaIDLaudo(ID) :- model:laudo(ID, _, _, _).
 Verifica se o ID pertence a uma consulta. 
 @param ID: id da Consulta.
 */
-validaIDConsulta(ID).
+validaIDConsulta(ID) :- model:consulta(ID, _, _, _, _).

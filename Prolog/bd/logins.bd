@@ -1,0 +1,6 @@
+:- dynamic logins/3.
+
+logins(1, "123", 0).
+logins(2, "123", 0).
+logins(3, "123", 1).
+
