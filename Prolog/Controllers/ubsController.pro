@@ -129,3 +129,10 @@ Verifica se o ID pertence a um laudo.
 @param ID: id do laudo.
 */
 validaIDLaudo(ID) :- model:laudo(ID, _, _, _).
+
+/* 
+Verifica se o ID pertence a uma consulta. 
+
+@param ID: id da Consulta.
+*/
+validaIDConsulta(ID).
