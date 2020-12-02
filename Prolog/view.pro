@@ -27,7 +27,7 @@ main :-
     ( OP = "L" -> tty_clear, login;
       OP = "C" -> tty_clear, cadastro;
       OP = "E" -> writeln('Tchau');
-      writeln('Opção Inválida'), nl, utils:mensagemEspera, tty_clear, main).
+      writeln('Opção Inválida'), utils:mensagemEspera, tty_clear, main).
 
 /* Menu de login. */
 login :- write('-----------------------------------------------------------------\n
@@ -38,7 +38,7 @@ login :- write('----------------------------------------------------------------
          (T =:= 0 -> tty_clear, menuPaciente(ID);
           T =:= 1 -> tty_clear, menuUBS(ID);
           T =:= 2 -> tty_clear, menuMedico(ID) ;
-          write('ID não encontrado\n'), login).
+          write('ID não encontrado'), utils:mensagemEspera, main).
 
 /* Menu de cadastro. */
 cadastro :- write('-----------------------------------------------------------------\n
@@ -49,7 +49,7 @@ cadastro :- write('-------------------------------------------------------------
     (O = "P" -> cadastraPac, main;
      O = "U" -> cadastraUBS, main;
      O = "V" -> tty_clear, main;
-     write('Opção inválida\n'), cadastro).
+     write('Opção inválida'), utils:mensagemEspera, cadastro).
 
 /* Lê as opções de cadastro do paciente e faz seu cadastro. */
 cadastraPac :- promptString('Nome > ', Nome),
@@ -69,7 +69,7 @@ cadastraPac :- promptString('Nome > ', Nome),
                persistence:escreveId,
                persistence:escrevePaciente,
                persistence:escreveLogins,
-               format('\nCadastrado de paciente realizado com sucesso, id: ~d', [N]),
+               format('\nCadastro de paciente realizado com sucesso, id: ~d', [N]),
                utils:mensagemEspera.
 
 /* Lê as opções de cadastro da UBS e faz seu cadastro. */
@@ -82,8 +82,8 @@ cadastraUBS :- promptString('Nome > ', Nome),
                persistence:escreveId,
                persistence:escreveUBS,
                persistence:escreveLogins,
-               format('\nCadastrado de UBS realizado com sucesso, id: ~d', [N]),
-               utils:mensagemEspera. 
+               format('\nCadastro de UBS realizado com sucesso, id: ~d', [N]),
+               utils:mensagemEspera.
 
 /* 
 Menu do paciente. 
@@ -104,7 +104,7 @@ menuPaciente(ID) :- write('-----------------------------------------------------
                 O = "C" -> menuPacienteConsultar(ID), utils:mensagemEspera, tty_clear, menuPaciente(ID);
                 O = "E" -> menuPacienteEmergencia, utils:mensagemEspera, tty_clear, menuPaciente(ID);
                 O = "S" -> tty_clear, main;
-                write('Opcao Invalida\n'), menuPaciente(ID)).
+                write('Opção Inválida'), utils:mensagemEspera, tty_clear, menuPaciente(ID)).
 
 menuPacienteBuscarUBS(ID) :- write('(T)odas as UBS'), nl,
                             write('(E)specilidades da UBS'), nl,
@@ -113,13 +113,13 @@ menuPacienteBuscarUBS(ID) :- write('(T)odas as UBS'), nl,
                             (O = "T" -> menuPacienteBuscarTodasUbs;
                             O = "E" -> menuPacienteBuscarEspecialidadesUbs(ID);
                             O = "U" -> menuPacienteBuscarUBSPorEspecialidade;
-                            write('Opcao Invalida\n'), menuPaciente(ID)).
+                            write('Opção Inválida'), utils:mensagemEspera, menuPaciente(ID)).
 
 menuPacienteBuscarUBSPorEspecialidade :- promptString('Especialidade > ', E), paciente:buscarUnidadesEspec(E).
 
 menuPacienteBuscarTodasUbs :- paciente:buscarTodasUnidades.
 
-menuPacienteBuscarEspecialidadesUbs(ID) :- promptString('Id da UBS > ', I), 
+menuPacienteBuscarEspecialidadesUbs(ID) :- prompt('Id da UBS > ', I), 
                                         (ubs:validaIDUBS(I) -> paciente:especialidadeDaUBS(I);
                                         write('Id inválido\n'), menuPacienteBuscarUBS(ID)).
 

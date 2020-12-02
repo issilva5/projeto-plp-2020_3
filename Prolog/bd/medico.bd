@@ -1,0 +1,7 @@
+:- dynamic medico/5.
+
+medico(4, "dr hans chucrute", "12456", 3, "cardiologia").
+medico(6, "dr rey", "40028922", 3, "plastica").
+medico(7, "DR WHO", "666", 5, "podologo").
+medico(8, "dr benjamim", "14754", 5, "cardiologia").
+

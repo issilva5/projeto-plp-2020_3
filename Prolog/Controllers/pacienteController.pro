@@ -15,7 +15,7 @@ Buscar as unidades que tem determinada especialidade.
 
 
 */
-buscarUnidadesEspec(E) :- model:medico(_,_,_,IdUbs,E), forall(model:ubs(IdUbs, Nome, End), show:showUbs(model:ubs(IdUbs, Nome, End))).
+buscarUnidadesEspec(E) :- forall((model:medico(_,_,_,IdUbs,E), model:ubs(IdUbs, Nome, End)), show:showUbs(model:ubs(IdUbs, Nome, End))).
 
 /* Listar todas as unidades. */
 buscarTodasUnidades :- forall(model:ubs(IdUbs, Nome, End), show:showUbs(model:ubs(IdUbs, Nome, End))).
@@ -132,7 +132,7 @@ Recebe um pedido de emergência.
 
 @param E: endereço da emergência.
 */
-emergencia(_) :- ansi_format([bold, fg(green)], 'Uma ambulância está a caminho!', []), nl,
+emergencia(E) :- ansi_format([bold, fg(green)], 'Uma ambulância está a caminho do endereço ~w!', [E]), nl,
               ansi_format([bold, fg(green)], 'wiii-wooo-wiii-wooo wiii-wooo-wiii-wooo wiii-wooo-wiii-wooo', []).
 
 /* 

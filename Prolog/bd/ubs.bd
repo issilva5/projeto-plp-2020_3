@@ -1,4 +1,5 @@
 :- dynamic ubs/3.
 
 ubs(3, "upa ufcg", "ufcg").
+ubs(5, "upa grandona", "rua tudo grande").
 

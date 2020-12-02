@@ -16,13 +16,12 @@ cadastraMedico(IdUBS) :-
     promptString('Especialidade > ', Especialidade),
     promptString('Senha > ', Senha),
     model:nextId(N),
-    persistence:escreveId,
     assertz(model:medico(N, Nome, CRM, IdUBS, Especialidade)),
-    persistence:escreveMedico,
     assertz(model:logins(N, Senha, 2)),
+    persistence:escreveId,
+    persistence:escreveMedico,
     persistence:escreveLogins,
-    format('\nCadastrado de médico realizado com sucesso, id: ~d', [N]),
-    promptString('\n\nPressione qualquer tecla para continuar', _).
+    format('\nCadastrado de médico realizado com sucesso, id: ~d', [N]).
 
 /* Cria um medicamento */
 cadastraMedicamento(IdUBS) :-
