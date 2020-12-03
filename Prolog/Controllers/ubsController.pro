@@ -23,16 +23,6 @@ cadastraMedico(IdUBS) :-
     persistence:escreveLogins,
     format('\nCadastrado de médico realizado com sucesso, id: ~d', [N]).
 
-/* Cria um medicamento */
-cadastraMedicamento(IdUBS) :-
-    promptString('Nome > ', Nome),
-    utils:prompt('Quantidade > ', Qtd),
-    promptString('Bula > ', Bula),
-    model:nextId(N),
-    assertz(model:medicamento(N, IdUBS, Nome, Qtd, Bula)),
-    format('\nCadastrado de medicamento realizado com sucesso, id: ~d', [N]),
-    promptString('\n\nPressione qualquer tecla para continuar', _).
-
 /* Visualiza as consultas agendadas na UBS para hoje ou posteriori.
     visualizaConsultasFuturas(?IdUBS, -IdConsulta, -IdPaciente, -IdMedico, -Dia)
 */
@@ -65,6 +55,7 @@ adicionaMedicamentoEstoque(IdMed, IdUBS, Qtd) :-
     QuantidadeAtualizada is QtdAtual + Qtd,
     retract(model:medicamento(IdMed, IdUbs, Nome, QtdAtual, Bula)),
     assertz(model:medicamento(IdMed, IdUbs, Nome, QuantidadeAtualizada, Bula)),
+    persistence:escreveMedicamento,
     show:showMedicamento(model:medicamento(IdMed, IdUbs, Nome, QuantidadeAtualizada, Bula)).
 
 /* Retira uma quantiade do estoque de um medicamento.

@@ -228,51 +228,62 @@ menuPacienteEmergencia :- promptString('Endereço > ', E),
 menuUBS(IdUBS) :- write('-----------------------------------------------------------------\n
     SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - UBS  \n
 -----------------------------------------------------------------\n'),
-    write('(C)adastrar corpo médico'), nl, write('(V)isualizar informações'), nl,
-    write('(F)armácia'), nl, write('(D)ashboard'), nl, write('(S)air'), nl,
+    write('(C)adastrar corpo médico'), nl,
+    write('(V)isualizar informações'), nl,
+    write('(F)armácia'), nl,
+    write('(D)ashboard'), nl,
+    write('(S)air'), nl,
     promptString('Opção > ', Op),
-    (Op = "C" -> cadastraMedico(IdUBS), utils:mensagemEspera, tty_clear, menuUBS(IdUBS);
-     Op = "V" -> visualizaUBS(IdUBS), utils:mensagemEspera, tty_clear, menuUBS(IdUBS);
-     Op = "F" -> farmaciaUBS(IdUBS), utils:mensagemEspera, tty_clear, menuUBS(IdUBS);
-     Op = "D" -> dashBoard(IdUBS), utils:mensagemEspera, tty_clear, menuUBS(IdUBS);
+    (Op = "C" -> cadastraMedico(IdUBS), utils:mensagemEspera, menuUBS(IdUBS);
+     Op = "V" -> visualizaUBS(IdUBS), utils:mensagemEspera, menuUBS(IdUBS);
+     Op = "F" -> farmaciaUBS(IdUBS), utils:mensagemEspera, menuUBS(IdUBS);
+     Op = "D" -> dashBoard(IdUBS), utils:mensagemEspera, menuUBS(IdUBS);
      Op = "S" -> tty_clear, main;
-     write('Opção inválida\n'), menuUBS(IdUBS)).
+     write('Opção inválida'), utils:mensagemEspera, menuUBS(IdUBS)).
 
 cadastraMedico(IdUBS) :- ubs:cadastraMedico(IdUBS).
 
-visualizaUBS(IdUBS) :- write('(A)gendamentos'), nl, write('(P)aciente'), nl, write('(M)édico'), nl,
+visualizaUBS(IdUBS) :- write('(A)gendamentos'), nl,
+    write('(P)aciente'), nl,
+    write('(M)édico'), nl,
     promptString('Opção > ', Op),
     (Op = "A" -> ubs:visualizaConsultasFuturas(IdUBS);
     Op = "P" -> ubs:visualizaPacientes(IdUBS);
     Op = "M" -> visualizaUBSMedicos(IdUBS);
-    write('Opção inválida\n'), menuUBS(IdUBS)).
+    write('Opção inválida')).
 
-visualizaUBSMedicos(IdUBS) :- write('(T)odos'), nl, write('(E)specífico'), nl,
+visualizaUBSMedicos(IdUBS) :- write('(T)odos'), nl,
+    write('(E)specífico'), nl,
     promptString('Opção > ', Op),
     (Op = "T" -> ubs:visualizaMedicos(IdUBS);
     Op = "E" -> visualizaUBSMedico(IdUBS);
-    write('Opção inválida\n')).
+    write('Opção inválida')).
 
 visualizaUBSMedico(IdUBS) :- prompt('Id Médico > ', IdMed), 
     (medico:validaIDMedico(IdMed) -> ubs:visualizaMedico(IdMed, IdUBS);
-    write('Id inválido\n'), visualizaUBS(IdUBS)).
+    write('Id inválido')).
 
-farmaciaUBS(IdUBS) :- write('(C)onsultar'), nl, write('(N)ovo'), nl, write('(A)dicionar'), nl, write('(R)emover'), nl,
+farmaciaUBS(IdUBS) :- write('(C)onsultar'), nl,
+    write('(N)ovo'), nl,
+    write('(A)dicionar'), nl,
+    write('(R)emover'), nl,
     promptString('Opção > ', Op),
-    (Op = "C" -> farmaciaUBSConsultar(IdUBS), tty_clear, menuUBS(IdUBS);
-    Op = "N" -> novoMedicamento(IdUBS), tty_clear, menuUBS(IdUBS);
-    Op = "A" -> adicionaMedicamentoEstoque(IdUBS), tty_clear, menuUBS(IdUBS);
-    Op = "R" -> removeMedicamentoEstoque(IdUBS), tty_clear, menuUBS(IdUBS);
-    write('Opção inválida\n'), menuUBS(IdUBS)).
+    (Op = "C" -> farmaciaUBSConsultar(IdUBS);
+    Op = "N" -> novoMedicamento(IdUBS);
+    Op = "A" -> adicionaMedicamentoEstoque(IdUBS);
+    Op = "R" -> removeMedicamentoEstoque(IdUBS);
+    write('Opção inválida')).
 
-farmaciaUBSConsultar(IdUBS) :- write('(T)odos'), nl, write('(E)specífico'), nl,
+farmaciaUBSConsultar(IdUBS) :- write('(T)odos'), nl,
+    write('(E)specífico'), nl,
     promptString('Opção > ', Op),
-    (Op = "T" -> ubs:consultarMedicamentos(IdUBS);
-    Op = "E" -> (promptString('Id Medicamento > ', IdMed), ubs:validaIDMedicamento(IdMed), ubs:consultarMedicamento(IdMed, IdUBS);
-    write('Opção inválida\n'))).
+    (Op = "T" -> ubs:consultarMedicamentos(IdUBS) ;
+    Op = "E" -> (prompt('Id Medicamento > ', IdMed), 
+        ubs:validaIDMedicamento(IdMed),
+        ubs:consultarMedicamento(IdMed, IdUBS) ; write('ID inválido')) ;
+    write('Opção inválida')).
 
 novoMedicamento(IdUBS) :- promptString('Nome > ', Nome),
-    promptString('Nome > ', Nome),
     prompt('Quantidade > ', Qtd),
     promptString('Bula > ', Bula),
     model:nextId(N),
@@ -283,13 +294,13 @@ novoMedicamento(IdUBS) :- promptString('Nome > ', Nome),
 
 adicionaMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed), 
     prompt('Quantidade a adicionar > ', Qtd),
-    (ubs:validaIDMedicamento(IdMed) -> ubs:adicionaMedicamentoEstoque(IdMed, IdUBS, Qtd), persistence:escreveMedicamento;
-    write('Id inválido\n'), farmaciaUBSConsultar(IdUBS)).
+    (ubs:validaIDMedicamento(IdMed) -> ubs:adicionaMedicamentoEstoque(IdMed, IdUBS, Qtd) ;
+    write('Id inválido')).
 
 removeMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed), 
     prompt('Quantidade a remover > ', Qtd),
-    (ubs:validaIDMedicamento(IdMed) -> ubs:removeMedicamentoEstoque(IdMed, IdUBS, Qtd),persistence:escreveMedicamento;
-    write('Id inválido\n'), farmaciaUBSConsultar(IdUBS)).
+    (ubs:validaIDMedicamento(IdMed) -> ubs:removeMedicamentoEstoque(IdMed, IdUBS, Qtd) ;
+    write('Id inválido')).
 
 dashBoard(_).
 
