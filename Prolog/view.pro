@@ -17,12 +17,9 @@ main :-
     writeln( '-----------------------------------------------------------------'),
     writeln( '         SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS)         '),
     writeln( '-----------------------------------------------------------------'),
-    writeln('--------------'),
-    writeln('  (L)ogin     '),
-    writeln('  (C)adastrar '),
-    writeln('  (E)ncerrar  '),
-    writeln('--------------'),
-
+    writeln('(L)ogin     '),
+    writeln('(C)adastrar '),
+    writeln('(E)ncerrar  '),
     promptString('Opção > ', OP),
     ( OP = "L" -> tty_clear, login;
       OP = "C" -> tty_clear, cadastro;
@@ -134,26 +131,28 @@ menuPacienteRequisitar(ID) :- write('(C)onsulta'), nl,
 
 leituraRequisitaConsulta(ID) :- prompt('ID do Médico > ', IDM),
                                 medico:validaIDMedico(IDM),
-                                prompt('ID da UBS > ', IDU),
-                                ubs:validaIDUBS(IDU),
-                                promptString('Informe a data desejada: ', Data),
+                                medico:pegaUBS(IDM, IDU),
+                                time:getNextDate(IDM, Data),
                                 model:nextId(N),
                                 persistence:escreveId,
                                 paciente:requisitarConsulta(N, ID, IDM, IDU, Data),
                                 persistence:escreveConsulta,
-                                format('Consulta ~d Marcada com o Médico ~d, na UBS ~d e no dia ~w ~n', [N, IDM, IDU, Data]).
+                                format('Consulta ~d Marcada com o Médico ~d, na UBS ~d e no(a) ', [N, IDM, IDU]),
+                                format_time(user, '%a, %d %b %Y %T', Data),
+                                format('.~n').       
 
 leituraRequisitaExame(ID) :- prompt('ID do Médico > ', IDM),
                              medico:validaIDMedico(IDM),
-                             prompt('ID da UBS > ', IDU),
-                             ubs:validaIDUBS(IDU),
+                             medico:pegaUBS(IDM, IDU),
                              promptString('Tipo de Exame > ', Tipo),
-                             promptString('Informe a data desejada: ', Data),
+                             time:getNextDate(IDM, Data),
                              model:nextId(N),
                              persistence:escreveId,
                              paciente:requisitarExame(N, ID, IDM, IDU, Tipo, Data),
                              persistence:escreveExame,
-                             format('Exame ~d marcado na UBS ~d e no dia ~w ~n', [N, IDU, Data]).
+                             format('Exame ~d marcado na UBS ~d e no(a) ', [N, IDU]),
+                             format_time(user, '%a, %d %b %Y %T', Data),
+                             format('.~n').
 
 leituraRequisitaMedicamento(ID) :- prompt('ID da Receita > ', IDR),
                                    (ubs:validaIDReceita(IDR) -> paciente:requisitarMedicamento(IDR, ID), persistence:escreveMedicamento;

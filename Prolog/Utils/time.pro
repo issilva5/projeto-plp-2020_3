@@ -73,10 +73,10 @@ Caso o horário de início ou de fim seja inválido, ambos serão considerados i
 informaHorarios(Id) :- limpaTudo(Id), !, tempoConsulta(Id),
     persistence:escreveMTempo,
     today_weekday(W),
-    forall(between(W,7,WeekD),
+    Wd is W+1,
+    forall(between(Wd,7,WeekD),
     (informaHorario(Id,WeekD) ; true)),
-    Wd is W-1,
-    forall(between(1,Wd,WeekD),
+    forall(between(1,W,WeekD),
     (informaHorario(Id,WeekD) ; true)).
 
 /*
@@ -201,14 +201,10 @@ Pega a data do próximo dia da semana a partir de uma dada data.
 next_weekday(_, WeekD, DateOut) :- (WeekD < 1 ; WeekD > 7), DateOut = "impossivel", !.
 
 next_weekday(date(Y, M, D), WeekD, DateOut) :-
-    day_of_the_week(date(Y, M, D), DWeek),
-    WeekD == DWeek,
-    DateOut = date(Y, M, D), !.
-
-next_weekday(date(Y, M, D), WeekD, DateOut) :-
     add_days(date(Y, M, D, 0, 0, 0, 0, -, -), 1, DateAux1),
     date_time_value(date, DateAux1, DateAux2),
-    next_weekday(DateAux2, WeekD, DateOut).
+    day_of_the_week(DateAux2, DWeek),
+    (WeekD =\= DWeek -> next_weekday(DateAux2, WeekD, DateOut) ; DateOut = DateAux2).
 
 /*
 

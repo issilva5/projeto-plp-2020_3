@@ -14,26 +14,26 @@ showPaciente(model:paciente(IdPac, Nome, _, Nascimento, Peso, Altura, Sangue, En
 
 showExame(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado)) :-
     write('----------------------------'), nl,
-    format('EXAME ~d', [IdEx]),
-    format('Paciente: ~d', [IdPac]),
-    format('Médico responsável: ~d', [IDM]),
-    format('UBS: ~d', [IdUBS]),
-    format('Tipo do exame: ~w', [Tipo]),
+    format('EXAME ~d~n', [IdEx]),
+    format('Paciente: ~d~n', [IdPac]),
+    format('Médico responsável: ~d~n', [IDM]),
+    format('UBS: ~d~n', [IdUBS]),
+    format('Tipo do exame: ~w~n', [Tipo]),
     write('Data: '), format_time(user, '%a, %d %b %Y %T', Data), nl,
-    format('Resultado: ', [Resultado]).
+    format('Resultado: ~w~n', [Resultado]).
 
 showConsulta(model:consulta(ID, IdPac, IDM, IdUBS, Data)) :-
     write('----------------------------'), nl,
-    format('CONSULTA ~d', [ID]),
-    format('Paciente: ~d', [IdPac]),
-    format('Médico responsável: ~d', [IDM]),
-    format('UBS: ~d', [IdUBS]),
+    format('CONSULTA ~d~n', [ID]),
+    format('Paciente: ~d~n', [IdPac]),
+    format('Médico responsável: ~d~n', [IDM]),
+    format('UBS: ~d~n', [IdUBS]),
     write('Data: '), format_time(user, '%a, %d %b %Y %T', Data), nl.
 
 showMedicamento(model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula)) :-
     write('----------------------------'), nl,
-    format('MEDICAMENTO ~d', [IdMed]),
-    format('UBS: ~d', [IdUBS]),
+    format('MEDICAMENTO ~d~n', [IdMed]),
+    format('UBS: ~d~n', [IdUBS]),
     format('Nome: ~w~n', [Nome]),
     format('Bula: ~w~n', [Bula]),
     format('Quantidade em estoque: ~d~n', [Estoque]).

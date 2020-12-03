@@ -65,7 +65,7 @@ Listar todos os laudos do paciente.
 @param IDPac: id do paciente. 
 
 */
-consultarLaudos(IDPac) :- model:exame(IdEx, IDPac,_,_,_,_,_), forall(model:laudo(Id, IdMed, IdEx, Text), show:showLaudo(model:laudo(Id, IdMed, IdEx, Text))).
+consultarLaudos(IDPac) :- forall((model:exame(IdEx, IDPac,_,_,_,_,_), model:laudo(Id, IdMed, IdEx, Text)), show:showLaudo(model:laudo(Id, IdMed, IdEx, Text))).
 
 /* 
 Ver um laudo específico do paciente. 
