@@ -16,7 +16,7 @@ cadastraMedico(IdUBS) :-
     promptString('Nome > ', Nome),
     promptString('CRM > ', CRM),
     promptString('Especialidade > ', Especialidade),
-    promptString('Senha > ', Senha),
+    promptPassword('Senha > ', Senha),
     model:nextId(N),
     assertz(model:medico(N, Nome, CRM, IdUBS, Especialidade)),
     assertz(model:logins(N, Senha, 2)),

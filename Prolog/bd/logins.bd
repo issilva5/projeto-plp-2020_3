@@ -8,4 +8,5 @@ logins(5, "123", 1).
 logins(6, "123", 2).
 logins(7, "123", 2).
 logins(8, "123", 2).
+logins(19, "oi", 1).
 
