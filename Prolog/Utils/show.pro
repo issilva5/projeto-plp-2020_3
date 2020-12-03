@@ -64,4 +64,8 @@ showReceita(model:receita(Id, IdPac, IdMed, IdUbs)) :-
     format('RECEITA ~d~n', [Id]),
     format('Paciente: ~d~n', [IdPac]),
     format('Médico responsável: ~d~n', [IdMed]),
-    format('UBS: ~w~n', [IdUbs]).
+    format('UBS: ~w~n', [IdUbs]),
+    format('--------Medicamentos--------~n'),
+    forall((model:receita_remedio(Id, Medic, Inst, Quant),
+            model:medicamento(Medic, _, Nome, _, _)),
+            format('Nome: ~w~nQuant: ~d~nInst: ~w~n~n', [Nome, Quant, Inst])).
