@@ -39,7 +39,15 @@ dia da semana :: Int (1 a 7).
 Os campos de tempo de atendimento (m_tempo) são idMed :: Int, tempo de consulta em minutos :: Int.
 
 */
-iniciaMedico :- dynamic medico/5, m_inicio/3, m_fim/3, m_tempo/2, m_horarios/2.
+iniciaMedico :- dynamic(medico/5).
+
+iniciaMInicio :- dynamic(m_inicio/3).
+
+iniciaMFim :- dynamic(m_fim/3).
+
+iniciaMTempo :- dynamic(m_tempo/2).
+
+iniciaMHorarios :- dynamic(m_horarios/2).
 
 /*
 
@@ -50,7 +58,8 @@ Os campos de remédio são: idReceita :: Int, idMedicamento :: Int, instruções
 quantidade :: Int.
 
 */
-iniciaReceita :- dynamic receita/4, receita_remedio/4.
+iniciaReceita :- dynamic(receita/4),
+    dynamic(receita_remedio/4).
 
 /*
 
@@ -117,7 +126,8 @@ Inicializa todas as tabelas do sistema de uma só vez.
 
 */
 iniciaSistema :- verificaPaciente, verificaMedico, verificaUBS, verificaReceita, verificaMedicamento,
-                 verificaLaudo, verificaExame, verificaLogins, verificaConsulta, verificaId.
+                 verificaLaudo, verificaExame, verificaLogins, verificaConsulta, verificaId,
+                 verificaHorario, verificaMInicio, verificaMFim, verificaMTempo.
 
 verificaPaciente :- exists_file('bd/paciente.bd') -> lePaciente ; iniciaPaciente.
 
@@ -138,6 +148,14 @@ verificaLogins :- exists_file('bd/logins.bd') -> leLogins ; iniciaLogins.
 verificaConsulta :- exists_file('bd/consulta.bd') -> leConsulta ; iniciaConsulta.
 
 verificaId :- exists_file('bd/id.bd') -> leId ; iniciaId.
+
+verificaHorario :- exists_file('bd/medico_horarios.bd') -> leHorarios ; iniciaMHorarios.
+
+verificaMInicio :- exists_file('bd/medico_inicio.bd') -> leMInicio ; iniciaMInicio.
+
+verificaMFim :- exists_file('bd/medico_fim.bd') -> leMFim ; iniciaMFim.
+
+verificaMTempo :- exists_file('bd/medico_tempo.bd') -> leMTempo ; iniciaMTempo.
 
 /*
 Verifica se o arquivo 'paciente.bd' existe, se existir o lê,
@@ -199,3 +217,14 @@ Verifica se o arquivo 'id.bd' existe, se existir o lê,
 c.c. chama model:iniciaId.
 */
 leId :- consult('bd/id.bd').
+
+leHorarios :- consult('bd/medico_horarios.bd').
+
+/* Persiste a tabela medico_inicio no arquivo. */
+leMInicio :- consult('bd/medico_inicio.bd').
+
+/* Persiste a tabela medico_fim no arquivo. */
+leMFim :- consult('bd/medico_fim.bd').
+
+/* Persiste a tabela medico_fim no arquivo. */
+leMTempo :- consult('bd/medico_tempo.bd').

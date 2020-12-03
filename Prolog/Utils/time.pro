@@ -2,6 +2,7 @@
 
 :- use_module('utils.pro').
 :- use_module('../Models/model.pro').
+:- use_module('../Persistence/persistence.pro').
 
 /*
 
@@ -42,8 +43,7 @@ putNextDate(Id, D) :- model:m_tempo(Id, T),
         add_days(NewDate, 7, OutputDate),
         date_time_value(date, OutputDate, OnlyDate2),
         combine_dt(OnlyDate2, TI, NewDate2),
-        assertz(model:m_horarios(Id, NewDate2))), !.
-
+        assertz(model:m_horarios(Id, NewDate2))), persistence:escreveHorarios, !.
 
 
 /*
@@ -58,7 +58,7 @@ iniciaDatas(Id) :- forall(
     next_weekday(T, W, D),
     combine_dt(D, time(H, M), O),
     today_weekday(Tw)),
-    Tw == W -> asserta(model:m_horarios(Id, O)) ; assertz(model:m_horarios(Id, O))).
+    assertz(model:m_horarios(Id, O))), persistence:escreveHorarios.
 
 /*
 
@@ -71,7 +71,12 @@ Caso o horário de início ou de fim seja inválido, ambos serão considerados i
 
 */
 informaHorarios(Id) :- limpaTudo(Id), !, tempoConsulta(Id),
-    forall(between(1,7,WeekD),
+    persistence:escreveMTempo,
+    today_weekday(W),
+    forall(between(W,7,WeekD),
+    (informaHorario(Id,WeekD) ; true)),
+    Wd is W-1,
+    forall(between(1,Wd,WeekD),
     (informaHorario(Id,WeekD) ; true)).
 
 /*
@@ -80,14 +85,12 @@ Limpa informações anteriores sobre os horários do médico.
 @param +Id: Id do médico.
 
 */
-limpaTudo(Id) :- (model:m_horarios(Id, D) ; true),
-    (retract(model:m_horarios(Id, D)) ; true),
-    (model:m_inicio(Id, I, W) ; true),
-    (retract(model:m_inicio(Id, I, W)) ; true),
-    (model:m_fim(Id, F, W2) ; true),
-    (retract(model:m_fim(Id, F, W2)) ; true),
-    (model:m_tempo(Id, T) ; true),
-    (retract(model:m_tempo(Id, T)) ; true).
+limpaTudo(Id) :- (retractall(model:m_horarios(Id, _)) ; true),
+    (retractall(model:m_inicio(Id, _, _)) ; true),
+    (retractall(model:m_fim(Id, _, _)) ; true),
+    (retractall(model:m_tempo(Id, _)) ; true),
+    persistence:escreveMInicio, persistence:escreveMFim,
+    persistence:escreveMTempo, persistence:escreveHorarios.
 
 /*
 
@@ -110,7 +113,9 @@ Faz a coleta dos horários de início e fim de plantão do médico para um dado 
 informaHorario(Id, WeekD) :- informaHorarioInicio(Id, WeekD, MInicio),
     informaHorarioFim(Id, WeekD, MFim),
     assertz(MInicio),
-    assertz(MFim).
+    assertz(MFim),
+    persistence:escreveMInicio,
+    persistence:escreveMFim.
 
 /*
 

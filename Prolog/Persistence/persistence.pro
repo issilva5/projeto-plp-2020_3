@@ -1,6 +1,8 @@
 :- module(persistence, [escrevePaciente/0, escreveUBS/0,
                         escreveMedico/0, escreveReceita/0, escreveReceitaRem/0, escreveMedicamento/0, escreveLaudo/0,
-                        escreveConsulta/0, escreveExame/0, escreveLogins/0, escreveId/0]).
+                        escreveConsulta/0, escreveExame/0, escreveLogins/0, escreveId/0,
+                        escreveHorarios/0, escreveMInicio/0, escreveMFim/0]).
+
 :- use_module('../Models/model.pro').
 
 /*
@@ -41,3 +43,15 @@ escreveLogins :- tell('bd/logins.bd'), listing(model:logins), told.
 
 /* Persiste a tabela id no arquivo 'id.bd'. */
 escreveId :- tell('bd/id.bd'), listing(model:id), told.
+
+/* Persiste a tabela medico_horarios no arquivo. */
+escreveHorarios :- tell('bd/medico_horarios.bd'), listing(model:m_horarios), told.
+
+/* Persiste a tabela medico_inicio no arquivo. */
+escreveMInicio :- tell('bd/medico_inicio.bd'), listing(model:m_inicio), told.
+
+/* Persiste a tabela medico_fim no arquivo. */
+escreveMFim :- tell('bd/medico_fim.bd'), listing(model:m_fim), told.
+
+/* Persiste a tabela medico_fim no arquivo. */
+escreveMTempo :- tell('bd/medico_tempo.bd'), listing(model:m_tempo), told.
