@@ -7,6 +7,8 @@
 :- use_module('../Models/model.pro').
 :- use_module('../Utils/show.pro').
 :- use_module('../Utils/utils.pro').
+:- use_module('../Controllers/ubsController.pro', [removeMedicamentoEstoque/3]).
+:- use_module('../Persistence/persistence.pro', [escreveReceita/0, escreveReceitaRem/0]).
 
 /*
 Buscar as unidades que tem determinada especialidade.
@@ -54,15 +56,16 @@ Deduz do estoque os medicamentos de um dada receita.
 TODO reformular método.
 
 */
-requisitarMedicamento(ID, IDPac) :- model:receita(ID, IDPac, IdMed, IdUbs),
-    model:receita_remedio(ID, IdMedic, Int, Qtd),
-    model:medicamento(IdMedic, IdUBS, Nome, Estoque, Bula),
-    NovaQuantidade is Estoque - Qtd,
-    retract(model:receita(ID, IDPac, IdMed, IdUbs)),
-    retract(model:receita_remedio(ID, IdMedic, Int, Qtd)),
-    retract(model:medicamento(IdMedic, IdUBS, Nome, Estoque, Bula)),
-    assertz(model:medicamento(IdMedic, IdUBS, Nome, NovaQuantidade, Bula)).
-    
+requisitarMedicamento(ID, IDPac) :- 
+    forall((model:receita(ID, IDPac, IDMed, IdUbs),
+    model:receita_remedio(ID, IdMedic, _, Qtd),
+    model:medicamento(IdMedic, IdUbs, _, Estoque, _),
+    Estoque >= Qtd
+    ), ubs:removeMedicamentoEstoque(IdMedic, IdUbs, Qtd)),
+    retract(model:receita(ID, IDPac, _, _)),
+    retractall(model:receita_remedio(ID, _, _, _)),
+    persistence:escreveReceita,
+    persistence:escreveReceitaRem.
 
 /* 
 Listar todos os laudos do paciente. 
