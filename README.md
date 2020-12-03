@@ -47,4 +47,4 @@ No diretório [Prolog](Prolog), faça:
  
 ## Vídeos de demonstração
  
-Os vídeos de demonstração para [Haskell](https://www.youtube.com/watch?v=WGFePs7LXg8) e Prolog podem ser acessados nos links respectivos.
+Os vídeos de demonstração para [Haskell](https://www.youtube.com/watch?v=WGFePs7LXg8) e [Prolog](https://youtu.be/mGAf4_cfU7w) podem ser acessados nos links respectivos.
