@@ -26,12 +26,24 @@ cadastraMedico(IdUBS) :-
 /* Visualiza as consultas agendadas na UBS para hoje ou posteriori.
     visualizaConsultasFuturas(?IdUBS, -IdConsulta, -IdPaciente, -IdMedico, -Dia)
 */
-visualizaConsultasFuturas(IdUBS).
+visualizaConsultasFuturas(IdUBS) :-
+    forall((model:consulta(IdConsulta, IdPac, IdMed, IdUBS, Data),
+            get_time(X), stamp_date_time(X, Today, 10800),
+            Data @>= Today),
+        (show:showConsulta(model:consulta(IdConsulta, IdPac, IdMed, IdUBS, Data)))).
 
 /* Visualiza as informações dos pacientes com consultas agendadas.
     visualizaPacientes(?IdUBS, -IdPaciente, -Nome, -Endereco, -CPF, -Dia, -Peso, -Altura, -TipoSanguineo, -C, -D, -H)
 */
-visualizaPacientes(IdUBS).
+visualizaPacientes(IdUBS) :-
+    findall(IdPac, (model:consulta(_, IdPac, _, IdUBS, Data),
+            get_time(X), stamp_date_time(X, Today, 10800),
+            Data @>= Today), L),
+    list_to_set(L, S),
+    foreach(member(IdP, S), showP(IdP)).
+
+showP(IdP) :- model:paciente(IdP, Nome, _, Nascimento, Peso, Altura, Sangue, Endereco, Card, Diab, Hiper),
+    show:showPaciente(model:paciente(IdP, Nome, _, Nascimento, Peso, Altura, Sangue, Endereco, Card, Diab, Hiper)).
 
 /* Visualiza os médicos que trabalham na UBS.
     visualizaMedicos(-IdMed, -Nome, -CRM, ?IdUBS, -Especialidade)

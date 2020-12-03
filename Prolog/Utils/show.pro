@@ -10,7 +10,7 @@ showPaciente(model:paciente(IdPac, Nome, _, Nascimento, Peso, Altura, Sangue, En
     format('Data de nascimento: ~w~n', [Nascimento]),
     format('Peso/Altura: ~d/~d~n', [Peso, Altura]),
     format('Tipo sanguíneo: ~w~n', [Sangue]),
-    format('C/D/H: ~w/~w/~w', [Card, Diab, Hiper]).
+    format('C/D/H: ~w/~w/~w~n', [Card, Diab, Hiper]).
 
 showExame(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado)) :-
     write('----------------------------'), nl,
