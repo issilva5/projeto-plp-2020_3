@@ -302,7 +302,7 @@ removeMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed),
     (ubs:validaIDMedicamento(IdMed) -> ubs:removeMedicamentoEstoque(IdMed, IdUBS, Qtd) ;
     write('Id inválido')).
 
-dashBoard(_).
+dashBoard(IdUBS) :- ubs:statusMedico(IdUBS).
 
 /* Menu do medico. */
 menuMedico(IDM) :- write('---------------------------------------------------------------------------------\n
@@ -385,4 +385,4 @@ menuMedicoEmitirResultado :- ((prompt('ID do Exame > ', IdExame), ubs:validaIDEx
 menuMedicoEmitirLaudo(IDM) :- ((prompt('ID do Exame > ', IdExame), ubs:validaIDExame(IdExame)) -> medico:emitirLaudo(IDM, IdExame)) ; write('ID inválido!').   
 
 menuMedicoTransferencia(IDM) :- prompt('ID da UBS de destino > ', IdUBS),
-                                ubs:validaIDUBS(IdUBS), medico:solicitarTransferencia(IDM, IdUBS) ; write('ID inválido!').
+                                ubs:validaIDUBS(IdUBS) -> medico:solicitarTransferencia(IDM, IdUBS) ; write('ID inválido!').

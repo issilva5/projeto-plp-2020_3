@@ -1,4 +1,4 @@
-:- module(time, [medicoHorarios/1, getNextDate/2, string_to_date/2]).
+:- module(time, [medicoHorarios/1, getNextDate/2, string_to_date/2, getStatusMedico/2]).
 
 :- use_module('utils.pro').
 :- use_module('../Models/model.pro').
@@ -262,3 +262,32 @@ string_to_date(String, Date) :- split_string(String, '/', '', [D, M, A]),
     atom_number(M, Mes),
     atom_number(A, Ano),
     Date = date(Ano, Mes, Dia, 0, 0, 0.0, 10800, -, -).
+
+getStatusMedico(IdMed, 'fora do plantão') :-
+    today_weekday(Tw),
+    not(model:m_inicio(IdMed, Tinicio, Tw)), !.
+
+getStatusMedico(IdMed, 'fora do plantão') :-
+    today_weekday(Tw),
+    model:m_inicio(IdMed, Tinicio, Tw),
+    model:m_fim(IdMed, Tfim, Tw),
+    get_time(X), stamp_date_time(X, D, 10800),
+    date_time_value(hour, D, NowHour),
+    date_time_value(minute, D, NowMinute),
+    (time(NowHour, NowMinute) @< Tinicio ; time(NowHour, NowMinute) @> Tfim), !.
+
+getStatusMedico(IdMed, 'em consulta') :-
+    today(date(Y, M, D)),
+    not(model:m_horarios(IdMed, date(Y, M, D, Hour, Minute, _, _, _, _))), !.
+
+getStatusMedico(IdMed, 'em consulta') :-
+    today(date(Y, M, D)),
+    model:m_horarios(IdMed, date(Y, M, D, Hour, Minute, _, _, _, _)),
+    get_time(X), stamp_date_time(X, D, 10800),
+    date_time_value(hour, D, NowHour),
+    date_time_value(minute, D, NowMinute),
+    time(Hour, Minute) @> time(NowHour, NowMinute), !.
+
+getStatusMedico(IdMed, 'em plantão e sem consulta').
+
+

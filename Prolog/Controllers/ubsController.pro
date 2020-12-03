@@ -7,6 +7,7 @@
 :- use_module('../Models/model.pro').
 :- use_module('../Utils/show.pro').
 :- use_module('../Utils/utils.pro').
+:- use_module('../Utils/time.pro', [getStatusMedico/2]).
 :- use_module('../Persistence/persistence.pro').
 
 /* Cria um médico. */
@@ -99,7 +100,10 @@ Um médico pode estar:
 1 - em plantão e sem consulta,
 2 - em plantão e em consulta.
 */
-statusMedico.
+statusMedico(IdUbs) :-
+    forall(model:medico(IdMed, Nome, _, IdUbs, _), 
+    (time:getStatusMedico(IdMed, Status),
+     format('Médico ~w de id ~d está ~w.~n', [Nome, IdMed, Status]))).
 
 /*
 Verifica se o ID pertence a uma UBS.
