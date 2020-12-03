@@ -8,7 +8,7 @@
 :- use_module('../Utils/show.pro').
 :- use_module('../Utils/utils.pro').
 :- use_module('../Controllers/ubsController.pro', [removeMedicamentoEstoque/3]).
-:- use_module('../Persistence/persistence.pro', [escreveReceita/0, escreveReceitaRem/0]).
+:- use_module('../Persistence/persistence.pro', [escreveReceita/0, escreveReceitaRem/0, escreveMedicamento/0]).
 
 /*
 Buscar as unidades que tem determinada especialidade.
@@ -65,7 +65,8 @@ requisitarMedicamento(ID, IDPac) :-
     retract(model:receita(ID, IDPac, _, _)),
     retractall(model:receita_remedio(ID, _, _, _)),
     persistence:escreveReceita,
-    persistence:escreveReceitaRem.
+    persistence:escreveReceitaRem,
+    persistence:escreveMedicamento.
 
 /* 
 Listar todos os laudos do paciente. 
