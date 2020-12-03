@@ -2,7 +2,8 @@
                 validaIDExame/1, validaIDReceita/1, validaIDLaudo/1,
                 visualizaConsultasFuturas/1, visualizaPacientes/1, visualizaMedicos/1,
                 visualizaMedico/2, consultarMedicamentos/1, consultarMedicamento/2,
-                adicionaMedicamentoEstoque/3, removeMedicamentoEstoque/3]).
+                adicionaMedicamentoEstoque/3, removeMedicamentoEstoque/3,
+                consultasHoje/1, estoqueEmBaixa/1]).
 
 :- use_module('../Models/model.pro').
 :- use_module('../Utils/show.pro').
@@ -101,9 +102,27 @@ Um médico pode estar:
 2 - em plantão e em consulta.
 */
 statusMedico(IdUbs) :-
+    format('Status dos médicos:~n'),
     forall(model:medico(IdMed, Nome, _, IdUbs, _), 
     (time:getStatusMedico(IdMed, Status),
      format('Médico ~w de id ~d está ~w.~n', [Nome, IdMed, Status]))).
+
+consultasHoje(IdUbs) :-
+    format('Consultas do Dia:~n'),
+    forall((model:consulta(IdConsulta, IdPac, IdMed, IdUbs, DataC),
+            get_time(X), stamp_date_time(X, TodayC, 10800),
+            date_time_value(date, DataC, Data),
+            date_time_value(date, TodayC, Today),
+            Data =@= Today,
+            date_time_value(time, DataC, time(H, M, _))),
+        format('Consulta ~d do paciente ~d com o doutor ~d às ~d:~d~n', [IdConsulta, IdPac, IdMed, H, M])).
+
+estoqueEmBaixa(IdUbs) :-
+    format('Medicamentos com estoque em baixa:~n'),
+    forall((model:medicamento(IdMedic, IdUbs, Nome, Qtd, _),
+            Qtd < 15),
+        format('~w - ~d~n', [Nome, Qtd])).
+
 
 /*
 Verifica se o ID pertence a uma UBS.

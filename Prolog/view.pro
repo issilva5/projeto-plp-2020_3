@@ -302,7 +302,9 @@ removeMedicamentoEstoque(IdUBS) :- prompt('Id Medicamento > ', IdMed),
     (ubs:validaIDMedicamento(IdMed) -> ubs:removeMedicamentoEstoque(IdMed, IdUBS, Qtd) ;
     write('Id inválido')).
 
-dashBoard(IdUBS) :- ubs:statusMedico(IdUBS).
+dashBoard(IdUBS) :- ubs:consultasHoje(IdUBS), nl, nl,
+                    ubs:estoqueEmBaixa(IdUBS), nl, nl,
+                    ubs:statusMedico(IdUBS).
 
 /* Menu do medico. */
 menuMedico(IDM) :- write('---------------------------------------------------------------------------------\n
