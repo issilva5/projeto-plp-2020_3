@@ -57,7 +57,7 @@ TODO reformular método.
 
 */
 requisitarMedicamento(ID, IDPac) :- 
-    forall((model:receita(ID, IDPac, IDMed, IdUbs),
+    forall((model:receita(ID, IDPac, _, IdUbs),
     model:receita_remedio(ID, IdMedic, _, Qtd),
     model:medicamento(IdMedic, IdUbs, _, Estoque, _),
     Estoque >= Qtd

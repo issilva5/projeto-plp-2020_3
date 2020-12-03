@@ -56,8 +56,7 @@ iniciaDatas(Id) :- forall(
     (today(T),
     model:m_inicio(Id, time(H, M), W),
     next_weekday(T, W, D),
-    combine_dt(D, time(H, M), O),
-    today_weekday(Tw)),
+    combine_dt(D, time(H, M), O)),
     assertz(model:m_horarios(Id, O))), persistence:escreveHorarios.
 
 /*
@@ -265,7 +264,7 @@ string_to_date(String, Date) :- split_string(String, '/', '', [D, M, A]),
 
 getStatusMedico(IdMed, 'fora do plantão') :-
     today_weekday(Tw),
-    not(model:m_inicio(IdMed, Tinicio, Tw)), !.
+    not(model:m_inicio(IdMed, _, Tw)), !.
 
 getStatusMedico(IdMed, 'fora do plantão') :-
     today_weekday(Tw),
@@ -278,7 +277,7 @@ getStatusMedico(IdMed, 'fora do plantão') :-
 
 getStatusMedico(IdMed, 'em consulta') :-
     today(date(Y, M, D)),
-    not(model:m_horarios(IdMed, date(Y, M, D, Hour, Minute, _, _, _, _))), !.
+    not(model:m_horarios(IdMed, date(Y, M, D, _, _, _, _, _, _))), !.
 
 getStatusMedico(IdMed, 'em consulta') :-
     today(date(Y, M, D)),
@@ -288,6 +287,6 @@ getStatusMedico(IdMed, 'em consulta') :-
     date_time_value(minute, D, NowMinute),
     time(Hour, Minute) @> time(NowHour, NowMinute), !.
 
-getStatusMedico(IdMed, 'em plantão e sem consulta').
+getStatusMedico(_, 'em plantão e sem consulta').
 
 

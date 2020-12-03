@@ -119,7 +119,7 @@ consultasHoje(IdUbs) :-
 
 estoqueEmBaixa(IdUbs) :-
     format('Medicamentos com estoque em baixa:~n'),
-    forall((model:medicamento(IdMedic, IdUbs, Nome, Qtd, _),
+    forall((model:medicamento(_, IdUbs, Nome, Qtd, _),
             Qtd < 15),
         format('~w - ~d~n', [Nome, Qtd])).
 

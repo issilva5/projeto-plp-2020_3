@@ -20,7 +20,7 @@ main :-
     writeln('(L)ogin     '),
     writeln('(C)adastrar '),
     writeln('(E)ncerrar  '),
-    promptString('Opção > ', OP),
+    promptOption('Opção > ', OP),
     ( OP = "L" -> tty_clear, login;
       OP = "C" -> tty_clear, cadastro;
       OP = "E" -> writeln('Tchau');
@@ -42,7 +42,7 @@ cadastro :- write('-------------------------------------------------------------
    SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - CADASTRO  \n
 -----------------------------------------------------------------\n'),
     write('(P)aciente'), nl, write('(U)BS'), nl, write('(V)oltar'), nl,
-    promptString('Opção > ', O),
+    promptOption('Opção > ', O),
     (O = "P" -> cadastraPac, main;
      O = "U" -> cadastraUBS, main;
      O = "V" -> tty_clear, main;
@@ -95,7 +95,7 @@ menuPaciente(ID) :- write('-----------------------------------------------------
                 write('(C)onsultar'), nl,
                 write('(E)mergência'), nl,
                 write('(S)air'), nl,
-                promptString('Opção > ', O),
+                promptOption('Opção > ', O),
                 (O = "B" -> menuPacienteBuscarUBS, utils:mensagemEspera, menuPaciente(ID);
                 O = "R" -> menuPacienteRequisitar(ID), utils:mensagemEspera, menuPaciente(ID);
                 O = "C" -> menuPacienteConsultar(ID), utils:mensagemEspera, menuPaciente(ID);
@@ -106,7 +106,7 @@ menuPaciente(ID) :- write('-----------------------------------------------------
 menuPacienteBuscarUBS :- write('(T)odas as UBS'), nl,
                             write('(E)specilidades da UBS'), nl,
                             write('(U)BS por especialidade'), nl,
-                            promptString('Opção > ', O),
+                            promptOption('Opção > ', O),
                             (O = "T" -> menuPacienteBuscarTodasUbs;
                             O = "E" -> menuPacienteBuscarEspecialidadesUbs;
                             O = "U" -> menuPacienteBuscarUBSPorEspecialidade;
@@ -123,7 +123,7 @@ menuPacienteBuscarEspecialidadesUbs :- prompt('Id da UBS > ', I),
 menuPacienteRequisitar(ID) :- write('(C)onsulta'), nl,
                               write('(E)xame'), nl,
                               write('(M)edicamento'), nl,
-                              promptString('Opção > ', O),
+                              promptOption('Opção > ', O),
                               (O ="C" -> leituraRequisitaConsulta(ID);
                               O = "E" -> leituraRequisitaExame(ID);
                               O = "M" -> leituraRequisitaMedicamento(ID);
@@ -162,7 +162,7 @@ menuPacienteConsultar(ID) :- write('(L)audo'), nl,
                              write('(R)eceita'), nl,
                              write('(E)xame'), nl,
                              write('(C)onsultas'), nl,
-                             promptString('Opção > ', O),
+                             promptOption('Opção > ', O),
                              (O = "L" -> leituraConsultaLaudo(ID);
                              O = "R" -> leituraConsultaReceita(ID);
                              O = "E" -> leituraConsultaExame(ID);
@@ -171,7 +171,7 @@ menuPacienteConsultar(ID) :- write('(L)audo'), nl,
 
 leituraConsultaLaudo(ID) :- write('(T)odos'), nl,
                             write('(E)specífico'), nl,
-                            promptString('Opção > ', O),
+                            promptOption('Opção > ', O),
                             (O = "T" -> leituraConsultaTodosLaudos(ID);
                             O = "E" -> leituraConsultaLaudoEspecifico;
                             write('Opção Inválida')).
@@ -184,7 +184,7 @@ leituraConsultaLaudoEspecifico :- prompt('ID do Laudo > ', IDL),
 
 leituraConsultaReceita(ID) :- write('(T)odas'), nl,
                               write('(E)specífica'), nl,
-                              promptString('Opção > ', O),
+                              promptOption('Opção > ', O),
                               (O = "T" -> leituraConsultaTodasReceitas(ID);
                               O = "E" -> leituraConsultaReceitaEspecifica(ID);
                               write('Opção Inválida')).
@@ -197,7 +197,7 @@ leituraConsultaReceitaEspecifica(ID) :- prompt('ID da Receita > ', IDR),
 
 leituraConsultaExame(ID) :- write('(T)odos'), nl,
                             write('(E)specífico'), nl,
-                            promptString('Opção > ', O),
+                            promptOption('Opção > ', O),
                             (O = "T" -> leituraConsultaTodosExames(ID);
                             O = "E" -> leituraConsultaExameEspecifico(ID);
                             write('Opção Inválida')).
@@ -210,7 +210,7 @@ leituraConsultaExameEspecifico(ID) :- prompt('ID do Exame > ', IdEx),
 
 leituraConsultaConsultas(ID) :- write('(T)odas'), nl,
                                 write('(E)specífica'), nl,
-                                promptString('Opção > ', O),
+                                promptOption('Opção > ', O),
                                 (O = "T" -> leituraConsultaTodasConsultas(ID);
                                 O = "E" -> leituraConsultaConsultaEspecifica(ID);
                                 write('Opção Inválida')).
@@ -233,7 +233,7 @@ menuUBS(IdUBS) :- write('-------------------------------------------------------
     write('(F)armácia'), nl,
     write('(D)ashboard'), nl,
     write('(S)air'), nl,
-    promptString('Opção > ', Op),
+    promptOption('Opção > ', Op),
     (Op = "C" -> cadastraMedico(IdUBS), utils:mensagemEspera, menuUBS(IdUBS);
      Op = "V" -> visualizaUBS(IdUBS), utils:mensagemEspera, menuUBS(IdUBS);
      Op = "F" -> farmaciaUBS(IdUBS), utils:mensagemEspera, menuUBS(IdUBS);
@@ -246,7 +246,7 @@ cadastraMedico(IdUBS) :- ubs:cadastraMedico(IdUBS).
 visualizaUBS(IdUBS) :- write('(A)gendamentos'), nl,
     write('(P)aciente'), nl,
     write('(M)édico'), nl,
-    promptString('Opção > ', Op),
+    promptOption('Opção > ', Op),
     (Op = "A" -> ubs:visualizaConsultasFuturas(IdUBS);
     Op = "P" -> ubs:visualizaPacientes(IdUBS);
     Op = "M" -> visualizaUBSMedicos(IdUBS);
@@ -254,7 +254,7 @@ visualizaUBS(IdUBS) :- write('(A)gendamentos'), nl,
 
 visualizaUBSMedicos(IdUBS) :- write('(T)odos'), nl,
     write('(E)specífico'), nl,
-    promptString('Opção > ', Op),
+    promptOption('Opção > ', Op),
     (Op = "T" -> ubs:visualizaMedicos(IdUBS);
     Op = "E" -> visualizaUBSMedico(IdUBS);
     write('Opção inválida')).
@@ -267,7 +267,7 @@ farmaciaUBS(IdUBS) :- write('(C)onsultar'), nl,
     write('(N)ovo'), nl,
     write('(A)dicionar'), nl,
     write('(R)emover'), nl,
-    promptString('Opção > ', Op),
+    promptOption('Opção > ', Op),
     (Op = "C" -> farmaciaUBSConsultar(IdUBS);
     Op = "N" -> novoMedicamento(IdUBS);
     Op = "A" -> adicionaMedicamentoEstoque(IdUBS);
@@ -276,7 +276,7 @@ farmaciaUBS(IdUBS) :- write('(C)onsultar'), nl,
 
 farmaciaUBSConsultar(IdUBS) :- write('(T)odos'), nl,
     write('(E)specífico'), nl,
-    promptString('Opção > ', Op),
+    promptOption('Opção > ', Op),
     (Op = "T" -> ubs:consultarMedicamentos(IdUBS) ;
     Op = "E" -> (prompt('Id Medicamento > ', IdMed), 
         ubs:validaIDMedicamento(IdMed),
@@ -315,7 +315,7 @@ menuMedico(IDM) :- write('------------------------------------------------------
                 write('(E)mitir'), nl,
                 write('(T)ransferência'), nl,
                 write('(S)air'), nl,
-                promptString('Opção > ', O),
+                promptOption('Opção > ', O),
                 (O = "I" -> time:medicoHorarios(IDM), mensagemEspera, menuMedico(IDM);
                 O = "A" -> menuMedicoAcessarDados(IDM), mensagemEspera, menuMedico(IDM);
                 O = "E" -> menuMedicoEmitir(IDM), mensagemEspera, menuMedico(IDM);
@@ -327,7 +327,7 @@ menuMedicoAcessarDados(IDM) :- write('(P)acientes'), nl,
                                write('(E)xames'), nl,
                                write('(C)onsultas agendadas'), nl,
                                write('(M)edicamentos'), nl,
-                               promptString('Opção > ', O),
+                               promptOption('Opção > ', O),
                                (O = "P" -> acessarDadosPacientes ;
                                O = "E" -> menuMedicoAcessarExames(IDM) ;
                                O = "C" -> menuMedicoAcessarAgendamentos(IDM) ;
@@ -339,14 +339,14 @@ acessarDadosPacientes :- prompt('ID do Paciente > ', ID),
  
 menuMedicoAcessarExames(IDM) :- write('(T)odos'), nl,
                                 write('(E)specíficos'), nl,
-                                promptString('Opção > ', O),
+                                promptOption('Opção > ', O),
                                 (O = "T" -> medico:acessarExames(IDM, 0) ;
                                 O = "E" -> menuMedicoAcessarExamesEspecifico ;
                                 write('Opção Inválida')).
 
 menuMedicoAcessarExamesEspecifico :- write('ID do (E)xame'), nl,
                                     write('ID do (P)aciente'), nl,
-                                    promptString('Opção > ', O),
+                                    promptOption('Opção > ', O),
                                     prompt('Insira o ID > ', ID),
                                     ((O = "E", ubs:validaIDExame(ID)) -> medico:acessarExames(ID, 1);
                                     (O = "P", paciente:validaIDPaciente(ID)) -> medico:acessarExames(ID, 2);
@@ -355,7 +355,7 @@ menuMedicoAcessarExamesEspecifico :- write('ID do (E)xame'), nl,
 
 menuMedicoAcessarAgendamentos(IDM) :- write('(T)odos'), nl,
                                       write('(E)specíficos'), nl,
-                                      promptString('Opção > ', O),
+                                      promptOption('Opção > ', O),
                                       (O = "T" -> medico:acessarConsultas(IDM, 0);
                                       O = "E" -> menuMedicoAcessarAgendamentosEspecifico(IDM);
                                       write('Opção Inválida')).                  
@@ -366,7 +366,7 @@ menuMedicoAcessarAgendamentosEspecifico(IDM) :- write('Data > '), nl,
 
 menuMedicoAcessarMedicamentos :- write('(T)odos'), nl,
                                       write('(E)specíficos'), nl,
-                                      promptString('Opção > ', O),
+                                      promptOption('Opção > ', O),
                                       (O = "T" -> medico:acessarMedicamentos ;
                                       O = "E" -> prompt('Insira o ID > ', ID), medico:acessarMedicamentos(ID) ;
                                       write('Opção Inválida')).
@@ -374,7 +374,7 @@ menuMedicoAcessarMedicamentos :- write('(T)odos'), nl,
 menuMedicoEmitir(IDM) :- write('(R)eceita'), nl,
                          write('Resultado de (E)xame'), nl,
                          write('(L)audo Médico'), nl,
-                         promptString('Opção > ', O),
+                         promptOption('Opção > ', O),
                          (O = "R" -> menuMedicoEmitirReceita(IDM);
                          O = "E" -> menuMedicoEmitirResultado;
                          O = "L" -> menuMedicoEmitirLaudo(IDM);
