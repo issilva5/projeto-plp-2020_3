@@ -1,0 +1,6 @@
+:- dynamic ubs/3.
+
+ubs(3, "upa ufcg", "ufcg").
+ubs(5, "upa grandona", "rua tudo grande").
+ubs(19, "upa pequena", "rua tudo pequeno").
+

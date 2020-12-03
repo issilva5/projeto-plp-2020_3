@@ -39,7 +39,15 @@ dia da semana :: Int (1 a 7).
 Os campos de tempo de atendimento (m_tempo) são idMed :: Int, tempo de consulta em minutos :: Int.
 
 */
-iniciaMedico :- dynamic medico/5, m_inicio/3, m_fim/3, m_tempo/2, m_horarios/2.
+iniciaMedico :- dynamic(medico/5).
+
+iniciaMInicio :- dynamic(m_inicio/3).
+
+iniciaMFim :- dynamic(m_fim/3).
+
+iniciaMTempo :- dynamic(m_tempo/2).
+
+iniciaMHorarios :- dynamic(m_horarios/2).
 
 /*
 
@@ -50,7 +58,9 @@ Os campos de remédio são: idReceita :: Int, idMedicamento :: Int, instruções
 quantidade :: Int.
 
 */
-iniciaReceita :- dynamic receita/4, receita_remedio/4.
+iniciaReceita :- dynamic(receita/4).
+
+iniciaReceitaReme :- dynamic(receita_remedio/4).
 
 /*
 
@@ -117,24 +127,109 @@ Inicializa todas as tabelas do sistema de uma só vez.
 
 */
 iniciaSistema :- verificaPaciente, verificaMedico, verificaUBS, verificaReceita, verificaMedicamento,
-                 verificaLaudo, verificaExame, verificaLogins, verificaConsulta, verificaId.
+                 verificaLaudo, verificaExame, verificaLogins, verificaConsulta, verificaId,
+                 verificaHorario, verificaMInicio, verificaMFim, verificaMTempo, verificaReceitaRem.
 
-verificaPaciente :- exists_file('paciente.bd') -> persistence:lePaciente; iniciaPaciente.
+verificaPaciente :- exists_file('bd/paciente.bd') -> lePaciente ; iniciaPaciente.
 
-verificaMedico :- exists_file('medico.bd') -> persistence:leMedico; iniciaMedico.
+verificaMedico :- exists_file('bd/medico.bd') -> leMedico ; iniciaMedico.
 
-verificaUBS :- exists_file('ubs.bd') -> persistence:leUBS; iniciaUBS.
+verificaUBS :- exists_file('bd/ubs.bd') -> leUBS ; iniciaUBS.
 
-verificaReceita :- exists_file('receita.bd') -> persistence:leReceita; iniciaReceita.
+verificaReceita :- exists_file('bd/receita.bd') -> leReceita ; iniciaReceita.
 
-verificaMedicamento :- exists_file('medicamento.bd') -> persistence:leMedicamento; iniciaMedicamento.
+verificaReceitaRem :- exists_file('bd/receita_rem.bd') -> leReceitaRem ; iniciaReceitaReme.
 
-verificaLaudo :- exists_file('laudo.bd') -> persistence:leLaudo; iniciaLaudo.
+verificaMedicamento :- exists_file('bd/medicamento.bd') -> leMedicamento ; iniciaMedicamento.
 
-verificaExame :- exists_file('exame.bd') -> persistence:leExame; iniciaExame.
+verificaLaudo :- exists_file('bd/laudo.bd') -> leLaudo ; iniciaLaudo.
 
-verificaLogins :- exists_file('logins.bd') -> persistence:leLogins; iniciaLogins.
+verificaExame :- exists_file('bd/exame.bd') -> leExame ; iniciaExame.
 
-verificaConsulta :- exists_file('consulta.bd') -> persistence:leConsulta; iniciaConsulta.
+verificaLogins :- exists_file('bd/logins.bd') -> leLogins ; iniciaLogins.
 
-verificaId :- exists_file('id.bd') -> persistence:leId; iniciaId.
+verificaConsulta :- exists_file('bd/consulta.bd') -> leConsulta ; iniciaConsulta.
+
+verificaId :- exists_file('bd/id.bd') -> leId ; iniciaId.
+
+verificaHorario :- exists_file('bd/medico_horarios.bd') -> leHorarios ; iniciaMHorarios.
+
+verificaMInicio :- exists_file('bd/medico_inicio.bd') -> leMInicio ; iniciaMInicio.
+
+verificaMFim :- exists_file('bd/medico_fim.bd') -> leMFim ; iniciaMFim.
+
+verificaMTempo :- exists_file('bd/medico_tempo.bd') -> leMTempo ; iniciaMTempo.
+
+/*
+Verifica se o arquivo 'paciente.bd' existe, se existir o lê,
+c.c. chama model:iniciaPaciente.
+*/
+lePaciente :- consult('bd/paciente.bd').
+
+
+/*
+Verifica se o arquivo 'ubs.bd' existe, se existir o lê,
+c.c. chama model:iniciaUBS.
+*/
+leUBS :- consult('bd/ubs.bd').
+
+/*
+Verifica se o arquivo 'medico.bd' existe, se existir o lê,
+c.c. chama model:iniciaMedico.
+*/
+leMedico :- consult('bd/medico.bd').
+
+/*
+Verifica se o arquivo 'paciente.bd' existe, se existir o lê,
+c.c. chama model:iniciaPaciente.
+*/
+leConsulta :- consult('bd/consulta.bd').
+
+/*
+Verifica se o arquivo 'receita.bd' existe, se existir o lê,
+c.c. chama model:iniciaReceita.
+*/
+leReceita :- consult('bd/receita.bd').
+
+leReceitaRem :- consult('bd/receita_rem.bd').
+
+/*
+Verifica se o arquivo 'medicamento.bd' existe, se existir o lê,
+c.c. chama model:iniciaMedicamento.
+*/
+leMedicamento :- consult('bd/medicamento.bd').
+
+/*
+Verifica se o arquivo 'laudo.bd' existe, se existir o lê,
+c.c. chama model:iniciaLaudo.
+*/
+leLaudo :- consult('bd/laudo.bd').
+
+/*
+Verifica se o arquivo 'exame.bd' existe, se existir o lê,
+c.c. chama model:iniciaExame.
+*/
+leExame :- consult('bd/exame.bd').
+
+/*
+Verifica se o arquivo 'logins.bd' existe, se existir o lê,
+c.c. chama model:iniciaLogin.
+*/
+leLogins :- consult('bd/logins.bd').
+
+/*
+Verifica se o arquivo 'id.bd' existe, se existir o lê,
+c.c. chama model:iniciaId.
+*/
+leId :- consult('bd/id.bd').
+
+leHorarios :- consult('bd/medico_horarios.bd').
+
+/* Persiste a tabela medico_inicio no arquivo. */
+leMInicio :- consult('bd/medico_inicio.bd').
+
+/* Persiste a tabela medico_fim no arquivo. */
+leMFim :- consult('bd/medico_fim.bd').
+
+/* Persiste a tabela medico_fim no arquivo. */
+leMTempo :- consult('bd/medico_tempo.bd').

@@ -10,24 +10,24 @@ showPaciente(model:paciente(IdPac, Nome, _, Nascimento, Peso, Altura, Sangue, En
     format('Data de nascimento: ~w~n', [Nascimento]),
     format('Peso/Altura: ~d/~d~n', [Peso, Altura]),
     format('Tipo sanguíneo: ~w~n', [Sangue]),
-    format('C/D/H: ~w/~w/~w', [Card, Diab, Hiper]).
+    format('C/D/H: ~w/~w/~w~n', [Card, Diab, Hiper]).
 
 showExame(model:exame(IdEx, IdPac, IDM, IdUBS, Tipo, Data, Resultado)) :-
     write('----------------------------'), nl,
-    format('EXAME ~d', [IdEx]),
-    format('Paciente: ~d', [IdPac]),
-    format('Médico responsável: ~d', [IDM]),
-    format('UBS: ~d', [IdUBS]),
-    format('Tipo do exame: ~w', [Tipo]),
+    format('EXAME ~d~n', [IdEx]),
+    format('Paciente: ~d~n', [IdPac]),
+    format('Médico responsável: ~d~n', [IDM]),
+    format('UBS: ~d~n', [IdUBS]),
+    format('Tipo do exame: ~w~n', [Tipo]),
     write('Data: '), format_time(user, '%a, %d %b %Y %T', Data), nl,
-    format('Resultado: ', [Resultado]).
+    format('Resultado: ~w~n', [Resultado]).
 
 showConsulta(model:consulta(ID, IdPac, IDM, IdUBS, Data)) :-
     write('----------------------------'), nl,
-    format('CONSULTA ~d', [ID]),
-    format('Paciente: ~d', [IdPac]),
-    format('Médico responsável: ~d', [IDM]),
-    format('UBS: ~d', [IdUBS]),
+    format('CONSULTA ~d~n', [ID]),
+    format('Paciente: ~d~n', [IdPac]),
+    format('Médico responsável: ~d~n', [IDM]),
+    format('UBS: ~d~n', [IdUBS]),
     write('Data: '), format_time(user, '%a, %d %b %Y %T', Data), nl.
 
 showMedicamento(model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula)) :-
@@ -64,4 +64,8 @@ showReceita(model:receita(Id, IdPac, IdMed, IdUbs)) :-
     format('RECEITA ~d~n', [Id]),
     format('Paciente: ~d~n', [IdPac]),
     format('Médico responsável: ~d~n', [IdMed]),
-    format('UBS: ~w~n', [IdUbs]).
+    format('UBS: ~w~n', [IdUbs]),
+    format('--------Medicamentos--------~n'),
+    forall((model:receita_remedio(Id, Medic, Inst, Quant),
+            model:medicamento(Medic, _, Nome, _, _)),
+            format('Nome: ~w~nQuant: ~d~nInst: ~w~n~n', [Nome, Quant, Inst])).

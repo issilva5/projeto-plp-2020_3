@@ -1,7 +1,8 @@
-:- module(time, [medicoHorarios/1, getNextDate/2, string_to_date/2]).
+:- module(time, [medicoHorarios/1, getNextDate/2, string_to_date/2, getStatusMedico/2]).
 
 :- use_module('utils.pro').
 :- use_module('../Models/model.pro').
+:- use_module('../Persistence/persistence.pro').
 
 /*
 
@@ -42,8 +43,7 @@ putNextDate(Id, D) :- model:m_tempo(Id, T),
         add_days(NewDate, 7, OutputDate),
         date_time_value(date, OutputDate, OnlyDate2),
         combine_dt(OnlyDate2, TI, NewDate2),
-        assertz(model:m_horarios(Id, NewDate2))), !.
-
+        assertz(model:m_horarios(Id, NewDate2))), persistence:escreveHorarios, !.
 
 
 /*
@@ -56,9 +56,8 @@ iniciaDatas(Id) :- forall(
     (today(T),
     model:m_inicio(Id, time(H, M), W),
     next_weekday(T, W, D),
-    combine_dt(D, time(H, M), O),
-    today_weekday(Tw)),
-    Tw == W -> asserta(model:m_horarios(Id, O)) ; assertz(model:m_horarios(Id, O))).
+    combine_dt(D, time(H, M), O)),
+    assertz(model:m_horarios(Id, O))), persistence:escreveHorarios.
 
 /*
 
@@ -71,7 +70,12 @@ Caso o horário de início ou de fim seja inválido, ambos serão considerados i
 
 */
 informaHorarios(Id) :- limpaTudo(Id), !, tempoConsulta(Id),
-    forall(between(1,7,WeekD),
+    persistence:escreveMTempo,
+    today_weekday(W),
+    Wd is W+1,
+    forall(between(Wd,7,WeekD),
+    (informaHorario(Id,WeekD) ; true)),
+    forall(between(1,W,WeekD),
     (informaHorario(Id,WeekD) ; true)).
 
 /*
@@ -80,14 +84,12 @@ Limpa informações anteriores sobre os horários do médico.
 @param +Id: Id do médico.
 
 */
-limpaTudo(Id) :- (model:m_horarios(Id, D) ; true),
-    (retract(model:m_horarios(Id, D)) ; true),
-    (model:m_inicio(Id, I, W) ; true),
-    (retract(model:m_inicio(Id, I, W)) ; true),
-    (model:m_fim(Id, F, W2) ; true),
-    (retract(model:m_fim(Id, F, W2)) ; true),
-    (model:m_tempo(Id, T) ; true),
-    (retract(model:m_tempo(Id, T)) ; true).
+limpaTudo(Id) :- (retractall(model:m_horarios(Id, _)) ; true),
+    (retractall(model:m_inicio(Id, _, _)) ; true),
+    (retractall(model:m_fim(Id, _, _)) ; true),
+    (retractall(model:m_tempo(Id, _)) ; true),
+    persistence:escreveMInicio, persistence:escreveMFim,
+    persistence:escreveMTempo, persistence:escreveHorarios.
 
 /*
 
@@ -110,7 +112,9 @@ Faz a coleta dos horários de início e fim de plantão do médico para um dado 
 informaHorario(Id, WeekD) :- informaHorarioInicio(Id, WeekD, MInicio),
     informaHorarioFim(Id, WeekD, MFim),
     assertz(MInicio),
-    assertz(MFim).
+    assertz(MFim),
+    persistence:escreveMInicio,
+    persistence:escreveMFim.
 
 /*
 
@@ -196,14 +200,10 @@ Pega a data do próximo dia da semana a partir de uma dada data.
 next_weekday(_, WeekD, DateOut) :- (WeekD < 1 ; WeekD > 7), DateOut = "impossivel", !.
 
 next_weekday(date(Y, M, D), WeekD, DateOut) :-
-    day_of_the_week(date(Y, M, D), DWeek),
-    WeekD == DWeek,
-    DateOut = date(Y, M, D), !.
-
-next_weekday(date(Y, M, D), WeekD, DateOut) :-
     add_days(date(Y, M, D, 0, 0, 0, 0, -, -), 1, DateAux1),
     date_time_value(date, DateAux1, DateAux2),
-    next_weekday(DateAux2, WeekD, DateOut).
+    day_of_the_week(DateAux2, DWeek),
+    (WeekD =\= DWeek -> next_weekday(DateAux2, WeekD, DateOut) ; DateOut = DateAux2).
 
 /*
 
@@ -261,3 +261,32 @@ string_to_date(String, Date) :- split_string(String, '/', '', [D, M, A]),
     atom_number(M, Mes),
     atom_number(A, Ano),
     Date = date(Ano, Mes, Dia, 0, 0, 0.0, 10800, -, -).
+
+getStatusMedico(IdMed, 'fora do plantão') :-
+    today_weekday(Tw),
+    not(model:m_inicio(IdMed, _, Tw)), !.
+
+getStatusMedico(IdMed, 'fora do plantão') :-
+    today_weekday(Tw),
+    model:m_inicio(IdMed, Tinicio, Tw),
+    model:m_fim(IdMed, Tfim, Tw),
+    get_time(X), stamp_date_time(X, D, 10800),
+    date_time_value(hour, D, NowHour),
+    date_time_value(minute, D, NowMinute),
+    (time(NowHour, NowMinute) @< Tinicio ; time(NowHour, NowMinute) @> Tfim), !.
+
+getStatusMedico(IdMed, 'em consulta') :-
+    today(date(Y, M, D)),
+    not(model:m_horarios(IdMed, date(Y, M, D, _, _, _, _, _, _))), !.
+
+getStatusMedico(IdMed, 'em consulta') :-
+    today(date(Y, M, D)),
+    model:m_horarios(IdMed, date(Y, M, D, Hour, Minute, _, _, _, _)),
+    get_time(X), stamp_date_time(X, D, 10800),
+    date_time_value(hour, D, NowHour),
+    date_time_value(minute, D, NowMinute),
+    time(Hour, Minute) @> time(NowHour, NowMinute), !.
+
+getStatusMedico(_, 'em plantão e sem consulta').
+
+

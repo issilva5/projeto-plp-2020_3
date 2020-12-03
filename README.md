@@ -41,6 +41,9 @@ Antes de tudo faça a instalação das dependências descritas [aqui](Haskell/DE
  - com a compilação terminada faça `./Haskell/View/Main` para executar o sistema.
 
 ### Prolog
+
+No diretório [Prolog](Prolog), faça:
+  - `swipl -s view.pro -t begin`
  
 ## Vídeos de demonstração
  

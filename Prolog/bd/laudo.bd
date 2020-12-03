@@ -1,0 +1,4 @@
+:- dynamic laudo/4.
+
+laudo(16, 4, 11, "A MORTE N VAI VIR").
+

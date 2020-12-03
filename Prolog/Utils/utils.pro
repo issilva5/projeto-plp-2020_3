@@ -1,4 +1,4 @@
-:- module(utils, [prompt/2, promptString/2, autentica/3, mensagemEspera/0]). %% na lista devem entrar as regras publicas do módulo na forma <nome>/<n>
+:- module(utils, [prompt/2, promptString/2, autentica/3, mensagemEspera/0, promptOption/2, promptPassword/2]). %% na lista devem entrar as regras publicas do módulo na forma <nome>/<n>
 
 :- use_module('../Models/model.pro').
 
@@ -20,6 +20,12 @@ promptString(+Text, -Value).
 promptString(Text, Value) :- read_pending_chars(user_input, _, _),
                              write(Text), flush_output(user),
                              read_line_to_string(user_input, Value).
+
+promptOption(Text, Value) :- promptString(Text, V), string_upper(V, Value).
+
+promptPassword(Text, Value) :- promptString(Text, V),
+    (V = "" -> promptPassword(Text, Value) ;
+    Value = V).
 
 /*
 

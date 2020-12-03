@@ -1,0 +1,5 @@
+:- dynamic medicamento/5.
+
+medicamento(14, 3, "rivotril", 40, "dont get mad get in").
+medicamento(15, 3, "paracetamol", 10, "dorzinha de cabeça?").
+
