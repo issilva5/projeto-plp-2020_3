@@ -1,0 +1,5 @@
+:- dynamic receita_remedio/4.
+
+receita_remedio(17, 14, "TOME A CADA 4 HORAS", 2).
+receita_remedio(17, 15, "n mata, pode tomar como quiser", 3).
+
