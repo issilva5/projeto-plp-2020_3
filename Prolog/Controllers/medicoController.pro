@@ -131,7 +131,8 @@ TODO persistência
 solicitarTransferencia(IDM, IdNovaUBS) :- 
     model:medico(IDM, Nome, CRM, IdUBS, Espec),
     retract(model:medico(IDM, Nome, CRM, IdUBS, Espec)),
-    assertz(model:medico(IDM, Nome, CRM, IdNovaUBS, Espec)).
+    assertz(model:medico(IDM, Nome, CRM, IdNovaUBS, Espec)),
+    persistence:escreveMedico.
 
 /* Consulta o id da UBS de um médico. */
 pegaUBS(IDM, IdUBS) :- model:medico(IDM, _, _, IdUBS, _).
