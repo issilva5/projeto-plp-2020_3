@@ -50,13 +50,18 @@ requisitarExame(ID, IDPac, IDMed, IDUbs, Tipo, Dia) :- assertz(model:exame(ID, I
 Deduz do estoque os medicamentos de um dada receita. 
 
 @param ID: id da receita.
+
+TODO reformular método.
+
 */
-requisitarMedicamento(ID, IDPac) :- model:receita(ID, IDPac, IdMed, IdUbs), model:receita_remedio(ID, IdMed,Int,Qtd), model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula),
+requisitarMedicamento(ID, IDPac) :- model:receita(ID, IDPac, IdMed, IdUbs),
+    model:receita_remedio(ID, IdMedic, Int, Qtd),
+    model:medicamento(IdMedic, IdUBS, Nome, Estoque, Bula),
     NovaQuantidade is Estoque - Qtd,
     retract(model:receita(ID, IDPac, IdMed, IdUbs)),
-    retract(model:receita_remedio(ID, IdMed,Int,Qtd)),
-    retract(model:medicamento(IdMed, IdUBS, Nome, Estoque, Bula)),
-    assertz(model:medicamento(IdMed, IdUBS, Nome, NovaQuantidade, Bula)).
+    retract(model:receita_remedio(ID, IdMedic, Int, Qtd)),
+    retract(model:medicamento(IdMedic, IdUBS, Nome, Estoque, Bula)),
+    assertz(model:medicamento(IdMedic, IdUBS, Nome, NovaQuantidade, Bula)).
     
 
 /* 

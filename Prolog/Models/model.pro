@@ -58,8 +58,9 @@ Os campos de remédio são: idReceita :: Int, idMedicamento :: Int, instruções
 quantidade :: Int.
 
 */
-iniciaReceita :- dynamic(receita/4),
-    dynamic(receita_remedio/4).
+iniciaReceita :- dynamic(receita/4).
+
+iniciaReceitaReme :- dynamic(receita_remedio/4).
 
 /*
 
@@ -127,7 +128,7 @@ Inicializa todas as tabelas do sistema de uma só vez.
 */
 iniciaSistema :- verificaPaciente, verificaMedico, verificaUBS, verificaReceita, verificaMedicamento,
                  verificaLaudo, verificaExame, verificaLogins, verificaConsulta, verificaId,
-                 verificaHorario, verificaMInicio, verificaMFim, verificaMTempo.
+                 verificaHorario, verificaMInicio, verificaMFim, verificaMTempo, verificaReceitaRem.
 
 verificaPaciente :- exists_file('bd/paciente.bd') -> lePaciente ; iniciaPaciente.
 
@@ -136,6 +137,8 @@ verificaMedico :- exists_file('bd/medico.bd') -> leMedico ; iniciaMedico.
 verificaUBS :- exists_file('bd/ubs.bd') -> leUBS ; iniciaUBS.
 
 verificaReceita :- exists_file('bd/receita.bd') -> leReceita ; iniciaReceita.
+
+verificaReceitaRem :- exists_file('bd/receita_rem.bd') -> leReceitaRem ; iniciaReceitaReme.
 
 verificaMedicamento :- exists_file('bd/medicamento.bd') -> leMedicamento ; iniciaMedicamento.
 
@@ -187,6 +190,8 @@ Verifica se o arquivo 'receita.bd' existe, se existir o lê,
 c.c. chama model:iniciaReceita.
 */
 leReceita :- consult('bd/receita.bd').
+
+leReceitaRem :- consult('bd/receita_rem.bd').
 
 /*
 Verifica se o arquivo 'medicamento.bd' existe, se existir o lê,

@@ -179,7 +179,7 @@ leituraConsultaLaudo(ID) :- write('(T)odos'), nl,
 leituraConsultaTodosLaudos(ID) :- paciente:consultarLaudos(ID).
 
 leituraConsultaLaudoEspecifico(ID) :- prompt('ID do Laudo > ', IDL),
-                                      (ubs:validaIDLaudo(IDL) -> paciente:consultarLaudo(ID, IDL);
+                                      (ubs:validaIDLaudo(IDL) -> paciente:consultarLaudo(IDL);
                                       write('Id inválido\n'), leituraConsultaLaudo(ID)).
 
 leituraConsultaReceita(ID) :- write('(T)odas'), nl,
