@@ -88,7 +88,9 @@ consultarMedicamento(IdMed, IdUbs) :-
     show:showMedicamento(model:medicamento(IdMed, IdUbs, Nome, Qtd, Bula)).
 
 /*
+
 Determina o status dos médicos da UBS.
+
 Um médico pode estar:
 0 - sem plantão,
 1 - em plantão e sem consulta,
