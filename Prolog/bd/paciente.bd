@@ -1,5 +1,4 @@
 :- dynamic paciente/11.
 
-paciente(1, "itallo", "101154", "07/06/199", 90, 170, "a+", "rua manoel", "n", "n", "n").
-paciente(2, "thiago", "147852", "22/05/2001", 80, 190, "a+", "rua malvinas", "n", "n", "s").
+paciente(1, "Thiago", "1111", "22/05/2001", 70, 180, "a+", "ABC", "s", "n", "n").
 

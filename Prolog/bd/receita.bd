@@ -1,4 +1,3 @@
 :- dynamic receita/4.
 
-receita(18, 1, 6, 3).
 

@@ -87,9 +87,9 @@ Menu do paciente.
 
 @param ID o id do paciente.
 */
-menuPaciente(ID) :- write('---------------------------------------------------------------------------------\n
+menuPaciente(ID) :- write('-----------------------------------------------------------------\n
         SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - MENU PACIENTE \n
----------------------------------------------------------------------------------\n'),
+-----------------------------------------------------------------\n'),
                 write('(B)uscar unidade'), nl,
                 write('(R)equisitar'), nl,
                 write('(C)onsultar'), nl,
@@ -307,9 +307,9 @@ dashBoard(IdUBS) :- ubs:consultasHoje(IdUBS), nl, nl,
                     ubs:statusMedico(IdUBS).
 
 /* Menu do medico. */
-menuMedico(IDM) :- write('---------------------------------------------------------------------------------\n
+menuMedico(IDM) :- write('-----------------------------------------------------------------\n
         SISTEMA INTEGRADO DE ASSISTÊNCIA À SAÚDE (SIAS) - MENU MEDICO \n
----------------------------------------------------------------------------------\n'),
+-----------------------------------------------------------------\n'),
                 write('(I)nforma Horários'), nl,
                 write('(A)cessar Dados'), nl,
                 write('(E)mitir'), nl,

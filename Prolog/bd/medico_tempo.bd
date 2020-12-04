@@ -1,5 +1,4 @@
 :- dynamic m_tempo/2.
 
 m_tempo(4, 30).
-m_tempo(6, 30).
 

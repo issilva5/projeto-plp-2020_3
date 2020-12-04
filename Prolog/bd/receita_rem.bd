@@ -1,4 +1,3 @@
 :- dynamic receita_remedio/4.
 
-receita_remedio(18, 14, "use sabiamente", 2).
 

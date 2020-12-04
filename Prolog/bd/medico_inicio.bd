@@ -1,9 +1,6 @@
 :- dynamic m_inicio/3.
 
-m_inicio(6, time(10, 0), 3).
-m_inicio(6, time(18, 0), 6).
-m_inicio(4, time(22, 30), 4).
-m_inicio(4, time(18, 30), 5).
-m_inicio(4, time(14, 50), 1).
-m_inicio(4, time(20, 0), 3).
+m_inicio(4, time(10, 0), 5).
+m_inicio(4, time(10, 0), 1).
+m_inicio(4, time(15, 0), 4).
 
