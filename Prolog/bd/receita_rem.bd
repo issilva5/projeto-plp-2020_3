@@ -1,0 +1,3 @@
+:- dynamic receita_remedio/4.
+
+

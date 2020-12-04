@@ -1,0 +1,4 @@
+:- dynamic laudo/4.
+
+laudo(9, 4, 8, "Inconclusivo").
+

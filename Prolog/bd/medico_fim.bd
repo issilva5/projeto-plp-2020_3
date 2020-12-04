@@ -1,0 +1,6 @@
+:- dynamic m_fim/3.
+
+m_fim(4, time(19, 0), 5).
+m_fim(4, time(12, 0), 1).
+m_fim(4, time(22, 0), 4).
+

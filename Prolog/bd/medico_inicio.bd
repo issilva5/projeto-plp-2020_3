@@ -1,0 +1,6 @@
+:- dynamic m_inicio/3.
+
+m_inicio(4, time(10, 0), 5).
+m_inicio(4, time(10, 0), 1).
+m_inicio(4, time(15, 0), 4).
+

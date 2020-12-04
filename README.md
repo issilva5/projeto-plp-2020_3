@@ -39,7 +39,12 @@ O projeto foi desenvolvido em [Haskell](Haskell) e em Prolog.
 Antes de tudo faça a instalação das dependências descritas [aqui](Haskell/DEPENDENCIES.md), tendo feito isso, no diretório raiz do repositório, faça:
  - `ghc Haskell/View/Main.hs` para compilar;
  - com a compilação terminada faça `./Haskell/View/Main` para executar o sistema.
- 
+
+### Prolog
+
+No diretório [Prolog](Prolog), faça:
+  - `swipl -s view.pro -t begin`
+
  ## Vídeos de demonstração
  
- Os vídeos de demonstração para [Haskell](https://www.youtube.com/watch?v=WGFePs7LXg8) e Prolog podem ser acessados nos links respectivos.
+Os vídeos de demonstração para [Haskell](https://www.youtube.com/watch?v=WGFePs7LXg8) e [Prolog](https://youtu.be/mGAf4_cfU7w) podem ser acessados nos links respectivos.

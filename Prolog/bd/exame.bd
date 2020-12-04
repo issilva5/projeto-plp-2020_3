@@ -1,0 +1,4 @@
+:- dynamic exame/7.
+
+exame(8, 1, 4, 2, "Rotina", date(2020, 12, 4, 10, 30, 0.0, 10800, -, -), "Nada a declarar").
+

@@ -1,0 +1,5 @@
+:- dynamic medicamento/5.
+
+medicamento(6, 2, "Rivotril", 20, "Tomar todos os dias").
+medicamento(5, 2, "Gardenal", 9, "Sob orientação médica").
+

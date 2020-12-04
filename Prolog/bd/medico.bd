@@ -1,0 +1,4 @@
+:- dynamic medico/5.
+
+medico(4, "Hans", "12345", 3, "Cardiaca").
+
